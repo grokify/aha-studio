@@ -1,7 +1,0 @@
-{% import "strings" %}
-{% import "github.com/grokify/mogo/text/stringcase" %}
-{% func ToolsMarkdown(objs []stringcase.CaserNoun) %}
-{% for _, obj := range objs %}
-1. [ ] {%s obj.Plural.Display() %}
-    - [x] `get_{%s obj.Singular.SnakeCase() %}`: Get a specific {%s strings.ToLower(obj.Singular.Display()) %}{% endfor %}
-{% endfunc %}
