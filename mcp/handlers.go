@@ -1,6 +1,7 @@
 package mcp
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -403,7 +404,18 @@ func (h *ToolHandlers) SearchDocuments(ctx context.Context, params map[string]an
 		return nil, fmt.Errorf("error marshaling GraphQL request: %w", err)
 	}
 
-	resp, err := h.client.DoRaw(ctx, http.MethodPost, "/api/graphql", requestBody)
+	// GraphQL endpoint is at /api/graphql, not /api/v1/graphql
+	// Build URL directly using subdomain to avoid BaseURL's /api/v1 prefix
+	graphqlURL := fmt.Sprintf("https://%s.aha.io/api/graphql", h.client.Subdomain())
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, graphqlURL, bytes.NewReader(requestBody))
+	if err != nil {
+		return map[string]any{"error": fmt.Sprintf("error creating request: %v", err)}, nil
+	}
+	req.Header.Set("Authorization", "Bearer "+h.client.APIKey())
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return map[string]any{"error": fmt.Sprintf("error making GraphQL request: %v", err)}, nil
 	}
