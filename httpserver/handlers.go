@@ -251,7 +251,7 @@ func (s *Server) executeAPIQuery(ctx context.Context, aql, product string) (*res
 }
 
 // executeOfflineQuery executes a query against the local SQLite cache.
-func (s *Server) executeOfflineQuery(ctx context.Context, plan *planner.Plan, product string) (*result.Result, string, error) {
+func (s *Server) executeOfflineQuery(_ context.Context, plan *planner.Plan, product string) (*result.Result, string, error) {
 	if s.db == nil {
 		return nil, "", errCacheNotAvailable
 	}

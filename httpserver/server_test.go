@@ -1,3 +1,4 @@
+//nolint:dupl // Test functions have intentionally similar structure for consistency
 package httpserver
 
 import (

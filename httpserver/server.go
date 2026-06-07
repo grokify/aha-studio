@@ -231,8 +231,11 @@ func (s *Server) Start() error {
 			Logger:   s.logger,
 		}
 		s.scheduler = sync.NewScheduler(s.syncer, schedulerCfg)
-		s.scheduler.Start(context.Background())
-		s.logger.Info("background sync started", "interval", interval, "product", s.config.DefaultProduct)
+		if err := s.scheduler.Start(context.Background()); err != nil {
+			s.logger.Error("failed to start background sync", "error", err)
+		} else {
+			s.logger.Info("background sync started", "interval", interval, "product", s.config.DefaultProduct)
+		}
 	}
 
 	s.logger.Info("HTTP server starting",
