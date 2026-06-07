@@ -109,7 +109,7 @@ func TestSetGetLastSync(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetLastSync() after set error = %v", err)
 	}
-	if lastSync.Truncate(time.Second) != now {
+	if !lastSync.Truncate(time.Second).Equal(now) {
 		t.Errorf("GetLastSync() = %v, want %v", lastSync.Truncate(time.Second), now)
 	}
 }
