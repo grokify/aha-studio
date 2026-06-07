@@ -158,16 +158,18 @@ SELECT status, COUNT(*) as count FROM features GROUP BY status
 
 ## MCP Tools
 
-The MCP server provides 34 tools organized by category:
+The MCP server provides 34 tools organized by category.
 
-### Query Tools
+**Backend Legend:** Tools marked with 🌐 require browser credentials. Tools marked with 🔗 require Neo4j.
+
+### Query Tools (Aha API)
 
 | Tool | Description |
 |------|-------------|
 | `query` | Execute AQL queries |
 | `describe_aql` | Get AQL syntax help |
 
-### Get Tools
+### Get Tools (Aha API)
 
 | Tool | Description |
 |------|-------------|
@@ -185,7 +187,7 @@ The MCP server provides 34 tools organized by category:
 | `get_team` | Get team by ID |
 | `get_workflow` | Get workflow by ID |
 
-### List Tools
+### List Tools (Aha API)
 
 | Tool | Description |
 |------|-------------|
@@ -195,7 +197,7 @@ The MCP server provides 34 tools organized by category:
 | `list_releases` | List releases for product |
 | `search_documents` | Search documents via GraphQL |
 
-### Write Tools
+### Write Tools (Aha API)
 
 | Tool | Description |
 |------|-------------|
@@ -206,14 +208,14 @@ The MCP server provides 34 tools organized by category:
 | `add_feature_comment` | Add comment to feature |
 | `add_idea_comment` | Add comment to idea |
 
-### Browser Tools
+### Template Tools
 
 | Tool | Description |
 |------|-------------|
 | `list_predefined_templates` | List strategic templates |
-| `browser_create_template` | Create template via browser |
+| 🌐 `browser_create_template` | Create template via browser automation |
 
-### Graph Tools (Neo4j)
+### Graph Tools (Neo4j) 🔗
 
 | Tool | Description |
 |------|-------------|
