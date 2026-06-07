@@ -1,4 +1,4 @@
-# Aha! MCP Server
+# Aha Studio
 
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
@@ -9,342 +9,227 @@
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
 
- [go-ci-svg]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-ci.yaml/badge.svg?branch=main
- [go-ci-url]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-ci.yaml
- [go-lint-svg]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-lint.yaml/badge.svg?branch=main
- [go-lint-url]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-lint.yaml
- [go-sast-svg]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
- [go-sast-url]: https://github.com/grokify/aha-mcp-server/actions/workflows/go-sast-codeql.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/aha-mcp-server
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/aha-mcp-server
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/aha-mcp-server
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/aha-mcp-server
+ [go-ci-svg]: https://github.com/grokify/aha-studio/actions/workflows/go-ci.yaml/badge.svg?branch=main
+ [go-ci-url]: https://github.com/grokify/aha-studio/actions/workflows/go-ci.yaml
+ [go-lint-svg]: https://github.com/grokify/aha-studio/actions/workflows/go-lint.yaml/badge.svg?branch=main
+ [go-lint-url]: https://github.com/grokify/aha-studio/actions/workflows/go-lint.yaml
+ [go-sast-svg]: https://github.com/grokify/aha-studio/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
+ [go-sast-url]: https://github.com/grokify/aha-studio/actions/workflows/go-sast-codeql.yaml
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/aha-studio
+ [goreport-url]: https://goreportcard.com/report/github.com/grokify/aha-studio
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/aha-studio
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/aha-studio
  [docs-mkdoc-svg]: https://img.shields.io/badge/Go-dev%20guide-blue.svg
- [docs-mkdoc-url]: https://grokify.github.io/aha-mcp-server
+ [docs-mkdoc-url]: https://grokify.github.io/aha-studio
  [viz-svg]: https://img.shields.io/badge/visualization-Go-blue.svg
- [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Faha-mcp-server
- [loc-svg]: https://tokei.rs/b1/github/grokify/aha-mcp-server
- [repo-url]: https://github.com/grokify/aha-mcp-server
+ [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Faha-studio
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/aha-mcp-server/blob/main/LICENSE
+ [license-url]: https://github.com/grokify/aha-studio/blob/main/LICENSE
 
-A comprehensive Model Context Protocol (MCP) server for [Aha!](https://www.aha.io/) that enables AI assistants to interact with your Aha! workspace data. This server provides 13 tools to retrieve and search various Aha! objects, making it easy to integrate Aha! data into AI workflows.
+CLI tools for [Aha!](https://www.aha.io/) product management with AQL (Aha Query Language), MCP server integration, local SQLite sync, and Neo4j graph analytics.
 
-## What is MCP?
+## Overview
 
-The [Model Context Protocol](https://modelcontextprotocol.io/) is an open standard that enables AI assistants to securely connect to external data sources and tools. This Aha! MCP server acts as a bridge between AI assistants (like Claude) and your Aha! workspace.
+Aha Studio provides two command-line tools:
+
+| Binary | Purpose |
+|--------|---------|
+| `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
+| `aha-mcp-server` | MCP server (34 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
-- **13 comprehensive tools** for accessing and searching Aha! objects
-- **Secure authentication** using Aha! API tokens
-- **Easy configuration** with environment variables
-- **Multiple deployment options** (stdio or HTTP)
-- **Built with Go** for performance and reliability
-- **MIT licensed** and open source
-
-## Available Tools
-
-This server provides the following tools to retrieve and search Aha! data:
-
-| Category | Tool | Description |
-|----------|------|-------------|
-| **Search** | `search_documents` | Search for documents across your Aha! workspace using GraphQL |
-| **Comments** | `get_comment` | Retrieve a specific comment by ID |
-| **Epics** | `get_epic` | Retrieve a specific epic by ID |
-| **Features** | `get_feature` | Retrieve a specific feature by ID |
-| **Goals** | `get_goal` | Retrieve a specific goal by ID |
-| **Ideas** | `get_idea` | Retrieve a specific idea by ID |
-| **Initiatives** | `get_initiative` | Retrieve a specific initiative by ID |
-| **Key Results** | `get_key_result` | Retrieve a specific key result by ID |
-| **Personas** | `get_persona` | Retrieve a specific persona by ID |
-| **Releases** | `get_release` | Retrieve a specific release by ID |
-| **Requirements** | `get_requirement` | Retrieve a specific requirement by ID |
-| **Teams** | `get_team` | Retrieve a specific team by ID |
-| **Users** | `get_user` | Retrieve a specific user by ID |
-| **Workflows** | `get_workflow` | Retrieve a specific workflow by ID |
-
-All tools return JSON data including the requested object and HTTP status code.
-
-## Prerequisites
-
-- Go 1.24.1 or later
-- An Aha! workspace with API access
-- An Aha! API token (see [Aha! API documentation](https://www.aha.io/api))
+- **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
+- **34 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
+- **Local SQLite sync** - Offline queries and fast local caching
+- **Neo4j integration** - Graph analytics and relationship queries
+- **Browser automation** - Strategic template creation via headless Chrome
 
 ## Installation
 
-### Install from Source
-
 ```bash
-go install github.com/grokify/aha-mcp-server/cmd/aha-mcp-server@v0.7.0
-```
+# Install AQL CLI
+go install github.com/grokify/aha-studio/cmd/aha-studio@latest
 
-### Build from Source
-
-```bash
-git clone https://github.com/grokify/aha-mcp-server.git
-cd aha-mcp-server
-go build ./cmd/aha-mcp-server
+# Install MCP Server
+go install github.com/grokify/aha-studio/cmd/aha-mcp-server@latest
 ```
 
 ## Configuration
 
-### Get Your Aha! Credentials
-
-1. **API Token**: Generate an API token from your Aha! account settings
-2. **Domain**: Your Aha! subdomain (e.g., if your workspace is at `mycompany.aha.io`, your domain is `mycompany`)
-
-### Option 1: Direct Credentials
-
 Set the following environment variables:
 
 ```bash
-export AHA_API_TOKEN="your_api_token_here"
-export AHA_DOMAIN="your_aha_subdomain"
+export AHA_SUBDOMAIN=mycompany    # Required: your Aha.io subdomain
+export AHA_API_KEY=xxx            # Required: your Aha.io API key
+export AHA_DEFAULT_PRODUCT=PROD   # Optional: default product for queries
 ```
 
-Or use command-line flags:
+For Neo4j graph features (optional):
 
 ```bash
-aha-mcp-server --subdomain mycompany --api-key your-api-key
+export NEO4J_URI=bolt://localhost:7687
+export NEO4J_USERNAME=neo4j
+export NEO4J_PASSWORD=password
 ```
 
-### Option 2: Vault-Backed Credentials
-
-Use [omnitoken](https://github.com/plexusone/omnitoken) with vault backends for secure credential storage.
-
-| Provider | URI Pattern | Requirements |
-|----------|-------------|--------------|
-| 1Password | `op://vault` | `OP_SERVICE_ACCOUNT_TOKEN` env var |
-| Bitwarden | `bw://org-id` | `BW_ACCESS_TOKEN` and `BW_ORGANIZATION_ID` env vars |
-| Keeper | `keeper://` | `KSM_TOKEN` or `KSM_CONFIG` env var |
-| File | `file:///path` | None |
-
-#### 1Password Example
+For browser automation (optional):
 
 ```bash
-export OP_SERVICE_ACCOUNT_TOKEN="ops_..."
-aha-mcp-server --vault op://MyVault --credentials-name aha
+export AHA_EMAIL=user@example.com
+export AHA_PASSWORD=secret
 ```
 
-#### Bitwarden Example
+## Quick Start
+
+### AQL CLI
 
 ```bash
-export BW_ACCESS_TOKEN="..."
-export BW_ORGANIZATION_ID="..."
-aha-mcp-server --vault bw://org-id --credentials-name aha
+# Basic query
+aha-studio query "FROM features LIMIT 10"
+
+# Query with filter
+aha-studio query "FROM ideas WHERE status = 'Shipped' LIMIT 5"
+
+# Interactive shell
+aha-studio shell
+
+# Sync data to SQLite for offline queries
+aha-studio sync --product PROD
 ```
 
-#### Keeper Example
+### MCP Server (Claude Desktop)
 
-```bash
-export KSM_TOKEN="US:..."
-aha-mcp-server --vault keeper:// --credentials-name aha
-```
-
-### Claude Desktop Configuration
-
-Add to your Claude Desktop configuration file:
+Add to your Claude Desktop configuration:
 
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-#### With Direct Credentials
-
 ```json
 {
   "mcpServers": {
     "aha": {
       "command": "aha-mcp-server",
       "env": {
-        "AHA_API_TOKEN": "your_api_token_here",
-        "AHA_DOMAIN": "your_aha_subdomain"
+        "AHA_SUBDOMAIN": "mycompany",
+        "AHA_API_KEY": "your-api-key"
       }
     }
   }
 }
 ```
 
-#### With 1Password
+## AQL Syntax
 
-```json
-{
-  "mcpServers": {
-    "aha": {
-      "command": "aha-mcp-server",
-      "env": {
-        "OP_SERVICE_ACCOUNT_TOKEN": "ops_...",
-        "OMNITOKEN_VAULT_URI": "op://MyVault",
-        "OMNITOKEN_CREDENTIALS_NAME": "aha"
-      }
-    }
-  }
-}
+AQL provides a SQL-like interface for querying Aha.io data:
+
+```sql
+-- Basic query
+FROM features LIMIT 10
+
+-- Filter by status
+FROM ideas WHERE status = 'In Progress'
+
+-- Order by field
+FROM releases ORDER BY release_date DESC LIMIT 5
+
+-- Select specific fields
+SELECT name, status, created_at FROM features WHERE tag = 'v2'
+
+-- Aggregate queries
+SELECT status, COUNT(*) as count FROM features GROUP BY status
 ```
 
-#### With Bitwarden
+### Supported Entities
 
-```json
-{
-  "mcpServers": {
-    "aha": {
-      "command": "aha-mcp-server",
-      "env": {
-        "BW_ACCESS_TOKEN": "...",
-        "BW_ORGANIZATION_ID": "...",
-        "OMNITOKEN_VAULT_URI": "bw://org-id",
-        "OMNITOKEN_CREDENTIALS_NAME": "aha"
-      }
-    }
-  }
-}
-```
+| Entity | Description |
+|--------|-------------|
+| `features` | Product features |
+| `ideas` | Customer ideas |
+| `releases` | Product releases |
+| `epics` | Feature epics |
+| `initiatives` | Strategic initiatives |
+| `goals` | Product goals |
+| `users` | Workspace users |
+| `products` | Products/workspaces |
+| `comments` | Entity comments |
+| `requirements` | Feature requirements |
+| `tags` | Entity tags |
 
-#### With Keeper
+## MCP Tools
 
-```json
-{
-  "mcpServers": {
-    "aha": {
-      "command": "aha-mcp-server",
-      "env": {
-        "KSM_TOKEN": "US:...",
-        "OMNITOKEN_VAULT_URI": "keeper://",
-        "OMNITOKEN_CREDENTIALS_NAME": "aha"
-      }
-    }
-  }
-}
-```
+The MCP server provides 34 tools organized by category:
 
-### Environment Variables Reference
+### Query Tools
 
-| Variable | Flag | Description |
-|----------|------|-------------|
-| `AHA_DOMAIN` | `--subdomain` | Aha! subdomain |
-| `AHA_API_TOKEN` | `--api-key` | Aha! API key |
-| `OMNITOKEN_VAULT_URI` | `--vault` | Vault URI for credentials |
-| `OMNITOKEN_CREDENTIALS_NAME` | `--credentials-name` | Name of credentials in vault (default: `aha`) |
-| `OP_SERVICE_ACCOUNT_TOKEN` | - | 1Password service account token |
-| `BW_ACCESS_TOKEN` | - | Bitwarden access token |
-| `BW_ORGANIZATION_ID` | - | Bitwarden organization ID |
-| `KSM_TOKEN` | - | Keeper token (format: `REGION:TOKEN`) |
+| Tool | Description |
+|------|-------------|
+| `query` | Execute AQL queries |
+| `describe_aql` | Get AQL syntax help |
 
-### Other MCP Clients
+### Get Tools
 
-For other MCP clients, configure them to run the `aha-mcp-server` command with the required environment variables.
+| Tool | Description |
+|------|-------------|
+| `get_feature` | Get feature by reference |
+| `get_idea` | Get idea by reference |
+| `get_release` | Get release by reference |
+| `get_initiative` | Get initiative by reference |
+| `get_epic` | Get epic by ID |
+| `get_goal` | Get goal by ID |
+| `get_comment` | Get comment by ID |
+| `get_requirement` | Get requirement by ID |
+| `get_user` | Get user by ID |
+| `get_key_result` | Get key result by ID |
+| `get_persona` | Get persona by ID |
+| `get_team` | Get team by ID |
+| `get_workflow` | Get workflow by ID |
 
-## Usage
+### List Tools
 
-### Basic Usage
+| Tool | Description |
+|------|-------------|
+| `list_ideas` | List ideas with filters |
+| `list_products` | List all products |
+| `list_workflow_statuses` | List workflow statuses |
+| `list_releases` | List releases for product |
+| `search_documents` | Search documents via GraphQL |
 
-Once configured, you can use natural language with your AI assistant to interact with Aha! data:
+### Write Tools
 
-- "Search for documents about product roadmap"
-- "Find all pages related to user authentication"
-- "Show me feature AHA-123"
-- "Get details for epic EPIC-456" 
-- "What's in release REL-789?"
-- "Tell me about user john.doe"
+| Tool | Description |
+|------|-------------|
+| `create_feature` | Create a new feature |
+| `change_feature_status` | Change feature workflow status |
+| `assign_feature_release` | Assign feature to release |
+| `assign_user_to_feature` | Assign user to feature |
+| `add_feature_comment` | Add comment to feature |
+| `add_idea_comment` | Add comment to idea |
 
-### Tool Parameters
+### Browser Tools
 
-**Search Tool:**
-- `search_documents` requires:
-  - `query` (required): Search query string
-  - `searchable_type` (optional): Document type to search (defaults to "Page")
+| Tool | Description |
+|------|-------------|
+| `list_predefined_templates` | List strategic templates |
+| `browser_create_template` | Create template via browser |
 
-**Get Tools:**
-Each get tool requires a specific ID parameter:
-- `get_feature` requires `feature_id`
-- `get_epic` requires `epic_id`
-- `get_release` requires `release_id`
-- And so on...
+### Graph Tools (Neo4j)
 
-Example tool calls:
-```json
-{
-  "tool": "search_documents",
-  "parameters": {
-    "query": "product roadmap",
-    "searchable_type": "Page"
-  }
-}
-```
-
-```json
-{
-  "tool": "get_feature",
-  "parameters": {
-    "feature_id": "AHA-123"
-  }
-}
-```
-
-## Advanced Configuration
-
-### HTTP Mode
-
-You can run the server in HTTP mode for debugging or integration with other tools:
-
-```bash
-aha-mcp-server --http :8080
-```
-
-This will start an HTTP server on port 8080 instead of using stdio.
-
-### Command Line Options
-
-```bash
-aha-mcp-server [OPTIONS]
-
-Options:
-  -h, --http string    HTTP address (e.g., :8080) - if set, uses HTTP instead of stdio
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"AHA_DOMAIN environment variable is required"**
-   - Make sure you've set the `AHA_DOMAIN` environment variable
-   - Verify it contains only your subdomain (e.g., `mycompany`, not `mycompany.aha.io`)
-
-2. **"AHA_API_TOKEN environment variable is required"**
-   - Ensure you've set a valid Aha! API token
-   - Check that the token has the necessary permissions
-
-3. **Connection errors**
-   - Verify your Aha! subdomain is correct
-   - Check that your API token is valid and not expired
-   - Ensure your network allows connections to `*.aha.io`
-
-### Debug Mode
-
-Run with debug logging by setting the environment variable:
-
-```bash
-export MCP_DEBUG=1
-```
+| Tool | Description |
+|------|-------------|
+| `graph_sync` | Sync Aha data to Neo4j |
+| `graph_query` | Execute Cypher query |
+| `graph_find_path` | Find path between entities |
+| `graph_search` | Full-text search |
+| `graph_initiative_impact` | Initiative impact analysis |
+| `graph_release_deps` | Release dependency analysis |
 
 ## Development
-
-### Project Structure
-
-```
-aha-mcp-server/
-├── cmd/aha-mcp-server/     # Main application entry point
-├── tools/                  # Tool implementations
-├── mcputil/               # MCP utility functions
-├── codegen/               # Code generation templates
-├── server.go              # Core server implementation
-└── go.mod                 # Go module definition
-```
 
 ### Building
 
 ```bash
+go build ./cmd/aha-studio
 go build ./cmd/aha-mcp-server
 ```
 
@@ -354,28 +239,11 @@ go build ./cmd/aha-mcp-server
 go test ./...
 ```
 
-## Contributing
+### Linting
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## Updating
-
-### Version Number
-
-When updating the version, update it in both [`README.md`](README.md) and [`server.go`](server.go).
-
-## Comparison with Other Aha! MCP Servers
-
-| Server | Tools | License | Language |
-|--------|-------|---------|-----------|
-| **This Server** | 13 | MIT | Go |
-| [Official Aha! MCP](https://support.aha.io/aha-develop/integrations/mcp-server/mcp-server-connection~7493691606168806509) | 3 | ISC | TypeScript |
-| [popand/aha-mcp](https://github.com/popand/aha-mcp) | 4 | ISC | TypeScript |
-| [Zapier MCP](https://zapier.com/mcp/aha) | 2 | SaaS | - |
+```bash
+golangci-lint run
+```
 
 ## License
 
