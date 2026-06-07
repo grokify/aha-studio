@@ -342,7 +342,7 @@ type graphQLError struct {
 }
 
 type searchData struct {
-	Search searchResults `json:"search"`
+	SearchDocuments searchResults `json:"searchDocuments"`
 }
 
 type searchResults struct {
@@ -361,8 +361,8 @@ type documentNode struct {
 }
 
 const searchDocumentsQuery = `
-query SearchDocuments($query: String!, $searchableType: [String!]) {
-  search(query: $query, searchableType: $searchableType, first: 50) {
+query SearchDocuments($query: String!, $searchableType: [String!]!) {
+  searchDocuments(filters: {query: $query, searchableType: $searchableType}) {
     nodes {
       name
       url
@@ -447,8 +447,8 @@ func (h *ToolHandlers) SearchDocuments(ctx context.Context, params map[string]an
 		return map[string]any{"errors": errorMessages}, nil
 	}
 
-	results := make([]map[string]any, len(graphqlResp.Data.Search.Nodes))
-	for i, node := range graphqlResp.Data.Search.Nodes {
+	results := make([]map[string]any, len(graphqlResp.Data.SearchDocuments.Nodes))
+	for i, node := range graphqlResp.Data.SearchDocuments.Nodes {
 		results[i] = map[string]any{
 			"reference_num": node.SearchableID,
 			"name":          node.Name,
@@ -459,10 +459,10 @@ func (h *ToolHandlers) SearchDocuments(ctx context.Context, params map[string]an
 
 	return map[string]any{
 		"results":       results,
-		"total_results": graphqlResp.Data.Search.TotalCount,
-		"current_page":  graphqlResp.Data.Search.CurrentPage,
-		"total_pages":   graphqlResp.Data.Search.TotalPages,
-		"is_last_page":  graphqlResp.Data.Search.IsLastPage,
+		"total_results": graphqlResp.Data.SearchDocuments.TotalCount,
+		"current_page":  graphqlResp.Data.SearchDocuments.CurrentPage,
+		"total_pages":   graphqlResp.Data.SearchDocuments.TotalPages,
+		"is_last_page":  graphqlResp.Data.SearchDocuments.IsLastPage,
 	}, nil
 }
 
