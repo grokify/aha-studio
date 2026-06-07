@@ -1,3 +1,22 @@
 *.tar
 .DS_Store
 _*
+
+# Binaries
+bin/
+*.exe
+
+# Test output
+*.out
+coverage.html
+
+# MkDocs generated site
+site/
+
+# IDE
+.idea/
+.vscode/
+
+# Local config
+.env
+.env.local
