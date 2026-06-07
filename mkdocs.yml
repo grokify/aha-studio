@@ -1,8 +1,8 @@
-site_name: Aha! MCP Server
-site_description: MCP server for Aha! product management data
-site_url: https://grokify.github.io/aha-mcp-server
-repo_url: https://github.com/grokify/aha-mcp-server
-repo_name: grokify/aha-mcp-server
+site_name: Aha Studio
+site_description: CLI tools for Aha.io with AQL, MCP server, SQLite sync, and Neo4j graph analytics
+site_url: https://grokify.github.io/aha-studio
+repo_url: https://github.com/grokify/aha-studio
+repo_name: grokify/aha-studio
 
 theme:
   name: material
@@ -29,10 +29,14 @@ theme:
 
 nav:
   - Home: index.md
+  - Console: console.html
   - Getting Started:
       - Installation: getting-started/installation.md
       - Setup: getting-started/setup.md
       - Quick Start: getting-started/quickstart.md
+  - AQL:
+      - Syntax: aql/syntax.md
+      - Entities: aql/entities.md
   - Tools Reference:
       - Overview: tools/overview.md
   - CLI:
@@ -65,4 +69,4 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/grokify/aha-mcp-server
+      link: https://github.com/grokify/aha-studio
