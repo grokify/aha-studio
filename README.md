@@ -39,11 +39,11 @@ Aha Studio provides two command-line tools:
 
 ## Features
 
-- **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- **34 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
-- **Local SQLite sync** - Offline queries and fast local caching
-- **Neo4j integration** - Graph analytics and relationship queries
-- **Browser automation** - Strategic template creation via headless Chrome
+- 🔍 **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
+- 🛠️ **34 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
+- 💾 **Local SQLite sync** - Offline queries and fast local caching
+- 🔗 **Neo4j integration** - Graph analytics and relationship queries
+- 🌐 **Browser automation** - Strategic template creation via headless Chrome
 
 ## Installation
 
