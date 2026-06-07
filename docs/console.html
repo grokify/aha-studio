@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQL Console - Aha Studio</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --border: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    .page {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .navbar-brand svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .navbar-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .navbar-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .navbar-links a:hover {
+      color: var(--text);
+    }
+
+    .content {
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    .info-banner {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .info-banner svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+
+    .info-banner p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .info-banner code {
+      background: var(--bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    aql-console {
+      display: block;
+    }
+
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+
+      .navbar-links {
+        gap: 16px;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .info-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+          <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+          <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <span class="navbar-title">Aha Studio</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Docs</a>
+        <a href="aql/syntax.html">AQL Syntax</a>
+        <a href="https://github.com/grokify/aha-studio" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <header class="header">
+        <h1>AQL Console</h1>
+        <p>Query Aha.io data with SQL-like syntax</p>
+      </header>
+
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <p>
+          This console connects to your local Aha Studio HTTP server.
+          Start the server with <code>aha-studio serve</code> before running queries.
+          Your API key is required for authentication.
+        </p>
+      </div>
+
+      <aql-console
+        theme="dark"
+        show-history
+        server-url="http://localhost:8080"
+      ></aql-console>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Aha Studio &mdash;
+        <a href="https://github.com/grokify/aha-studio" target="_blank" rel="noopener">GitHub</a> &middot;
+        <a href="aql/syntax.html">AQL Syntax</a> &middot;
+        <a href="cli/commands.html">CLI Commands</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Load the AQL Console component -->
+  <!-- For development, use local build; for production, use CDN -->
+  <script type="module">
+    // Try to load from CDN first, fall back to local
+    const cdnUrl = 'https://cdn.jsdelivr.net/npm/@grokify/aql-console/dist/aql-console.min.js';
+    const localUrl = '../packages/aql-console/dist/aql-console.min.js';
+
+    async function loadComponent() {
+      try {
+        await import(cdnUrl);
+      } catch (e) {
+        console.log('CDN not available, trying local build...');
+        try {
+          await import(localUrl);
+        } catch (e2) {
+          console.error('Failed to load AQL Console component:', e2);
+          document.querySelector('aql-console').innerHTML = `
+            <div style="padding: 20px; text-align: center; color: #ef4444;">
+              <p>Failed to load AQL Console component.</p>
+              <p>Please ensure the component is built: <code>cd packages/aql-console && pnpm build</code></p>
+            </div>
+          `;
+        }
+      }
+    }
+
+    loadComponent();
+  </script>
+</body>
+</html>
