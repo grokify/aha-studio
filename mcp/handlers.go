@@ -1,7 +1,6 @@
 package mcp
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -10,7 +9,10 @@ import (
 	"net/http"
 	"time"
 
+	genql "github.com/Khan/genqlient/graphql"
 	aha "github.com/grokify/aha-go"
+	ahagql "github.com/grokify/aha-go/graphql"
+	"github.com/grokify/aha-go/graphql/generated"
 	"github.com/grokify/aha-studio/aql/parser"
 	"github.com/grokify/aha-studio/aql/validator"
 	"github.com/grokify/aha-studio/browser"
@@ -21,10 +23,11 @@ import (
 
 // ToolHandlers provides handler functions for Aha MCP tools.
 type ToolHandlers struct {
-	config      *Config
-	client      *aha.Client
-	executor    *executor.Executor
-	graphClient *graph.Client
+	config        *Config
+	client        *aha.Client
+	executor      *executor.Executor
+	graphClient   *graph.Client
+	graphqlClient genql.Client
 }
 
 // NewToolHandlers creates a new ToolHandlers instance.
@@ -42,6 +45,7 @@ func (h *ToolHandlers) Init(ctx context.Context) error {
 	}
 	h.client = client
 	h.executor = executor.New(client)
+	h.graphqlClient = ahagql.NewGenqlientClient(h.config.Subdomain, h.config.APIKey)
 
 	// Initialize graph client if Neo4j is configured
 	graphCfg := graph.ConfigFromEnv()
@@ -326,57 +330,6 @@ func (h *ToolHandlers) ListIdeas(ctx context.Context, params map[string]any) (an
 	}, nil
 }
 
-// GraphQL types for search
-type graphQLRequest struct {
-	Query     string         `json:"query"`
-	Variables map[string]any `json:"variables,omitempty"`
-}
-
-type graphQLResponse struct {
-	Data   searchData     `json:"data"`
-	Errors []graphQLError `json:"errors,omitempty"`
-}
-
-type graphQLError struct {
-	Message string `json:"message"`
-}
-
-type searchData struct {
-	SearchDocuments searchResults `json:"searchDocuments"`
-}
-
-type searchResults struct {
-	Nodes       []documentNode `json:"nodes"`
-	CurrentPage int            `json:"currentPage"`
-	TotalCount  int            `json:"totalCount"`
-	TotalPages  int            `json:"totalPages"`
-	IsLastPage  bool           `json:"isLastPage"`
-}
-
-type documentNode struct {
-	Name           string `json:"name"`
-	URL            string `json:"url"`
-	SearchableID   string `json:"searchableId"`
-	SearchableType string `json:"searchableType"`
-}
-
-const searchDocumentsQuery = `
-query SearchDocuments($query: String!, $searchableType: [String!]!) {
-  searchDocuments(filters: {query: $query, searchableType: $searchableType}) {
-    nodes {
-      name
-      url
-      searchableId
-      searchableType
-    }
-    currentPage
-    totalCount
-    totalPages
-    isLastPage
-  }
-}
-`
-
 // SearchDocuments searches for Aha! documents using GraphQL.
 func (h *ToolHandlers) SearchDocuments(ctx context.Context, params map[string]any) (any, error) {
 	query, ok := params["query"].(string)
@@ -389,80 +342,35 @@ func (h *ToolHandlers) SearchDocuments(ctx context.Context, params map[string]an
 		searchableType = st
 	}
 
-	variables := map[string]any{
-		"query":          query,
-		"searchableType": []string{searchableType},
-	}
-
-	graphqlReq := graphQLRequest{
-		Query:     searchDocumentsQuery,
-		Variables: variables,
-	}
-
-	requestBody, err := json.Marshal(graphqlReq)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling GraphQL request: %w", err)
-	}
-
-	// GraphQL endpoint is at /api/graphql, not /api/v1/graphql
-	// Build URL directly using subdomain to avoid BaseURL's /api/v1 prefix
-	graphqlURL := fmt.Sprintf("https://%s.aha.io/api/graphql", h.client.Subdomain())
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, graphqlURL, bytes.NewReader(requestBody))
-	if err != nil {
-		return map[string]any{"error": fmt.Sprintf("error creating request: %v", err)}, nil
-	}
-	req.Header.Set("Authorization", "Bearer "+h.client.APIKey())
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := generated.SearchDocuments(ctx, h.graphqlClient, query, []string{searchableType})
 	if err != nil {
 		return map[string]any{"error": fmt.Sprintf("error making GraphQL request: %v", err)}, nil
 	}
-	defer resp.Body.Close()
 
-	responseBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return map[string]any{"error": fmt.Sprintf("error reading response: %v", err)}, nil
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return map[string]any{
-			"error":       fmt.Sprintf("GraphQL request failed with status %d", resp.StatusCode),
-			"status_code": resp.StatusCode,
-			"body":        string(responseBody),
-		}, nil
-	}
-
-	var graphqlResp graphQLResponse
-	if err := json.Unmarshal(responseBody, &graphqlResp); err != nil {
-		return map[string]any{"error": fmt.Sprintf("error parsing GraphQL response: %v", err)}, nil
-	}
-
-	if len(graphqlResp.Errors) > 0 {
-		errorMessages := make([]string, len(graphqlResp.Errors))
-		for i, gqlErr := range graphqlResp.Errors {
-			errorMessages[i] = gqlErr.Message
+	results := make([]map[string]any, len(resp.SearchDocuments.Nodes))
+	for i, node := range resp.SearchDocuments.Nodes {
+		name := ""
+		if node.Name != nil {
+			name = *node.Name
 		}
-		return map[string]any{"errors": errorMessages}, nil
-	}
-
-	results := make([]map[string]any, len(graphqlResp.Data.SearchDocuments.Nodes))
-	for i, node := range graphqlResp.Data.SearchDocuments.Nodes {
+		searchableID := ""
+		if node.SearchableId != nil {
+			searchableID = *node.SearchableId
+		}
 		results[i] = map[string]any{
-			"reference_num": node.SearchableID,
-			"name":          node.Name,
+			"reference_num": searchableID,
+			"name":          name,
 			"type":          node.SearchableType,
-			"url":           node.URL,
+			"url":           node.Url,
 		}
 	}
 
 	return map[string]any{
 		"results":       results,
-		"total_results": graphqlResp.Data.SearchDocuments.TotalCount,
-		"current_page":  graphqlResp.Data.SearchDocuments.CurrentPage,
-		"total_pages":   graphqlResp.Data.SearchDocuments.TotalPages,
-		"is_last_page":  graphqlResp.Data.SearchDocuments.IsLastPage,
+		"total_results": resp.SearchDocuments.TotalCount,
+		"current_page":  resp.SearchDocuments.CurrentPage,
+		"total_pages":   resp.SearchDocuments.TotalPages,
+		"is_last_page":  resp.SearchDocuments.IsLastPage,
 	}, nil
 }
 
