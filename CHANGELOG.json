@@ -1,11 +1,63 @@
 {
   "irVersion": "1.0",
-  "project": "aha-mcp-server",
-  "repository": "https://github.com/grokify/aha-mcp-server",
+  "project": "aha-studio",
+  "repository": "https://github.com/grokify/aha-studio",
   "versioning": "semver",
   "commitConvention": "conventional",
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
+    {
+      "version": "v0.8.0",
+      "date": "2026-06-08",
+      "highlights": [
+        { "description": "AQL (Aha Query Language) for SQL-like data queries" },
+        { "description": "SQLite sync for offline queries and local caching" },
+        { "description": "Neo4j graph integration for relationship analytics" },
+        { "description": "Type-safe GraphQL via aha-go genqlient SDK" }
+      ],
+      "added": [
+        { "description": "AQL parser and query language", "commit": "15f09ed" },
+        { "description": "Entity schema definitions for AQL", "commit": "2b0597b" },
+        { "description": "Query result formatting", "commit": "a04deb0" },
+        { "description": "Query execution engine", "commit": "662616e" },
+        { "description": "Query optimization planner", "commit": "35e4e7d" },
+        { "description": "In-memory query caching", "commit": "220a344" },
+        { "description": "SQLite data synchronization", "commit": "3718b3f" },
+        { "description": "Neo4j graph integration", "commit": "48c8608" },
+        { "description": "Unified configuration management", "commit": "0e754fe" },
+        { "description": "Browser automation for templates", "commit": "67855fe" },
+        { "description": "New MCP server implementation", "commit": "7833437" },
+        { "description": "Interactive REPL interface", "commit": "54c06f5" },
+        { "description": "HTTP API server", "commit": "265ea80" },
+        { "description": "Studio orchestration layer", "commit": "6095d4e" },
+        { "description": "aha-studio CLI", "commit": "7d8284f" }
+      ],
+      "changed": [
+        { "description": "Use aha-go genqlient SDK for GraphQL operations", "commit": "c26a53a" },
+        { "description": "Simplify aha-mcp-server to use new mcp package", "commit": "c67b139" }
+      ],
+      "fixed": [
+        { "description": "Correct GraphQL search query to match Aha API", "commit": "eeed79d" },
+        { "description": "Correct GraphQL endpoint URL construction", "commit": "89dd0a2" },
+        { "description": "Use time.Equal for timezone-safe comparison in sync", "commit": "301a14f" },
+        { "description": "Resolve golangci-lint issues in httpserver", "commit": "5293207" }
+      ],
+      "documentation": [
+        { "description": "Add AQL syntax and entities documentation", "commit": "f88629f" },
+        { "description": "Add web console and roadmap specs", "commit": "3780bf4" },
+        { "description": "Update documentation for aha-studio", "commit": "2dc6b8d" },
+        { "description": "Update README and LICENSE for aha-studio", "commit": "94f2258" },
+        { "description": "Add UTF8 icons to Features section", "commit": "8a63458" },
+        { "description": "Indicate backend requirements for MCP tools", "commit": "f53d9cc" }
+      ],
+      "dependencies": [
+        { "description": "Update dependencies", "commit": "734fb07" },
+        { "description": "Update dependencies for aha-studio", "commit": "b796b40" }
+      ],
+      "breaking": [
+        { "description": "Remove legacy MCP server code", "commit": "7d1c7b1" }
+      ]
+    },
     {
       "version": "v0.7.0",
       "date": "2026-05-25",
