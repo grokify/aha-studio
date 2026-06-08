@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/aha-studio/configuration/environment/">
+        <link rel="canonical" href="https://grokify.github.io/aha-studio/releases/v0.8.0/">
       
       
-        <link rel="prev" href="../credentials/">
+        <link rel="prev" href="../../configuration/claude-desktop/">
       
       
-        <link rel="next" href="../claude-desktop/">
+        <link rel="next" href="../v0.7.0/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Environment Variables - Aha Studio</title>
+        <title>v0.8.0 - Aha Studio</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#environment-variables" class="md-skip">
+        <a href="#release-notes-v080" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Environment Variables
+              v0.8.0
             
           </span>
         </div>
@@ -337,13 +337,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../credentials/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../configuration/credentials/" class="md-tabs__link">
           
   
   
@@ -359,11 +357,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../releases/v0.8.0/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -837,31 +837,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -874,7 +871,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Configuration
@@ -888,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../credentials/" class="md-nav__link">
+      <a href="../../configuration/credentials/" class="md-nav__link">
         
   
   
@@ -908,32 +905,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Environment Variables
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../configuration/environment/" class="md-nav__link">
         
   
   
@@ -944,161 +919,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#available-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Available Variables
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Variables">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#credential-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Credential Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vault-provider-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vault Provider Authentication
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#precedence" class="md-nav__link">
-    <span class="md-ellipsis">
-      Precedence
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#direct-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Direct Credentials
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#1password" class="md-nav__link">
-    <span class="md-ellipsis">
-      1Password
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitwarden" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bitwarden
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#keeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      Keeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#shell-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Shell Configuration
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shell Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bashzsh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bash/Zsh
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fish" class="md-nav__link">
-    <span class="md-ellipsis">
-      Fish
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotenv-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dotenv Files
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1111,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../claude-desktop/" class="md-nav__link">
+      <a href="../../configuration/claude-desktop/" class="md-nav__link">
         
   
   
@@ -1138,28 +958,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
             
   
   
@@ -1172,7 +995,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Releases
@@ -1183,10 +1006,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../releases/v0.8.0/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    v0.8.0
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1197,6 +1042,140 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Highlights
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's New
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What&#39;s New">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aql-aha-query-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      AQL (Aha Query Language)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      SQLite Sync
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-graph-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neo4j Graph Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive REPL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-safe-graphql" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type-Safe GraphQL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug Fixes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      New Components
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Changelog
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1209,7 +1188,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/v0.7.0/" class="md-nav__link">
+      <a href="../v0.7.0/" class="md-nav__link">
         
   
   
@@ -1232,7 +1211,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/v0.6.0/" class="md-nav__link">
+      <a href="../v0.6.0/" class="md-nav__link">
         
   
   
@@ -1282,28 +1261,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#available-variables" class="md-nav__link">
+  <a href="#highlights" class="md-nav__link">
     <span class="md-ellipsis">
-      Available Variables
+      Highlights
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Available Variables">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's New
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What&#39;s New">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#credential-configuration" class="md-nav__link">
+  <a href="#aql-aha-query-language" class="md-nav__link">
     <span class="md-ellipsis">
-      Credential Configuration
+      AQL (Aha Query Language)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#vault-provider-authentication" class="md-nav__link">
+  <a href="#sqlite-sync" class="md-nav__link">
     <span class="md-ellipsis">
-      Vault Provider Authentication
+      SQLite Sync
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-graph-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neo4j Graph Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive REPL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-safe-graphql" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type-Safe GraphQL
     </span>
   </a>
   
@@ -1315,102 +1330,45 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#precedence" class="md-nav__link">
+  <a href="#bug-fixes" class="md-nav__link">
     <span class="md-ellipsis">
-      Precedence
+      Bug Fixes
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#new-components" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      New Components
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#direct-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Direct Credentials
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#1password" class="md-nav__link">
-    <span class="md-ellipsis">
-      1Password
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitwarden" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bitwarden
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#keeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      Keeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#shell-configuration" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      Shell Configuration
+      Dependencies
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Shell Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bashzsh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bash/Zsh
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fish" class="md-nav__link">
-    <span class="md-ellipsis">
-      Fish
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotenv-files" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Dotenv Files
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Changelog
     </span>
   </a>
   
@@ -1435,132 +1393,148 @@
   
 
 
-<h1 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h1>
-<p>All command-line flags can be set via environment variables.</p>
-<h2 id="available-variables">Available Variables<a class="headerlink" href="#available-variables" title="Permanent link">&para;</a></h2>
-<h3 id="credential-configuration">Credential Configuration<a class="headerlink" href="#credential-configuration" title="Permanent link">&para;</a></h3>
+<h1 id="release-notes-v080">Release Notes - v0.8.0<a class="headerlink" href="#release-notes-v080" title="Permanent link">&para;</a></h1>
+<p><strong>Release Date:</strong> 2026-06-08</p>
+<h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>AQL (Aha Query Language)</strong> - SQL-like syntax for querying Aha.io data</li>
+<li><strong>SQLite Sync</strong> - Local data synchronization for offline queries</li>
+<li><strong>Neo4j Graph Integration</strong> - Graph analytics and relationship queries</li>
+<li><strong>Type-Safe GraphQL</strong> - Migrated to aha-go genqlient SDK for GraphQL operations</li>
+</ul>
+<h2 id="whats-new">What's New<a class="headerlink" href="#whats-new" title="Permanent link">&para;</a></h2>
+<h3 id="aql-aha-query-language">AQL (Aha Query Language)<a class="headerlink" href="#aql-aha-query-language" title="Permanent link">&para;</a></h3>
+<p>Query Aha.io data using familiar SQL-like syntax:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- Basic query</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">-- Filter by status</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;In Progress&#39;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">-- Order and aggregate</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">count</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">status</span>
+</code></pre></div>
+<p>Supported entities: features, ideas, releases, epics, initiatives, goals, users, products, comments, requirements, tags.</p>
+<h3 id="sqlite-sync">SQLite Sync<a class="headerlink" href="#sqlite-sync" title="Permanent link">&para;</a></h3>
+<p>Synchronize Aha.io data locally for fast offline queries:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Sync product data to SQLite</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Query local data</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>aha-studio<span class="w"> </span>query<span class="w"> </span><span class="s2">&quot;FROM features WHERE status = &#39;Shipped&#39;&quot;</span>
+</code></pre></div>
+<h3 id="neo4j-graph-integration">Neo4j Graph Integration<a class="headerlink" href="#neo4j-graph-integration" title="Permanent link">&para;</a></h3>
+<p>Analyze relationships between Aha.io entities using graph queries:</p>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Flag</th>
+<th>Tool</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>AHA_DOMAIN</code></td>
-<td><code>--subdomain</code></td>
-<td>Aha! subdomain</td>
+<td><code>graph_sync</code></td>
+<td>Sync Aha data to Neo4j</td>
 </tr>
 <tr>
-<td><code>AHA_API_TOKEN</code></td>
-<td><code>--api-key</code></td>
-<td>Aha! API key</td>
+<td><code>graph_query</code></td>
+<td>Execute Cypher queries</td>
 </tr>
 <tr>
-<td><code>OMNITOKEN_VAULT_URI</code></td>
-<td><code>--vault</code></td>
-<td>Vault URI for credentials</td>
+<td><code>graph_find_path</code></td>
+<td>Find paths between entities</td>
 </tr>
 <tr>
-<td><code>OMNITOKEN_CREDENTIALS_NAME</code></td>
-<td><code>--credentials-name</code></td>
-<td>Name of credentials in vault</td>
+<td><code>graph_search</code></td>
+<td>Full-text graph search</td>
+</tr>
+<tr>
+<td><code>graph_initiative_impact</code></td>
+<td>Initiative impact analysis</td>
+</tr>
+<tr>
+<td><code>graph_release_deps</code></td>
+<td>Release dependency analysis</td>
 </tr>
 </tbody>
 </table>
-<h3 id="vault-provider-authentication">Vault Provider Authentication<a class="headerlink" href="#vault-provider-authentication" title="Permanent link">&para;</a></h3>
+<h3 id="interactive-repl">Interactive REPL<a class="headerlink" href="#interactive-repl" title="Permanent link">&para;</a></h3>
+<p>Launch an interactive shell for AQL queries:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aha-studio<span class="w"> </span>shell
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aha&gt;<span class="w"> </span>FROM<span class="w"> </span>features<span class="w"> </span>LIMIT<span class="w"> </span><span class="m">5</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>aha&gt;<span class="w"> </span>FROM<span class="w"> </span>ideas<span class="w"> </span>WHERE<span class="w"> </span><span class="nv">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;priority&#39;</span>
+</code></pre></div>
+<h3 id="type-safe-graphql">Type-Safe GraphQL<a class="headerlink" href="#type-safe-graphql" title="Permanent link">&para;</a></h3>
+<p>The MCP server now uses the <a href="https://github.com/grokify/aha-go">aha-go</a> genqlient-generated client for GraphQL operations, providing compile-time type safety and reduced boilerplate.</p>
+<h2 id="bug-fixes">Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>GraphQL search</strong>: Fixed search query to match Aha API schema (<code>eeed79d</code>)</li>
+<li><strong>GraphQL endpoint</strong>: Corrected endpoint URL construction (<code>89dd0a2</code>)</li>
+<li><strong>Sync timestamps</strong>: Use <code>time.Equal</code> for timezone-safe comparison (<code>301a14f</code>)</li>
+<li><strong>HTTP server</strong>: Resolved golangci-lint issues (<code>5293207</code>)</li>
+</ul>
+<h2 id="new-components">New Components<a class="headerlink" href="#new-components" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
+<th>Component</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>OP_SERVICE_ACCOUNT_TOKEN</code></td>
-<td>1Password service account token</td>
+<td><code>aql/</code></td>
+<td>AQL parser and query language</td>
 </tr>
 <tr>
-<td><code>BW_ACCESS_TOKEN</code></td>
-<td>Bitwarden access token</td>
+<td><code>executor/</code></td>
+<td>Query execution engine</td>
 </tr>
 <tr>
-<td><code>BW_ORGANIZATION_ID</code></td>
-<td>Bitwarden organization ID</td>
+<td><code>planner/</code></td>
+<td>Query optimization planner</td>
 </tr>
 <tr>
-<td><code>KSM_TOKEN</code></td>
-<td>Keeper token (format: <code>REGION:TOKEN</code>)</td>
+<td><code>sync/</code></td>
+<td>SQLite data synchronization</td>
 </tr>
 <tr>
-<td><code>KSM_CONFIG</code></td>
-<td>Keeper config (base64-encoded JSON)</td>
+<td><code>graph/</code></td>
+<td>Neo4j graph integration</td>
+</tr>
+<tr>
+<td><code>cache/</code></td>
+<td>In-memory query caching</td>
+</tr>
+<tr>
+<td><code>repl/</code></td>
+<td>Interactive REPL interface</td>
+</tr>
+<tr>
+<td><code>httpserver/</code></td>
+<td>HTTP API server</td>
+</tr>
+<tr>
+<td><code>browser/</code></td>
+<td>Browser automation for templates</td>
 </tr>
 </tbody>
 </table>
-<h2 id="precedence">Precedence<a class="headerlink" href="#precedence" title="Permanent link">&para;</a></h2>
-<p>Command-line flags take precedence over environment variables.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Environment variable is used</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>aha-mcp-server
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Uses: mycompany</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Flag overrides environment</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>aha-mcp-server<span class="w"> </span>--subdomain<span class="w"> </span>othercompany
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Uses: othercompany</span>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Bumped <code>github.com/grokify/aha-go</code> to v0.4.0 (genqlient SDK)</li>
+<li>Updated indirect dependencies</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Install AQL CLI</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/aha-studio/cmd/aha-studio@v0.8.0
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Install MCP Server</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/aha-studio/cmd/aha-mcp-server@v0.8.0
 </code></pre></div>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="direct-credentials">Direct Credentials<a class="headerlink" href="#direct-credentials" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_TOKEN</span><span class="o">=</span>your-api-key
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>aha-mcp-server
-</code></pre></div>
-<h3 id="1password">1Password<a class="headerlink" href="#1password" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OP_SERVICE_ACCOUNT_TOKEN</span><span class="o">=</span><span class="s2">&quot;ops_...&quot;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>op://MyVault
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>aha-mcp-server
-</code></pre></div>
-<h3 id="bitwarden">Bitwarden<a class="headerlink" href="#bitwarden" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ACCESS_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ORGANIZATION_ID</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>bw://org-id
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>aha-mcp-server
-</code></pre></div>
-<h3 id="keeper">Keeper<a class="headerlink" href="#keeper" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KSM_TOKEN</span><span class="o">=</span><span class="s2">&quot;US:...&quot;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>keeper://
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>aha-mcp-server
-</code></pre></div>
-<h2 id="shell-configuration">Shell Configuration<a class="headerlink" href="#shell-configuration" title="Permanent link">&para;</a></h2>
-<h3 id="bashzsh">Bash/Zsh<a class="headerlink" href="#bashzsh" title="Permanent link">&para;</a></h3>
-<p>Add to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Aha! MCP Server credentials</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span><span class="s2">&quot;mycompany&quot;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span>
-</code></pre></div>
-<h3 id="fish">Fish<a class="headerlink" href="#fish" title="Permanent link">&para;</a></h3>
-<p>Add to <code>~/.config/fish/config.fish</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">set</span> -gx AHA_DOMAIN <span class="s2">&quot;mycompany&quot;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">set</span> -gx AHA_API_TOKEN <span class="s2">&quot;your-api-key&quot;</span>
-</code></pre></div>
-<h2 id="dotenv-files">Dotenv Files<a class="headerlink" href="#dotenv-files" title="Permanent link">&para;</a></h2>
-<p>For project-specific configuration, use a <code>.env</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># .env</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">AHA_API_TOKEN</span><span class="o">=</span>your-api-key
-</code></pre></div>
-<p>Load with <code>source</code> or a dotenv tool:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">source</span><span class="w"> </span>.env
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>aha-mcp-server
-</code></pre></div>
-<p>Or use a tool like <code>direnv</code> for automatic loading.</p>
+<h2 id="full-changelog">Full Changelog<a class="headerlink" href="#full-changelog" title="Permanent link">&para;</a></h2>
+<p>See the <a href="https://github.com/grokify/aha-studio/blob/main/CHANGELOG.md">CHANGELOG</a> for complete version history.</p>
 
 
 

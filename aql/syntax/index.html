@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/aha-studio/configuration/environment/">
+        <link rel="canonical" href="https://grokify.github.io/aha-studio/aql/syntax/">
       
       
-        <link rel="prev" href="../credentials/">
+        <link rel="prev" href="../../getting-started/quickstart/">
       
       
-        <link rel="next" href="../claude-desktop/">
+        <link rel="next" href="../entities/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Environment Variables - Aha Studio</title>
+        <title>Syntax - Aha Studio</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#environment-variables" class="md-skip">
+        <a href="#aql-syntax" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Environment Variables
+              Syntax
             
           </span>
         </div>
@@ -277,11 +277,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../aql/syntax/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -337,13 +339,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../credentials/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../configuration/credentials/" class="md-tabs__link">
           
   
   
@@ -589,28 +589,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -623,7 +626,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             AQL
@@ -634,10 +637,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../aql/syntax/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Syntax
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -648,6 +673,140 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basic-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#select-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      SELECT Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHERE Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order-by-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      ORDER BY Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limit-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      LIMIT Clause
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aggregate-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aggregate Functions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operators
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      Field References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comments
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -660,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../aql/entities/" class="md-nav__link">
+      <a href="../entities/" class="md-nav__link">
         
   
   
@@ -837,31 +996,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -874,7 +1030,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Configuration
@@ -888,7 +1044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../credentials/" class="md-nav__link">
+      <a href="../../configuration/credentials/" class="md-nav__link">
         
   
   
@@ -908,32 +1064,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Environment Variables
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../configuration/environment/" class="md-nav__link">
         
   
   
@@ -944,161 +1078,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#available-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Available Variables
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Variables">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#credential-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Credential Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vault-provider-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vault Provider Authentication
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#precedence" class="md-nav__link">
-    <span class="md-ellipsis">
-      Precedence
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#direct-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Direct Credentials
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#1password" class="md-nav__link">
-    <span class="md-ellipsis">
-      1Password
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitwarden" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bitwarden
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#keeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      Keeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#shell-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Shell Configuration
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shell Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bashzsh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bash/Zsh
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fish" class="md-nav__link">
-    <span class="md-ellipsis">
-      Fish
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotenv-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dotenv Files
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1111,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../claude-desktop/" class="md-nav__link">
+      <a href="../../configuration/claude-desktop/" class="md-nav__link">
         
   
   
@@ -1282,28 +1261,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#available-variables" class="md-nav__link">
+  <a href="#basic-syntax" class="md-nav__link">
     <span class="md-ellipsis">
-      Available Variables
+      Basic Syntax
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Available Variables">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#credential-configuration" class="md-nav__link">
+  <a href="#simple-queries" class="md-nav__link">
     <span class="md-ellipsis">
-      Credential Configuration
+      Simple Queries
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#vault-provider-authentication" class="md-nav__link">
+  <a href="#select-clause" class="md-nav__link">
     <span class="md-ellipsis">
-      Vault Provider Authentication
+      SELECT Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHERE Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order-by-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      ORDER BY Clause
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limit-clause" class="md-nav__link">
+    <span class="md-ellipsis">
+      LIMIT Clause
     </span>
   </a>
   
@@ -1315,102 +1330,45 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#precedence" class="md-nav__link">
+  <a href="#aggregate-functions" class="md-nav__link">
     <span class="md-ellipsis">
-      Precedence
+      Aggregate Functions
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#operators" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      Operators
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#direct-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Direct Credentials
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#1password" class="md-nav__link">
-    <span class="md-ellipsis">
-      1Password
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitwarden" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bitwarden
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#keeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      Keeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#shell-configuration" class="md-nav__link">
+  <a href="#data-types" class="md-nav__link">
     <span class="md-ellipsis">
-      Shell Configuration
+      Data Types
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Shell Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bashzsh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bash/Zsh
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fish" class="md-nav__link">
-    <span class="md-ellipsis">
-      Fish
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotenv-files" class="md-nav__link">
+  <a href="#field-references" class="md-nav__link">
     <span class="md-ellipsis">
-      Dotenv Files
+      Field References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comments
     </span>
   </a>
   
@@ -1435,132 +1393,178 @@
   
 
 
-<h1 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h1>
-<p>All command-line flags can be set via environment variables.</p>
-<h2 id="available-variables">Available Variables<a class="headerlink" href="#available-variables" title="Permanent link">&para;</a></h2>
-<h3 id="credential-configuration">Credential Configuration<a class="headerlink" href="#credential-configuration" title="Permanent link">&para;</a></h3>
+<h1 id="aql-syntax">AQL Syntax<a class="headerlink" href="#aql-syntax" title="Permanent link">&para;</a></h1>
+<p>AQL (Aha Query Language) provides a SQL-like interface for querying Aha.io data.</p>
+<h2 id="basic-syntax">Basic Syntax<a class="headerlink" href="#basic-syntax" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">[</span><span class="k">SELECT</span><span class="w"> </span><span class="n">fields</span><span class="p">]</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="p">[</span><span class="k">WHERE</span><span class="w"> </span><span class="n">conditions</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="p">[</span><span class="k">ASC</span><span class="o">|</span><span class="k">DESC</span><span class="p">]]</span><span class="w"> </span><span class="p">[</span><span class="k">LIMIT</span><span class="w"> </span><span class="n">n</span><span class="p">]</span>
+</code></pre></div>
+<h2 id="query-examples">Query Examples<a class="headerlink" href="#query-examples" title="Permanent link">&para;</a></h2>
+<h3 id="simple-queries">Simple Queries<a class="headerlink" href="#simple-queries" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- Get all features (limited)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">-- Get all ideas</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">-- Get all releases</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">releases</span>
+</code></pre></div>
+<h3 id="select-clause">SELECT Clause<a class="headerlink" href="#select-clause" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">-- Select specific fields</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">-- Select with aliases</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">current_status</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+</code></pre></div>
+<h3 id="where-clause">WHERE Clause<a class="headerlink" href="#where-clause" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- Filter by status</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;In Progress&#39;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">-- Filter by tag</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;customer-request&#39;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">-- Multiple conditions</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;In Progress&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;v2&#39;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">-- String contains</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">CONTAINS</span><span class="w"> </span><span class="s1">&#39;authentication&#39;</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">-- Date comparison</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">&#39;2024-01-01&#39;</span>
+</code></pre></div>
+<h3 id="order-by-clause">ORDER BY Clause<a class="headerlink" href="#order-by-clause" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Order ascending</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">ASC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- Order descending</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">releases</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">release_date</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span>
+</code></pre></div>
+<h3 id="limit-clause">LIMIT Clause<a class="headerlink" href="#limit-clause" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">-- Limit results</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">-- Get single result</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">reference_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;FEAT-123&#39;</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span>
+</code></pre></div>
+<h2 id="aggregate-functions">Aggregate Functions<a class="headerlink" href="#aggregate-functions" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">-- Count records</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">-- Count by group</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">count</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">status</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">-- Group by field</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">product_id</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">product_id</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
+</code></pre></div>
+<h2 id="operators">Operators<a class="headerlink" href="#operators" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Flag</th>
+<th>Operator</th>
 <th>Description</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>AHA_DOMAIN</code></td>
-<td><code>--subdomain</code></td>
-<td>Aha! subdomain</td>
+<td><code>=</code></td>
+<td>Equals</td>
+<td><code>status = 'Done'</code></td>
 </tr>
 <tr>
-<td><code>AHA_API_TOKEN</code></td>
-<td><code>--api-key</code></td>
-<td>Aha! API key</td>
+<td><code>!=</code></td>
+<td>Not equals</td>
+<td><code>status != 'Closed'</code></td>
 </tr>
 <tr>
-<td><code>OMNITOKEN_VAULT_URI</code></td>
-<td><code>--vault</code></td>
-<td>Vault URI for credentials</td>
+<td><code>&gt;</code></td>
+<td>Greater than</td>
+<td><code>created_at &gt; '2024-01-01'</code></td>
 </tr>
 <tr>
-<td><code>OMNITOKEN_CREDENTIALS_NAME</code></td>
-<td><code>--credentials-name</code></td>
-<td>Name of credentials in vault</td>
+<td><code>&gt;=</code></td>
+<td>Greater or equal</td>
+<td><code>score &gt;= 100</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>Less than</td>
+<td><code>priority &lt; 3</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>Less or equal</td>
+<td><code>votes &lt;= 10</code></td>
+</tr>
+<tr>
+<td><code>CONTAINS</code></td>
+<td>String contains</td>
+<td><code>name CONTAINS 'auth'</code></td>
+</tr>
+<tr>
+<td><code>IN</code></td>
+<td>In list</td>
+<td><code>status IN ('Open', 'In Progress')</code></td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td>Logical AND</td>
+<td><code>status = 'Open' AND tag = 'v2'</code></td>
+</tr>
+<tr>
+<td><code>OR</code></td>
+<td>Logical OR</td>
+<td><code>status = 'Open' OR status = 'Closed'</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="vault-provider-authentication">Vault Provider Authentication<a class="headerlink" href="#vault-provider-authentication" title="Permanent link">&para;</a></h3>
+<h2 id="data-types">Data Types<a class="headerlink" href="#data-types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Variable</th>
-<th>Description</th>
+<th>Type</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>OP_SERVICE_ACCOUNT_TOKEN</code></td>
-<td>1Password service account token</td>
+<td>String</td>
+<td><code>'In Progress'</code>, <code>"Done"</code></td>
 </tr>
 <tr>
-<td><code>BW_ACCESS_TOKEN</code></td>
-<td>Bitwarden access token</td>
+<td>Number</td>
+<td><code>100</code>, <code>3.14</code></td>
 </tr>
 <tr>
-<td><code>BW_ORGANIZATION_ID</code></td>
-<td>Bitwarden organization ID</td>
+<td>Boolean</td>
+<td><code>true</code>, <code>false</code></td>
 </tr>
 <tr>
-<td><code>KSM_TOKEN</code></td>
-<td>Keeper token (format: <code>REGION:TOKEN</code>)</td>
+<td>Date</td>
+<td><code>'2024-01-01'</code>, <code>'2024-01-01T12:00:00Z'</code></td>
 </tr>
 <tr>
-<td><code>KSM_CONFIG</code></td>
-<td>Keeper config (base64-encoded JSON)</td>
+<td>Null</td>
+<td><code>null</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="precedence">Precedence<a class="headerlink" href="#precedence" title="Permanent link">&para;</a></h2>
-<p>Command-line flags take precedence over environment variables.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Environment variable is used</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>aha-mcp-server
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Uses: mycompany</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Flag overrides environment</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>aha-mcp-server<span class="w"> </span>--subdomain<span class="w"> </span>othercompany
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Uses: othercompany</span>
+<h2 id="field-references">Field References<a class="headerlink" href="#field-references" title="Permanent link">&para;</a></h2>
+<p>Fields can be referenced directly by name:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- Simple field reference</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Done&#39;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- Custom field (prefixed with cf_)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cf_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;High&#39;</span>
 </code></pre></div>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="direct-credentials">Direct Credentials<a class="headerlink" href="#direct-credentials" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_TOKEN</span><span class="o">=</span>your-api-key
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>aha-mcp-server
+<h2 id="comments">Comments<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Single line comment</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="cm">/* Multi-line</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="cm">   comment */</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span>
 </code></pre></div>
-<h3 id="1password">1Password<a class="headerlink" href="#1password" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OP_SERVICE_ACCOUNT_TOKEN</span><span class="o">=</span><span class="s2">&quot;ops_...&quot;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>op://MyVault
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>aha-mcp-server
-</code></pre></div>
-<h3 id="bitwarden">Bitwarden<a class="headerlink" href="#bitwarden" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ACCESS_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ORGANIZATION_ID</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>bw://org-id
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>aha-mcp-server
-</code></pre></div>
-<h3 id="keeper">Keeper<a class="headerlink" href="#keeper" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KSM_TOKEN</span><span class="o">=</span><span class="s2">&quot;US:...&quot;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_VAULT_URI</span><span class="o">=</span>keeper://
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNITOKEN_CREDENTIALS_NAME</span><span class="o">=</span>aha
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>aha-mcp-server
-</code></pre></div>
-<h2 id="shell-configuration">Shell Configuration<a class="headerlink" href="#shell-configuration" title="Permanent link">&para;</a></h2>
-<h3 id="bashzsh">Bash/Zsh<a class="headerlink" href="#bashzsh" title="Permanent link">&para;</a></h3>
-<p>Add to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Aha! MCP Server credentials</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span><span class="s2">&quot;mycompany&quot;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span>
-</code></pre></div>
-<h3 id="fish">Fish<a class="headerlink" href="#fish" title="Permanent link">&para;</a></h3>
-<p>Add to <code>~/.config/fish/config.fish</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">set</span> -gx AHA_DOMAIN <span class="s2">&quot;mycompany&quot;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">set</span> -gx AHA_API_TOKEN <span class="s2">&quot;your-api-key&quot;</span>
-</code></pre></div>
-<h2 id="dotenv-files">Dotenv Files<a class="headerlink" href="#dotenv-files" title="Permanent link">&para;</a></h2>
-<p>For project-specific configuration, use a <code>.env</code> file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># .env</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">AHA_DOMAIN</span><span class="o">=</span>mycompany
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">AHA_API_TOKEN</span><span class="o">=</span>your-api-key
-</code></pre></div>
-<p>Load with <code>source</code> or a dotenv tool:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">source</span><span class="w"> </span>.env
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>aha-mcp-server
-</code></pre></div>
-<p>Or use a tool like <code>direnv</code> for automatic loading.</p>
 
 
 

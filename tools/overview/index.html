@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="MCP server for Aha! product management data">
+        <meta name="description" content="CLI tools for Aha.io with AQL, MCP server, SQLite sync, and Neo4j graph analytics">
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/aha-mcp-server/tools/overview/">
+        <link rel="canonical" href="https://grokify.github.io/aha-studio/tools/overview/">
       
       
-        <link rel="prev" href="../../getting-started/quickstart/">
+        <link rel="prev" href="../../aql/entities/">
       
       
         <link rel="next" href="../../cli/commands/">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Overview - Aha! MCP Server</title>
+        <title>Overview - Aha Studio</title>
       
     
     
@@ -90,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Aha! MCP Server" class="md-header__button md-logo" aria-label="Aha! MCP Server" data-md-component="logo">
+    <a href="../.." title="Aha Studio" class="md-header__button md-logo" aria-label="Aha Studio" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -104,7 +104,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Aha! MCP Server
+            Aha Studio
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -190,13 +190,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/grokify/aha-mcp-server" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/grokify/aha-studio" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    grokify/aha-mcp-server
+    grokify/aha-studio
   </div>
 </a>
       </div>
@@ -239,6 +239,25 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../console.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Console
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -247,6 +266,26 @@
   
   
   Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../aql/syntax/" class="md-tabs__link">
+          
+  
+  
+  AQL
 
         </a>
       </li>
@@ -324,7 +363,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../releases/v0.7.0/" class="md-tabs__link">
+        <a href="../../releases/v0.8.0/" class="md-tabs__link">
           
   
   
@@ -358,23 +397,23 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Aha! MCP Server" class="md-nav__button md-logo" aria-label="Aha! MCP Server" data-md-component="logo">
+    <a href="../.." title="Aha Studio" class="md-nav__button md-logo" aria-label="Aha Studio" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Aha! MCP Server
+    Aha Studio
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/grokify/aha-mcp-server" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/grokify/aha-studio" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    grokify/aha-mcp-server
+    grokify/aha-studio
   </div>
 </a>
     </div>
@@ -409,6 +448,28 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../console.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Console
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -425,10 +486,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -441,8 +502,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
           </label>
@@ -528,6 +589,104 @@
       
   
   
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    AQL
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            AQL
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aql/syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aql/entities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Entities
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -549,10 +708,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -565,8 +724,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Tools Reference
           </label>
@@ -629,14 +788,215 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#search-tools" class="md-nav__link">
+  <a href="#query-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Search Tools
+      Query Tools
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Search Tools">
+    <nav class="md-nav" aria-label="Query Tools">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    <span class="md-ellipsis">
+      query
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe_aql" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe_aql
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Get Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_feature
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_idea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_initiative" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_initiative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_epic" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_epic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_goal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_comment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_requirement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_user" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_user
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_key_result" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_key_result
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_persona
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_team" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_team
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list_ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_ideas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_products" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_products
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_workflow_statuses" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_workflow_statuses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_releases
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#search_documents" class="md-nav__link">
@@ -653,28 +1013,64 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ideas-tools" class="md-nav__link">
+  <a href="#write-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Ideas Tools
+      Write Tools
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Ideas Tools">
+    <nav class="md-nav" aria-label="Write Tools">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_idea" class="md-nav__link">
+  <a href="#create_feature" class="md-nav__link">
     <span class="md-ellipsis">
-      get_idea
+      create_feature
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#list_ideas" class="md-nav__link">
+  <a href="#change_feature_status" class="md-nav__link">
     <span class="md-ellipsis">
-      list_ideas
+      change_feature_status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign_feature_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      assign_feature_release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign_user_to_feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      assign_user_to_feature
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_feature_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_feature_comment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_idea_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_idea_comment
     </span>
   </a>
   
@@ -686,11 +1082,104 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#object-retrieval-tools" class="md-nav__link">
+  <a href="#browser-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Object Retrieval Tools
+      Browser Tools
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Browser Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list_predefined_templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_predefined_templates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#browser_create_template" class="md-nav__link">
+    <span class="md-ellipsis">
+      browser_create_template
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-tools-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      Graph Tools (Neo4j)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Graph Tools (Neo4j)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph_sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_sync
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_query" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_query
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_find_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_find_path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_search" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_initiative_impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_initiative_impact
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_release_deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_release_deps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -741,10 +1230,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -757,8 +1246,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             CLI
           </label>
@@ -816,10 +1305,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -832,8 +1321,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Configuration
           </label>
@@ -937,10 +1426,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -953,12 +1442,35 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Releases
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v0.8.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v0.8.0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1040,14 +1552,215 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#search-tools" class="md-nav__link">
+  <a href="#query-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Search Tools
+      Query Tools
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Search Tools">
+    <nav class="md-nav" aria-label="Query Tools">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    <span class="md-ellipsis">
+      query
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe_aql" class="md-nav__link">
+    <span class="md-ellipsis">
+      describe_aql
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Get Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_feature
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_idea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_initiative" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_initiative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_epic" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_epic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_goal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_comment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_requirement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_user" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_user
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_key_result" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_key_result
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_persona
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_team" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_team
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list_ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_ideas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_products" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_products
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_workflow_statuses" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_workflow_statuses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_releases
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#search_documents" class="md-nav__link">
@@ -1064,28 +1777,64 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ideas-tools" class="md-nav__link">
+  <a href="#write-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Ideas Tools
+      Write Tools
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Ideas Tools">
+    <nav class="md-nav" aria-label="Write Tools">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_idea" class="md-nav__link">
+  <a href="#create_feature" class="md-nav__link">
     <span class="md-ellipsis">
-      get_idea
+      create_feature
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#list_ideas" class="md-nav__link">
+  <a href="#change_feature_status" class="md-nav__link">
     <span class="md-ellipsis">
-      list_ideas
+      change_feature_status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign_feature_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      assign_feature_release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign_user_to_feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      assign_user_to_feature
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_feature_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_feature_comment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_idea_comment" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_idea_comment
     </span>
   </a>
   
@@ -1097,11 +1846,104 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#object-retrieval-tools" class="md-nav__link">
+  <a href="#browser-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Object Retrieval Tools
+      Browser Tools
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Browser Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#list_predefined_templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_predefined_templates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#browser_create_template" class="md-nav__link">
+    <span class="md-ellipsis">
+      browser_create_template
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-tools-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      Graph Tools (Neo4j)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Graph Tools (Neo4j)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph_sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_sync
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_query" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_query
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_find_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_find_path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_search" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_initiative_impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_initiative_impact
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph_release_deps" class="md-nav__link">
+    <span class="md-ellipsis">
+      graph_release_deps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1134,10 +1976,461 @@
 
 
 <h1 id="tools-reference">Tools Reference<a class="headerlink" href="#tools-reference" title="Permanent link">&para;</a></h1>
-<p>This server provides 14 tools for accessing and searching Aha! data.</p>
-<h2 id="search-tools">Search Tools<a class="headerlink" href="#search-tools" title="Permanent link">&para;</a></h2>
+<p>The MCP server provides 34 tools for accessing, querying, and managing Aha.io data.</p>
+<h2 id="query-tools">Query Tools<a class="headerlink" href="#query-tools" title="Permanent link">&para;</a></h2>
+<h3 id="query">query<a class="headerlink" href="#query" title="Permanent link">&para;</a></h3>
+<p>Execute an AQL query against Aha.io.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>AQL query string (e.g., 'FROM features WHERE status = "In Progress" LIMIT 10')</td>
+</tr>
+<tr>
+<td><code>product</code></td>
+<td>string</td>
+<td>No</td>
+<td>Product ID for context (required for releases)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;query&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FROM features WHERE status = &#39;In Progress&#39; LIMIT 10&quot;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="describe_aql">describe_aql<a class="headerlink" href="#describe_aql" title="Permanent link">&para;</a></h3>
+<p>Get AQL syntax help and examples.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>topic</code></td>
+<td>string</td>
+<td>No</td>
+<td>Specific topic: 'entities', 'operators', 'aggregates', 'joins', or 'examples'</td>
+</tr>
+</tbody>
+</table>
+<h2 id="get-tools">Get Tools<a class="headerlink" href="#get-tools" title="Permanent link">&para;</a></h2>
+<p>All get tools retrieve a single object by ID or reference number.</p>
+<h3 id="get_feature">get_feature<a class="headerlink" href="#get_feature" title="Permanent link">&para;</a></h3>
+<p>Retrieve a feature by reference number.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature reference number (e.g., FEAT-123)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_idea">get_idea<a class="headerlink" href="#get_idea" title="Permanent link">&para;</a></h3>
+<p>Retrieve an idea by reference number.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Idea reference number (e.g., IDEA-456)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_release">get_release<a class="headerlink" href="#get_release" title="Permanent link">&para;</a></h3>
+<p>Retrieve a release by reference number.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Release reference number (e.g., REL-1)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_initiative">get_initiative<a class="headerlink" href="#get_initiative" title="Permanent link">&para;</a></h3>
+<p>Retrieve an initiative by reference number.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Initiative reference number (e.g., INIT-1)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_epic">get_epic<a class="headerlink" href="#get_epic" title="Permanent link">&para;</a></h3>
+<p>Retrieve an epic by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>epic_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Epic ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_goal">get_goal<a class="headerlink" href="#get_goal" title="Permanent link">&para;</a></h3>
+<p>Retrieve a goal by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>goal_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Goal ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_comment">get_comment<a class="headerlink" href="#get_comment" title="Permanent link">&para;</a></h3>
+<p>Retrieve a comment by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>comment_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Comment ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_requirement">get_requirement<a class="headerlink" href="#get_requirement" title="Permanent link">&para;</a></h3>
+<p>Retrieve a requirement by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requirement_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Requirement ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_user">get_user<a class="headerlink" href="#get_user" title="Permanent link">&para;</a></h3>
+<p>Retrieve a user by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>User ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_key_result">get_key_result<a class="headerlink" href="#get_key_result" title="Permanent link">&para;</a></h3>
+<p>Retrieve a key result by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key_result_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Key result ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_persona">get_persona<a class="headerlink" href="#get_persona" title="Permanent link">&para;</a></h3>
+<p>Retrieve a persona by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>persona_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Persona ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_team">get_team<a class="headerlink" href="#get_team" title="Permanent link">&para;</a></h3>
+<p>Retrieve a team by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>team_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Team ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get_workflow">get_workflow<a class="headerlink" href="#get_workflow" title="Permanent link">&para;</a></h3>
+<p>Retrieve a workflow by ID.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>workflow_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Workflow ID to retrieve</td>
+</tr>
+</tbody>
+</table>
+<h2 id="list-tools">List Tools<a class="headerlink" href="#list-tools" title="Permanent link">&para;</a></h2>
+<h3 id="list_ideas">list_ideas<a class="headerlink" href="#list_ideas" title="Permanent link">&para;</a></h3>
+<p>List ideas from Aha with optional filtering and pagination.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q</code></td>
+<td>string</td>
+<td>No</td>
+<td>Search term to match against the idea name</td>
+</tr>
+<tr>
+<td><code>spam</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>When true, shows ideas marked as spam</td>
+</tr>
+<tr>
+<td><code>workflow_status</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by workflow status ID or name</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>string</td>
+<td>No</td>
+<td>Sort by: recent, trending, or popular</td>
+</tr>
+<tr>
+<td><code>created_before</code></td>
+<td>string</td>
+<td>No</td>
+<td>UTC timestamp (ISO8601). Only ideas created before this time</td>
+</tr>
+<tr>
+<td><code>created_since</code></td>
+<td>string</td>
+<td>No</td>
+<td>UTC timestamp (ISO8601). Only ideas created after this time</td>
+</tr>
+<tr>
+<td><code>updated_since</code></td>
+<td>string</td>
+<td>No</td>
+<td>UTC timestamp (ISO8601). Only ideas updated after this time</td>
+</tr>
+<tr>
+<td><code>tag</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by tag value</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Page number</td>
+</tr>
+<tr>
+<td><code>per_page</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Results per page</td>
+</tr>
+</tbody>
+</table>
+<h3 id="list_products">list_products<a class="headerlink" href="#list_products" title="Permanent link">&para;</a></h3>
+<p>List all accessible Aha.io products.</p>
+<h3 id="list_workflow_statuses">list_workflow_statuses<a class="headerlink" href="#list_workflow_statuses" title="Permanent link">&para;</a></h3>
+<p>List all workflow statuses for a product.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Product ID or reference prefix (e.g., 'PROD')</td>
+</tr>
+</tbody>
+</table>
+<h3 id="list_releases">list_releases<a class="headerlink" href="#list_releases" title="Permanent link">&para;</a></h3>
+<p>List all releases for a product.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Product ID or reference prefix (e.g., 'PROD')</td>
+</tr>
+</tbody>
+</table>
 <h3 id="search_documents">search_documents<a class="headerlink" href="#search_documents" title="Permanent link">&para;</a></h3>
-<p>Search for documents across your Aha! workspace using GraphQL.</p>
+<p>Search for Aha! documents using GraphQL.</p>
 <p><strong>Parameters:</strong></p>
 <table>
 <thead>
@@ -1159,29 +2452,166 @@
 <td><code>searchable_type</code></td>
 <td>string</td>
 <td>No</td>
-<td>Document type to search (default: "Page")</td>
-</tr>
-<tr>
-<td><code>limit</code></td>
-<td>integer</td>
-<td>No</td>
-<td>Maximum number of results</td>
+<td>Type of document to search for (defaults to Page)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;search_documents&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;product roadmap&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">&quot;searchable_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Page&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="ideas-tools">Ideas Tools<a class="headerlink" href="#ideas-tools" title="Permanent link">&para;</a></h2>
-<h3 id="get_idea">get_idea<a class="headerlink" href="#get_idea" title="Permanent link">&para;</a></h3>
-<p>Retrieve a specific idea by ID.</p>
+<h2 id="write-tools">Write Tools<a class="headerlink" href="#write-tools" title="Permanent link">&para;</a></h2>
+<h3 id="create_feature">create_feature<a class="headerlink" href="#create_feature" title="Permanent link">&para;</a></h3>
+<p>Create a new feature in Aha!</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>release_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Release ID or reference to create the feature in</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature name</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>No</td>
+<td>Feature description (HTML supported)</td>
+</tr>
+<tr>
+<td><code>workflow_status</code></td>
+<td>string</td>
+<td>No</td>
+<td>Initial workflow status ID or name</td>
+</tr>
+<tr>
+<td><code>assigned_to_user</code></td>
+<td>string</td>
+<td>No</td>
+<td>User ID or email to assign the feature to</td>
+</tr>
+</tbody>
+</table>
+<h3 id="change_feature_status">change_feature_status<a class="headerlink" href="#change_feature_status" title="Permanent link">&para;</a></h3>
+<p>Change the workflow status of a feature.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature ID or reference number (e.g., 'FEAT-123')</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>New workflow status ID or name</td>
+</tr>
+</tbody>
+</table>
+<h3 id="assign_feature_release">assign_feature_release<a class="headerlink" href="#assign_feature_release" title="Permanent link">&para;</a></h3>
+<p>Assign a feature to a different release.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature ID or reference number (e.g., 'FEAT-123')</td>
+</tr>
+<tr>
+<td><code>release_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Release ID or reference to assign the feature to</td>
+</tr>
+</tbody>
+</table>
+<h3 id="assign_user_to_feature">assign_user_to_feature<a class="headerlink" href="#assign_user_to_feature" title="Permanent link">&para;</a></h3>
+<p>Assign a user to a feature.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature ID or reference number (e.g., 'FEAT-123')</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>User ID or email address to assign</td>
+</tr>
+</tbody>
+</table>
+<h3 id="add_feature_comment">add_feature_comment<a class="headerlink" href="#add_feature_comment" title="Permanent link">&para;</a></h3>
+<p>Add a comment to a feature.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Feature ID or reference number (e.g., 'FEAT-123')</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Comment body (HTML supported)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="add_idea_comment">add_idea_comment<a class="headerlink" href="#add_idea_comment" title="Permanent link">&para;</a></h3>
+<p>Add a comment to an idea.</p>
 <p><strong>Parameters:</strong></p>
 <table>
 <thead>
@@ -1197,12 +2627,21 @@
 <td><code>idea_id</code></td>
 <td>string</td>
 <td>Yes</td>
-<td>The idea ID (e.g., "IDEA-123")</td>
+<td>Idea ID or reference number (e.g., 'IDEA-456')</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Comment body (HTML supported)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="list_ideas">list_ideas<a class="headerlink" href="#list_ideas" title="Permanent link">&para;</a></h3>
-<p>List ideas with filtering and pagination.</p>
+<h2 id="browser-tools">Browser Tools<a class="headerlink" href="#browser-tools" title="Permanent link">&para;</a></h2>
+<h3 id="list_predefined_templates">list_predefined_templates<a class="headerlink" href="#list_predefined_templates" title="Permanent link">&para;</a></h3>
+<p>List all predefined strategic model templates available for browser automation.</p>
+<h3 id="browser_create_template">browser_create_template<a class="headerlink" href="#browser_create_template" title="Permanent link">&para;</a></h3>
+<p>Create a strategic model template in Aha! using browser automation.</p>
 <p><strong>Parameters:</strong></p>
 <table>
 <thead>
@@ -1215,176 +2654,217 @@
 </thead>
 <tbody>
 <tr>
-<td><code>q</code></td>
+<td><code>product_key</code></td>
 <td>string</td>
-<td>No</td>
-<td>Search term to match against idea name</td>
+<td>Yes</td>
+<td>Aha product key (e.g., 'PROD')</td>
 </tr>
 <tr>
-<td><code>spam</code></td>
+<td><code>template_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Template type: capability-stack, maturity-model, opportunity-patton, feature-canvas, business-model, lean-canvas, value-proposition, opportunity-solution-tree</td>
+</tr>
+<tr>
+<td><code>custom_name</code></td>
+<td>string</td>
+<td>No</td>
+<td>Optional custom name for the template</td>
+</tr>
+<tr>
+<td><code>headless</code></td>
 <td>boolean</td>
 <td>No</td>
-<td>Show ideas marked as spam</td>
-</tr>
-<tr>
-<td><code>workflow_status</code></td>
-<td>string</td>
-<td>No</td>
-<td>Filter by workflow status</td>
-</tr>
-<tr>
-<td><code>sort</code></td>
-<td>string</td>
-<td>No</td>
-<td>Sort by: recent, trending, or popular</td>
-</tr>
-<tr>
-<td><code>created_before</code></td>
-<td>string</td>
-<td>No</td>
-<td>Only ideas created before (ISO8601)</td>
-</tr>
-<tr>
-<td><code>created_since</code></td>
-<td>string</td>
-<td>No</td>
-<td>Only ideas created after (ISO8601)</td>
-</tr>
-<tr>
-<td><code>updated_since</code></td>
-<td>string</td>
-<td>No</td>
-<td>Only ideas updated after (ISO8601)</td>
-</tr>
-<tr>
-<td><code>tag</code></td>
-<td>string</td>
-<td>No</td>
-<td>Filter by tag</td>
-</tr>
-<tr>
-<td><code>user_id</code></td>
-<td>string</td>
-<td>No</td>
-<td>Filter by creator user ID</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td>integer</td>
-<td>No</td>
-<td>Page number</td>
-</tr>
-<tr>
-<td><code>per_page</code></td>
-<td>integer</td>
-<td>No</td>
-<td>Results per page</td>
+<td>Run browser in headless mode (default: true)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="object-retrieval-tools">Object Retrieval Tools<a class="headerlink" href="#object-retrieval-tools" title="Permanent link">&para;</a></h2>
-<p>All object retrieval tools follow the same pattern:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Browser automation requires <code>AHA_EMAIL</code> and <code>AHA_PASSWORD</code> environment variables.</p>
+</div>
+<h2 id="graph-tools-neo4j">Graph Tools (Neo4j)<a class="headerlink" href="#graph-tools-neo4j" title="Permanent link">&para;</a></h2>
+<p>Graph tools require Neo4j to be configured with <code>NEO4J_URI</code>, <code>NEO4J_USERNAME</code>, and <code>NEO4J_PASSWORD</code> environment variables.</p>
+<h3 id="graph_sync">graph_sync<a class="headerlink" href="#graph_sync" title="Permanent link">&para;</a></h3>
+<p>Sync Aha data to Neo4j graph database for relationship queries.</p>
+<p><strong>Parameters:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Tool</th>
 <th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>get_feature</code></td>
-<td><code>feature_id</code></td>
-<td>Retrieve a feature by ID</td>
+<td><code>product</code></td>
+<td>string</td>
+<td>No</td>
+<td>Product ID to sync (uses default if not specified)</td>
 </tr>
 <tr>
-<td><code>get_epic</code></td>
-<td><code>epic_id</code></td>
-<td>Retrieve an epic by ID</td>
+<td><code>entities</code></td>
+<td>array</td>
+<td>No</td>
+<td>Specific entities to sync: products, users, releases, features, epics, initiatives, goals, ideas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="graph_query">graph_query<a class="headerlink" href="#graph_query" title="Permanent link">&para;</a></h3>
+<p>Execute a Cypher query against Neo4j graph database.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cypher</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Cypher query to execute</td>
 </tr>
 <tr>
-<td><code>get_release</code></td>
-<td><code>release_id</code></td>
-<td>Retrieve a release by ID</td>
-</tr>
-<tr>
-<td><code>get_goal</code></td>
-<td><code>goal_id</code></td>
-<td>Retrieve a goal by ID</td>
-</tr>
-<tr>
-<td><code>get_initiative</code></td>
-<td><code>initiative_id</code></td>
-<td>Retrieve an initiative by ID</td>
-</tr>
-<tr>
-<td><code>get_key_result</code></td>
-<td><code>key_result_id</code></td>
-<td>Retrieve a key result by ID</td>
-</tr>
-<tr>
-<td><code>get_persona</code></td>
-<td><code>persona_id</code></td>
-<td>Retrieve a persona by ID</td>
-</tr>
-<tr>
-<td><code>get_requirement</code></td>
-<td><code>requirement_id</code></td>
-<td>Retrieve a requirement by ID</td>
-</tr>
-<tr>
-<td><code>get_team</code></td>
-<td><code>team_id</code></td>
-<td>Retrieve a team by ID</td>
-</tr>
-<tr>
-<td><code>get_user</code></td>
-<td><code>user_id</code></td>
-<td>Retrieve a user by ID</td>
-</tr>
-<tr>
-<td><code>get_workflow</code></td>
-<td><code>workflow_id</code></td>
-<td>Retrieve a workflow by ID</td>
-</tr>
-<tr>
-<td><code>get_comment</code></td>
-<td><code>comment_id</code></td>
-<td>Retrieve a comment by ID</td>
+<td><code>params</code></td>
+<td>object</td>
+<td>No</td>
+<td>Query parameters as key-value pairs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Example:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;get_feature&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;graph_query&quot;</span><span class="p">,</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&quot;feature_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEAT-123&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&quot;cypher&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MATCH (f:Feature)-[:IN_RELEASE]-&gt;(r:Release) RETURN f.name, r.name LIMIT 10&quot;</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="p">}</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
 </code></pre></div>
+<h3 id="graph_find_path">graph_find_path<a class="headerlink" href="#graph_find_path" title="Permanent link">&para;</a></h3>
+<p>Find the shortest path between two entities in the graph.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>from_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Source node type: Feature, Release, Epic, Initiative, Goal, Idea, Product, User</td>
+</tr>
+<tr>
+<td><code>from_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Source node ID</td>
+</tr>
+<tr>
+<td><code>to_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Target node type</td>
+</tr>
+<tr>
+<td><code>to_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Target node ID</td>
+</tr>
+</tbody>
+</table>
+<h3 id="graph_search">graph_search<a class="headerlink" href="#graph_search" title="Permanent link">&para;</a></h3>
+<p>Full-text search across graph entities.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Search query string</td>
+</tr>
+<tr>
+<td><code>entity_types</code></td>
+<td>array</td>
+<td>No</td>
+<td>Entity types to search: Feature, Idea, Initiative, Epic (searches all if not specified)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="graph_initiative_impact">graph_initiative_impact<a class="headerlink" href="#graph_initiative_impact" title="Permanent link">&para;</a></h3>
+<p>Get the impact analysis of an initiative (features, epics, goals, releases).</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>initiative_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Initiative ID to analyze</td>
+</tr>
+</tbody>
+</table>
+<h3 id="graph_release_deps">graph_release_deps<a class="headerlink" href="#graph_release_deps" title="Permanent link">&para;</a></h3>
+<p>Get feature dependencies for a release.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>release_id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Release ID to analyze</td>
+</tr>
+</tbody>
+</table>
 <h2 id="response-format">Response Format<a class="headerlink" href="#response-format" title="Permanent link">&para;</a></h2>
-<p>All tools return JSON data including:</p>
-<ul>
-<li>The requested object data</li>
-<li>HTTP status code</li>
-<li>Any error messages</li>
-</ul>
+<p>All tools return JSON data including the requested object and any relevant metadata.</p>
 <p><strong>Example Response:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;feature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6789012345&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;reference_num&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEAT-123&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Authentication&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">&quot;workflow_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;In Development&quot;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">      </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Implement OAuth2 authentication...&quot;</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="nt">&quot;status_code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">}</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6789012345&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;reference_num&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEAT-123&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Authentication&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;In Development&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Implement OAuth2 authentication...&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
 </code></pre></div>
 
 
@@ -1438,7 +2918,7 @@
       
       
     
-    <a href="https://github.com/grokify/aha-mcp-server" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+    <a href="https://github.com/grokify/aha-studio" target="_blank" rel="noopener" title="github.com" class="md-social__link">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
     </a>
   
