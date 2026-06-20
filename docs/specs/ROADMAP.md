@@ -1704,8 +1704,8 @@ WHERE r.release_date >= '2026-01-01'
 
 | Item | Status | Description |
 |------|--------|-------------|
-| Enhance feature sync | 🔄 In Progress | Fetch full feature details including release_id |
-| Store release_id | 🔄 In Progress | Add release_id to features table |
+| Enhance feature sync | ✅ Complete | Fetch full feature details including release_id via GraphQL |
+| Store release_id | ✅ Complete | Add release_id column to features table with migration |
 | Feature→Release relationship | 🔲 Planned | Create relationship in relationships table |
 | `GetFeaturesByReleaseDate` | 🔲 Planned | Query method in sync/db.go |
 | `GetFeaturesByReleaseName` | 🔲 Planned | Query method in sync/db.go |
@@ -1797,7 +1797,7 @@ When implementing a phase:
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| `github.com/grokify/aha-go` | v0.1.0 | Aha.io API client |
+| `github.com/grokify/aha-go` | v0.5.0 | Aha.io API client |
 | `github.com/spf13/cobra` | v1.9.x | CLI framework |
 | `github.com/c-bata/go-prompt` | v0.2.6 | Interactive REPL |
 | `github.com/olekukonko/tablewriter` | v0.0.5 | Table formatting |
