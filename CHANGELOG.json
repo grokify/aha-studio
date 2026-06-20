@@ -7,6 +7,26 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.8.1",
+      "date": "2026-06-18",
+      "highlights": [
+        { "description": "Fix MCP tool URL construction and add integration tests" }
+      ],
+      "fixed": [
+        { "description": "MCP get_*-by-id tools no longer return 404 due to doubled /api/v1 in URL path", "issue": "63" }
+      ],
+      "added": [
+        { "description": "Integration tests for MCP handlers (GetEpic, GetGoal, GetUser, GetWorkflow, GetFeature, GetIdea)" }
+      ],
+      "documentation": [
+        { "description": "Update AQL custom field syntax from cf_ prefix to custom. prefix" },
+        { "description": "Add custom field examples for ORDER BY and GROUP BY clauses" }
+      ],
+      "dependencies": [
+        { "description": "Bump github.com/grokify/aha-go to v0.4.1 with nullable date field fixes" }
+      ]
+    },
+    {
       "version": "v0.8.0",
       "date": "2026-06-08",
       "highlights": [
