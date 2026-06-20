@@ -803,6 +803,48 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#excel-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Excel Export
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Excel Export">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-features-by-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Features by Rank
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-features-by-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Features by Release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-with-column-aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export with Column Aliases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -900,6 +942,29 @@
   
   <span class="md-ellipsis">
     Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tools/write-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Write Tools
     
   </span>
   
@@ -1374,6 +1439,48 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#excel-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Excel Export
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Excel Export">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-features-by-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Features by Rank
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-features-by-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Features by Release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-with-column-aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export with Column Aliases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1431,6 +1538,12 @@
 <a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
 <a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">-- Date comparison</span>
 <a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">&#39;2024-01-01&#39;</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1">-- Filter by release ID</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">release_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;PROD-R-123&#39;</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1">-- Filter by release date</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">release_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">&#39;2024-01-01&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">release_date</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s1">&#39;2024-06-30&#39;</span>
 </code></pre></div>
 <h3 id="order-by-clause">ORDER BY Clause<a class="headerlink" href="#order-by-clause" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Order ascending</span>
@@ -1554,8 +1667,8 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- Simple field reference</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Done&#39;</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- Custom field (prefixed with cf_)</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cf_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;High&#39;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- Custom field (prefixed with custom.)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">custom</span><span class="p">.</span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;High&#39;</span>
 </code></pre></div>
 <h2 id="comments">Comments<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- Single line comment</span>
@@ -1565,6 +1678,64 @@
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="cm">   comment */</span>
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">ideas</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span>
 </code></pre></div>
+<h2 id="excel-export">Excel Export<a class="headerlink" href="#excel-export" title="Permanent link">&para;</a></h2>
+<p>AQL supports exporting query results to Excel (XLSX) format using the <code>-o xlsx</code> flag with <code>-f &lt;filename&gt;</code>.</p>
+<h3 id="export-features-by-rank">Export Features by Rank<a class="headerlink" href="#export-features-by-rank" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Export all features ordered by rank</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s2">   ORDER BY position ASC&quot;</span>
+</code></pre></div>
+<h3 id="export-features-by-release">Export Features by Release<a class="headerlink" href="#export-features-by-release" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Export features for a specific release ID</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>release-features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="s2">   WHERE release_id = &#39;PROD-R-123&#39;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s2">   ORDER BY position ASC&quot;</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># Export features by release name</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>release-features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="s2">   WHERE release = &#39;Q4 2024 Release&#39;</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="s2">   ORDER BY position ASC&quot;</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1"># Export features by release date</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>release-features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, release, tag_list, workspace</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="s2">   WHERE release_date = &#39;2024-12-31&#39;</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="s2">   ORDER BY position ASC&quot;</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1"># Export features by release date range</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>q4-features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, release, release_date, tag_list, workspace</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="s2">   WHERE release_date &gt;= &#39;2024-10-01&#39; AND release_date &lt;= &#39;2024-12-31&#39;</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="s2">   ORDER BY release_date ASC, position ASC&quot;</span>
+</code></pre></div>
+<h3 id="export-with-column-aliases">Export with Column Aliases<a class="headerlink" href="#export-with-column-aliases" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Use aliases for human-readable column headers</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num AS &#39;Feature Reference&#39;,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="s2">          name AS &#39;Feature Name&#39;,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">          position AS &#39;Feature Rank&#39;,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s2">          tag_list AS &#39;Feature Tags&#39;,</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s2">          workspace AS &#39;Workspace Name&#39;</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s2">   FROM features</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="s2">   ORDER BY position ASC&quot;</span>
+</code></pre></div>
+<p><strong>Note:</strong> Release, rank, tags, and workspace data require syncing first and using offline mode:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 1. Sync data (uses GraphQL to capture release info, rank, tags, workspace)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># 2. Query using offline mode (queries SQLite cache)</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>--offline<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace FROM features ORDER BY position ASC&quot;</span>
+</code></pre></div>
+<p>The <code>release_id</code>, <code>position</code>, <code>tag_list</code>, and <code>workspace</code> fields are only available via GraphQL sync - the REST API does not include them. Use <code>--offline</code> flag to query the synced SQLite cache.</p>
 
 
 

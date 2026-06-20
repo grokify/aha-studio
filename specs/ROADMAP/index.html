@@ -745,6 +745,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tools/write-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Write Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2098,6 +2121,108 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#phase-12-feature-release-query-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 12: Feature-Release Query Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 12: Feature-Release Query Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Case
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema Changes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-13-duckdb-migration-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 13: DuckDB Migration (Future)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 13: DuckDB Migration (Future)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rationale
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contributing" class="md-nav__link">
     <span class="md-ellipsis">
       Contributing
@@ -2116,7 +2241,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependencies_2" class="md-nav__link">
+  <a href="#dependencies_3" class="md-nav__link">
     <span class="md-ellipsis">
       Dependencies
     </span>
@@ -3315,18 +3440,30 @@
 </tr>
 <tr>
 <td>12</td>
+<td>Phase 12 (Feature-Release Queries)</td>
+<td>🔄 In Progress</td>
+<td>Query features by release date/name</td>
+</tr>
+<tr>
+<td>13</td>
 <td>Phase 10b (Extended Write Tools)</td>
 <td>🔲 Planned</td>
 <td>Full CRUD for all entities</td>
 </tr>
 <tr>
-<td>13</td>
+<td>14</td>
 <td>Phase 10c (Analytics Tools)</td>
 <td>🔲 Planned</td>
 <td>Statistics and metrics</td>
 </tr>
 <tr>
-<td>14</td>
+<td>15</td>
+<td>Phase 13 (DuckDB Migration)</td>
+<td>🔲 Planned</td>
+<td>Columnar DB for analytics</td>
+</tr>
+<tr>
+<td>16</td>
 <td>Phase 10d (Integrations)</td>
 <td>🔲 Planned</td>
 <td>Jira, Confluence, AI workflows</td>
@@ -4577,6 +4714,118 @@
 </tbody>
 </table>
 <hr />
+<h2 id="phase-12-feature-release-query-support">Phase 12: Feature-Release Query Support<a class="headerlink" href="#phase-12-feature-release-query-support" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> 🔄 In Progress</p>
+<p>Enable querying features by release date or name from the local cache.</p>
+<h3 id="overview_4">Overview<a class="headerlink" href="#overview_4" title="Permanent link">&para;</a></h3>
+<p>Currently, the feature sync captures only basic metadata without release assignment. This phase enhances the sync and query layer to:</p>
+<ol>
+<li>Capture feature→release relationships during sync</li>
+<li>Enable AQL queries filtering by release date/name</li>
+<li>Support efficient release-based feature lookups</li>
+</ol>
+<h3 id="use-case">Use Case<a class="headerlink" href="#use-case" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="c1">-- Query features in OBSERV with release date 2026-10-31</span>
+<a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span>
+<a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OBSERV&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">release</span><span class="p">.</span><span class="nb">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;2026-10-31&#39;</span>
+<a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a>
+<a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="c1">-- Query features by release name</span>
+<a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span>
+<a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OBSERV&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">release</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Q4 2026&#39;</span>
+<a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a>
+<a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="c1">-- Join features with releases</span>
+<a id="__codelineno-56-10" name="__codelineno-56-10" href="#__codelineno-56-10"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">release_name</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">release_date</span>
+<a id="__codelineno-56-11" name="__codelineno-56-11" href="#__codelineno-56-11"></a><span class="k">FROM</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="n">f</span>
+<a id="__codelineno-56-12" name="__codelineno-56-12" href="#__codelineno-56-12"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">releases</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="n">release_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span>
+<a id="__codelineno-56-13" name="__codelineno-56-13" href="#__codelineno-56-13"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">release_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">&#39;2026-01-01&#39;</span>
+</code></pre></div>
+<h3 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enhance feature sync</td>
+<td>✅ Complete</td>
+<td>Fetch full feature details including release_id via GraphQL</td>
+</tr>
+<tr>
+<td>Store release_id</td>
+<td>✅ Complete</td>
+<td>Add release_id column to features table with migration</td>
+</tr>
+<tr>
+<td>Feature→Release relationship</td>
+<td>🔲 Planned</td>
+<td>Create relationship in relationships table</td>
+</tr>
+<tr>
+<td><code>GetFeaturesByReleaseDate</code></td>
+<td>🔲 Planned</td>
+<td>Query method in sync/db.go</td>
+</tr>
+<tr>
+<td><code>GetFeaturesByReleaseName</code></td>
+<td>🔲 Planned</td>
+<td>Query method in sync/db.go</td>
+</tr>
+<tr>
+<td>AQL <code>release.date</code> support</td>
+<td>🔲 Planned</td>
+<td>Executor support for release.date in WHERE</td>
+</tr>
+<tr>
+<td>AQL <code>release.name</code> support</td>
+<td>🔲 Planned</td>
+<td>Executor support for release.name in WHERE</td>
+</tr>
+<tr>
+<td>MCP tool exposure</td>
+<td>🔲 Planned</td>
+<td><code>list_features_by_release</code> tool</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schema-changes">Schema Changes<a class="headerlink" href="#schema-changes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="c1">-- Add release_id to features table (migration)</span>
+<a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">release_id</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">;</span>
+<a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_features_release</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">features</span><span class="p">(</span><span class="n">release_id</span><span class="p">);</span>
+<a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a>
+<a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="c1">-- Feature→Release relationship</span>
+<a id="__codelineno-57-6" name="__codelineno-57-6" href="#__codelineno-57-6"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">relationships</span><span class="w"> </span><span class="p">(</span><span class="n">from_type</span><span class="p">,</span><span class="w"> </span><span class="n">from_id</span><span class="p">,</span><span class="w"> </span><span class="n">rel_type</span><span class="p">,</span><span class="w"> </span><span class="n">to_type</span><span class="p">,</span><span class="w"> </span><span class="n">to_id</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">)</span>
+<a id="__codelineno-57-7" name="__codelineno-57-7" href="#__codelineno-57-7"></a><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;feat-123&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;BELONGS_TO&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;release&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;rel-456&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;OBSERV&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="dependencies_2">Dependencies<a class="headerlink" href="#dependencies_2" title="Permanent link">&para;</a></h3>
+<p>Requires aha-go SDK enhancement to fetch features with release details.</p>
+<hr />
+<h2 id="phase-13-duckdb-migration-future">Phase 13: DuckDB Migration (Future)<a class="headerlink" href="#phase-13-duckdb-migration-future" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> 🔲 Planned</p>
+<p>Migrate from SQLite to DuckDB for improved analytical query performance.</p>
+<h3 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Columnar storage</strong> - Better for analytical scans and aggregations</li>
+<li><strong>Faster JOINs</strong> - More efficient for cross-entity queries</li>
+<li><strong>Native Parquet</strong> - Easy data export for external analysis</li>
+<li><strong>Modern SQL</strong> - Better window function and CTE support</li>
+</ul>
+<h3 id="migration-strategy">Migration Strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Keep SQLite for sync metadata tracking</li>
+<li>Use DuckDB for entity data and AQL queries</li>
+<li>Gradual migration with feature flag</li>
+<li>Validate performance improvements</li>
+</ol>
+<h3 id="timeline">Timeline<a class="headerlink" href="#timeline" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Implement after Phase 12 is complete and validated</li>
+<li>Learn from real query patterns before optimizing</li>
+</ul>
+<hr />
 <h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
 <p>When implementing a phase:</p>
 <ol>
@@ -4666,25 +4915,37 @@
 </tr>
 <tr>
 <td>1.2.0</td>
+<td>Phase 12</td>
+<td>TBD</td>
+<td>Feature-Release Query Support (release.date, release.name)</td>
+</tr>
+<tr>
+<td>1.3.0</td>
 <td>Phase 10b</td>
 <td>TBD</td>
 <td>Extended CRUD tools</td>
 </tr>
 <tr>
-<td>1.3.0</td>
+<td>1.4.0</td>
 <td>Phase 10c</td>
 <td>TBD</td>
 <td>Statistics and analytics tools</td>
 </tr>
 <tr>
-<td>1.4.0</td>
+<td>1.5.0</td>
+<td>Phase 13</td>
+<td>TBD</td>
+<td>DuckDB migration for analytics performance</td>
+</tr>
+<tr>
+<td>1.6.0</td>
 <td>Phase 10d</td>
 <td>TBD</td>
 <td>Integrations and AI workflows</td>
 </tr>
 </tbody>
 </table>
-<h2 id="dependencies_2">Dependencies<a class="headerlink" href="#dependencies_2" title="Permanent link">&para;</a></h2>
+<h2 id="dependencies_3">Dependencies<a class="headerlink" href="#dependencies_3" title="Permanent link">&para;</a></h2>
 <h3 id="core">Core<a class="headerlink" href="#core" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4697,7 +4958,7 @@
 <tbody>
 <tr>
 <td><code>github.com/grokify/aha-go</code></td>
-<td>v0.1.0</td>
+<td>v0.5.0</td>
 <td>Aha.io API client</td>
 </tr>
 <tr>

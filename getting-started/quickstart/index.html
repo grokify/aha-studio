@@ -657,9 +657,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-cli" class="md-nav__link">
+  <a href="#using-aha-studio-cli" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the CLI
+      Using aha-studio CLI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-aha-mcp-server-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using aha-mcp-server CLI
     </span>
   </a>
   
@@ -879,6 +888,29 @@
   
   <span class="md-ellipsis">
     Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tools/write-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Write Tools
     
   </span>
   
@@ -1282,9 +1314,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-the-cli" class="md-nav__link">
+  <a href="#using-aha-studio-cli" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the CLI
+      Using aha-studio CLI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-aha-mcp-server-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using aha-mcp-server CLI
     </span>
   </a>
   
@@ -1379,55 +1420,83 @@
 <li>"Show me epic EPIC-456"</li>
 <li>"List all ideas tagged with 'mobile'"</li>
 </ul>
-<h2 id="using-the-cli">Using the CLI<a class="headerlink" href="#using-the-cli" title="Permanent link">&para;</a></h2>
-<p>The server also works as a CLI tool for testing and scripting:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Search documents</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;authentication&quot;</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Get a feature</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># List ideas with filtering</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span>--workflow-status<span class="w"> </span><span class="s2">&quot;Under consideration&quot;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Get an epic</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>aha-mcp-server<span class="w"> </span>get-epic<span class="w"> </span>EPIC-456
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># Pretty print output</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-789<span class="w"> </span>--output<span class="w"> </span>pretty
+<h2 id="using-aha-studio-cli">Using aha-studio CLI<a class="headerlink" href="#using-aha-studio-cli" title="Permanent link">&para;</a></h2>
+<p>The <code>aha-studio</code> CLI provides AQL (Aha Query Language) for powerful querying and export:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Set credentials</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_SUBDOMAIN</span><span class="o">=</span>mycompany
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_KEY</span><span class="o">=</span>your-api-key
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Basic query</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>aha-studio<span class="w"> </span>query<span class="w"> </span><span class="s2">&quot;FROM features LIMIT 10&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># Query with filter</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>aha-studio<span class="w"> </span>query<span class="w"> </span><span class="s2">&quot;FROM ideas WHERE status = &#39;Shipped&#39; LIMIT 5&quot;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Sync data for offline queries</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># Export features to Excel ordered by rank</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s2">   FROM features ORDER BY position ASC&quot;</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1"># Export features for a specific release</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>aha-studio<span class="w"> </span>query<span class="w"> </span>-o<span class="w"> </span>xlsx<span class="w"> </span>-f<span class="w"> </span>release-features.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">  </span><span class="s2">&quot;SELECT reference_num, name, position, tag_list, workspace</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="s2">   FROM features WHERE release_id = &#39;PROD-R-123&#39; ORDER BY position ASC&quot;</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1"># Interactive shell</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>aha-studio<span class="w"> </span>shell
+</code></pre></div>
+<h2 id="using-aha-mcp-server-cli">Using aha-mcp-server CLI<a class="headerlink" href="#using-aha-mcp-server-cli" title="Permanent link">&para;</a></h2>
+<p>The MCP server also works as a CLI tool for testing and scripting:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Search documents</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;authentication&quot;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Get a feature</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># List ideas with filtering</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span>--workflow-status<span class="w"> </span><span class="s2">&quot;Under consideration&quot;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Get an epic</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>aha-mcp-server<span class="w"> </span>get-epic<span class="w"> </span>EPIC-456
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># Pretty print output</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-789<span class="w"> </span>--output<span class="w"> </span>pretty
 </code></pre></div>
 <h2 id="example-workflows">Example Workflows<a class="headerlink" href="#example-workflows" title="Permanent link">&para;</a></h2>
 <h3 id="research-a-topic">Research a Topic<a class="headerlink" href="#research-a-topic" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>You: Search Aha! for documents about our API redesign
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Claude: I&#39;ll search for documents about API redesign.
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>[Uses search_documents tool]
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>Found 5 documents:
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>1. &quot;API v2 Roadmap&quot; (Page)
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>2. &quot;REST API Design Guidelines&quot; (Page)
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>...
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>You: Search Aha! for documents about our API redesign
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Claude: I&#39;ll search for documents about API redesign.
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>[Uses search_documents tool]
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Found 5 documents:
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>1. &quot;API v2 Roadmap&quot; (Page)
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>2. &quot;REST API Design Guidelines&quot; (Page)
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>...
 </code></pre></div>
 <h3 id="review-a-feature">Review a Feature<a class="headerlink" href="#review-a-feature" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>You: Get the details for feature FEAT-123 and its requirements
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Claude: I&#39;ll get the feature details.
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>[Uses get_feature tool]
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Feature FEAT-123: &quot;User Authentication Overhaul&quot;
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Status: In Development
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>...
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>You: Get the details for feature FEAT-123 and its requirements
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Claude: I&#39;ll get the feature details.
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>[Uses get_feature tool]
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>Feature FEAT-123: &quot;User Authentication Overhaul&quot;
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>Status: In Development
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>...
 </code></pre></div>
 <h3 id="explore-ideas">Explore Ideas<a class="headerlink" href="#explore-ideas" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>You: List the most recent ideas tagged &quot;mobile&quot;
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Claude: I&#39;ll list ideas with the mobile tag.
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>[Uses list_ideas tool]
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>Found 12 ideas:
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>1. IDEA-789: &quot;Mobile app offline mode&quot;
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>2. IDEA-790: &quot;Push notifications for updates&quot;
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>...
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>You: List the most recent ideas tagged &quot;mobile&quot;
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Claude: I&#39;ll list ideas with the mobile tag.
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>[Uses list_ideas tool]
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>Found 12 ideas:
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>1. IDEA-789: &quot;Mobile app offline mode&quot;
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>2. IDEA-790: &quot;Push notifications for updates&quot;
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>...
 </code></pre></div>
 
 
