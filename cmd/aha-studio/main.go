@@ -12,6 +12,7 @@ import (
 	"time"
 
 	aha "github.com/grokify/aha-go"
+	"github.com/grokify/mogo/fmt/progress"
 	"github.com/spf13/cobra"
 
 	"github.com/grokify/aha-studio/aql/ast"
@@ -543,8 +544,21 @@ func executeAPIQuery(plan *planner.Plan) (*result.Result, error) {
 		return nil, fmt.Errorf("failed to create Aha client: %w", err)
 	}
 
-	exec := executor.New(client)
-	return exec.Execute(context.Background(), plan)
+	// Create progress renderer
+	renderer := progress.NewSingleStageRenderer(os.Stderr).WithBarWidth(30).WithTextWidth(40)
+
+	// Progress callback
+	progressFn := func(current, total int, message string) {
+		renderer.Update(current, total, message)
+	}
+
+	exec := executor.New(client).WithProgress(progressFn)
+	res, err := exec.Execute(context.Background(), plan)
+
+	// Clear progress line
+	renderer.Done("")
+
+	return res, err
 }
 
 // executeOfflineQuery executes a query against the local SQLite database.
@@ -577,8 +591,18 @@ func runSync(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("creating Aha client: %w", err)
 	}
 
-	// Create syncer
-	syncer := sync.NewSyncer(db, client)
+	// Create progress renderer
+	renderer := progress.NewSingleStageRenderer(os.Stderr).WithBarWidth(30).WithTextWidth(40)
+
+	// Progress callback
+	progressFn := func(current, total int, message string) {
+		renderer.Update(current, total, message)
+	}
+
+	// Create syncer with GraphQL support for release_id capture
+	subdomain := os.Getenv("AHA_SUBDOMAIN")
+	apiKey := os.Getenv("AHA_API_KEY")
+	syncer := sync.NewSyncerWithGraphQL(db, client, subdomain, apiKey).WithProgress(progressFn)
 
 	// Build sync options
 	opts := sync.SyncOptions{
@@ -613,6 +637,10 @@ func runSync(cmd *cobra.Command, args []string) error {
 	// Execute sync
 	startTime := time.Now()
 	results, err := syncer.SyncAll(context.Background(), opts)
+
+	// Clear progress line
+	renderer.Done("")
+
 	if err != nil {
 		return fmt.Errorf("sync failed: %w", err)
 	}
