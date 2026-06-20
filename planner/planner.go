@@ -91,30 +91,38 @@ func (p *Planner) Plan(query *ast.Query) *Plan {
 	return plan
 }
 
-// checkCustomFieldsNeeded returns true if any custom.* fields are referenced.
+// checkCustomFieldsNeeded returns true if any custom.* or release.* fields are referenced.
+// These fields require fetching full feature details to access.
 func (p *Planner) checkCustomFieldsNeeded(plan *Plan) bool {
+	needsDetails := func(field string) bool {
+		return strings.HasPrefix(field, "custom.") ||
+			field == "release_date" ||
+			field == "release_id" ||
+			strings.HasPrefix(field, "release.")
+	}
+
 	// Check select fields
 	for _, f := range plan.SelectFields {
-		if strings.HasPrefix(f, "custom.") {
+		if needsDetails(f) {
 			return true
 		}
 	}
 
 	// Check order by
-	if plan.OrderBy != nil && strings.HasPrefix(plan.OrderBy.Field, "custom.") {
+	if plan.OrderBy != nil && needsDetails(plan.OrderBy.Field) {
 		return true
 	}
 
 	// Check client filters
 	for _, f := range plan.ClientFilters {
-		if strings.HasPrefix(f.Field, "custom.") {
+		if needsDetails(f.Field) {
 			return true
 		}
 	}
 
 	// Check group by
 	for _, f := range plan.GroupBy {
-		if strings.HasPrefix(f, "custom.") {
+		if needsDetails(f) {
 			return true
 		}
 	}
