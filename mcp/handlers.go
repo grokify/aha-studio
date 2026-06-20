@@ -251,8 +251,10 @@ func (h *ToolHandlers) GetWorkflow(ctx context.Context, params map[string]any) (
 }
 
 // getResourceByID is a generic helper to fetch a resource by ID using the raw API.
+// Note: DoRaw appends the path to BaseURL which already includes /api/v1,
+// so we only need to provide the relative path (e.g., "/epics/AI-E-9").
 func (h *ToolHandlers) getResourceByID(ctx context.Context, endpoint, id, resourceName string) (any, error) {
-	resp, err := h.client.DoRaw(ctx, http.MethodGet, fmt.Sprintf("/api/v1/%s/%s", endpoint, id), nil)
+	resp, err := h.client.DoRaw(ctx, http.MethodGet, fmt.Sprintf("/%s/%s", endpoint, id), nil)
 	if err != nil {
 		return map[string]any{"error": fmt.Sprintf("error getting %s: %v", resourceName, err)}, nil
 	}
