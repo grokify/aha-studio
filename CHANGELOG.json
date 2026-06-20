@@ -7,23 +7,37 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
-      "version": "v0.8.1",
-      "date": "2026-06-18",
+      "version": "v0.9.0",
+      "date": "2026-06-20",
+      "commit": "f904c7b",
       "highlights": [
-        { "description": "Fix MCP tool URL construction and add integration tests" }
-      ],
-      "fixed": [
-        { "description": "MCP get_*-by-id tools no longer return 404 due to doubled /api/v1 in URL path", "issue": "63" }
+        { "description": "GraphQL sync with release_id for feature-release queries" },
+        { "description": "Progress bars for sync and query operations" },
+        { "description": "Release field support (release_id, release_date, position)" }
       ],
       "added": [
-        { "description": "Integration tests for MCP handlers (GetEpic, GetGoal, GetUser, GetWorkflow, GetFeature, GetIdea)" }
+        { "description": "GraphQL sync with release_id capture via NewSyncerWithGraphQL", "commit": "ccb5908" },
+        { "description": "Progress reporting for sync and query operations", "commit": "7f44aa3" },
+        { "description": "Progress bars in CLI using mogo/fmt/progress", "commit": "1ce43df" },
+        { "description": "Release and position fields to feature schema (release_id, release_date, position, workspace, tag_list)", "commit": "d277ee3" },
+        { "description": "Database migration to add release_id column to features table", "commit": "ccb5908" },
+        { "description": "Integration tests for MCP handlers", "commit": "b18b158" }
+      ],
+      "changed": [
+        { "description": "Planner recognizes release_id/release_date fields as requiring details fetch", "commit": "17f8ff3" }
+      ],
+      "fixed": [
+        { "description": "MCP DoRaw path format (no longer doubles /api/v1 prefix)", "commit": "4e59c4e" },
+        { "description": "Graph sync uses new ListProducts option names", "commit": "4ed4f5e" }
       ],
       "documentation": [
-        { "description": "Update AQL custom field syntax from cf_ prefix to custom. prefix" },
-        { "description": "Add custom field examples for ORDER BY and GROUP BY clauses" }
+        { "description": "Update documentation for release_id and progress features", "commit": "fa6f063" },
+        { "description": "Update ROADMAP with aha-go v0.5.0 and completed release_id features", "commit": "f904c7b" }
       ],
       "dependencies": [
-        { "description": "Bump github.com/grokify/aha-go to v0.4.1 with nullable date field fixes" }
+        { "description": "Upgrade github.com/grokify/aha-go to v0.5.0", "commit": "0d5f1a7" },
+        { "description": "Add github.com/grokify/mogo as direct dependency for progress rendering", "commit": "0d5f1a7" },
+        { "description": "Update indirect dependencies", "commit": "0d5f1a7" }
       ]
     },
     {
