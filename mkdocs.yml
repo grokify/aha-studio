@@ -39,6 +39,7 @@ nav:
       - Entities: aql/entities.md
   - Tools Reference:
       - Overview: tools/overview.md
+      - Write Tools: tools/write-tools.md
   - CLI:
       - Commands: cli/commands.md
   - Configuration:

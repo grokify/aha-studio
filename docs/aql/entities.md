@@ -21,14 +21,39 @@ Product features and their details.
 | `start_date` | date | Yes | Start date |
 | `due_date` | date | Yes | Due date |
 | `release_id` | string | Yes | Release ID |
+| `release_date` | date | Yes | Release target date (from associated release) |
+| `position` | integer | Yes | Feature rank/position |
+| `workspace` | string | Yes | Workspace/product name |
+| `tag_list` | string | Yes | Comma-separated tags |
 | `assigned_to_user` | string | Yes | Assigned user |
 | `tags` | array | No | Tags list |
 
-**Example:**
+**Examples:**
 
 ```sql
+-- Basic query
 SELECT name, status, created_at FROM features WHERE status = 'In Progress' LIMIT 10
+
+-- Query by release ID
+FROM features WHERE release_id = 'PROD-R-123'
+
+-- Query by release date
+FROM features WHERE release_date = '2024-10-31'
+
+-- Query by release date range
+FROM features WHERE release_date >= '2024-01-01' AND release_date <= '2024-06-30'
+
+-- Order by release date
+SELECT name, release_id, release_date FROM features ORDER BY release_date DESC LIMIT 10
+
+-- Order by rank (position)
+SELECT reference_num, name, position, tag_list, workspace FROM features ORDER BY position ASC
+
+-- Export to Excel ordered by rank
+SELECT reference_num, name, position, tag_list, workspace FROM features ORDER BY position ASC
 ```
+
+**Note:** Release-based queries (`release_id`, `release_date`), rank (`position`), tags (`tag_list`), and workspace require syncing with GraphQL support. Run `aha-studio sync --product PROD` to populate this data.
 
 ### ideas
 
@@ -204,12 +229,24 @@ SELECT name, feature_count FROM tags ORDER BY feature_count DESC LIMIT 10
 
 ## Custom Fields
 
-Custom fields are accessible with the `cf_` prefix:
+Custom fields are accessible with the `custom.` prefix:
 
 ```sql
--- Query custom field
-FROM features WHERE cf_priority = 'High'
+-- Query by custom field
+FROM features WHERE custom.priority = 'High'
 
--- Select custom field
-SELECT name, cf_priority, cf_team FROM features LIMIT 10
+-- Select custom fields
+SELECT name, custom.priority, custom.team FROM features LIMIT 10
+
+-- Order by custom field
+FROM features ORDER BY custom.priority DESC
+
+-- Group by custom field
+SELECT custom.team, COUNT(*) FROM features GROUP BY custom.team
 ```
+
+**Notes:**
+
+- Custom field filtering is applied **client-side** (not pushed to Aha API)
+- Queries referencing custom fields fetch full entity details, which may be slower
+- Supported on `features` and `goals` entities

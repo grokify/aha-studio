@@ -36,9 +36,41 @@ You can now ask Claude to interact with your Aha! data:
 - "Show me epic EPIC-456"
 - "List all ideas tagged with 'mobile'"
 
-## Using the CLI
+## Using aha-studio CLI
 
-The server also works as a CLI tool for testing and scripting:
+The `aha-studio` CLI provides AQL (Aha Query Language) for powerful querying and export:
+
+```bash
+# Set credentials
+export AHA_SUBDOMAIN=mycompany
+export AHA_API_KEY=your-api-key
+
+# Basic query
+aha-studio query "FROM features LIMIT 10"
+
+# Query with filter
+aha-studio query "FROM ideas WHERE status = 'Shipped' LIMIT 5"
+
+# Sync data for offline queries
+aha-studio sync --product PROD
+
+# Export features to Excel ordered by rank
+aha-studio query -o xlsx -f features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace
+   FROM features ORDER BY position ASC"
+
+# Export features for a specific release
+aha-studio query -o xlsx -f release-features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace
+   FROM features WHERE release_id = 'PROD-R-123' ORDER BY position ASC"
+
+# Interactive shell
+aha-studio shell
+```
+
+## Using aha-mcp-server CLI
+
+The MCP server also works as a CLI tool for testing and scripting:
 
 ```bash
 # Search documents

@@ -96,6 +96,10 @@ aha-studio shell
 
 # Sync data to SQLite for offline queries
 aha-studio sync --product PROD
+
+# Export features to Excel ordered by rank
+aha-studio query -o xlsx -f features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace FROM features ORDER BY position ASC"
 ```
 
 ### MCP Server (Claude Desktop)

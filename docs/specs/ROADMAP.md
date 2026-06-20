@@ -972,9 +972,11 @@ Recommended implementation order based on value and dependencies.
 | 9 | Phase 9 (Extended Features) | ✅ Complete | Excel, SQLite sync, tags, custom fields |
 | 10 | Phase 10a (Core Write Tools) | ✅ Complete | Essential MCP write operations |
 | 11 | Phase 11 (Web UI & HTTP API) | 🔄 In Progress | HTTP server, Lit component, cache modes |
-| 12 | Phase 10b (Extended Write Tools) | 🔲 Planned | Full CRUD for all entities |
-| 13 | Phase 10c (Analytics Tools) | 🔲 Planned | Statistics and metrics |
-| 14 | Phase 10d (Integrations) | 🔲 Planned | Jira, Confluence, AI workflows |
+| 12 | Phase 12 (Feature-Release Queries) | 🔄 In Progress | Query features by release date/name |
+| 13 | Phase 10b (Extended Write Tools) | 🔲 Planned | Full CRUD for all entities |
+| 14 | Phase 10c (Analytics Tools) | 🔲 Planned | Statistics and metrics |
+| 15 | Phase 13 (DuckDB Migration) | 🔲 Planned | Columnar DB for analytics |
+| 16 | Phase 10d (Integrations) | 🔲 Planned | Jira, Confluence, AI workflows |
 
 ---
 
@@ -1666,6 +1668,96 @@ Note: Lower scores indicate better matches (BM25 ranking).
 
 ---
 
+## Phase 12: Feature-Release Query Support
+
+**Status:** 🔄 In Progress
+
+Enable querying features by release date or name from the local cache.
+
+### Overview
+
+Currently, the feature sync captures only basic metadata without release assignment. This phase enhances the sync and query layer to:
+
+1. Capture feature→release relationships during sync
+2. Enable AQL queries filtering by release date/name
+3. Support efficient release-based feature lookups
+
+### Use Case
+
+```sql
+-- Query features in OBSERV with release date 2026-10-31
+FROM features
+WHERE product = 'OBSERV' AND release.date = '2026-10-31'
+
+-- Query features by release name
+FROM features
+WHERE product = 'OBSERV' AND release.name = 'Q4 2026'
+
+-- Join features with releases
+SELECT f.name, r.name as release_name, r.release_date
+FROM features f
+JOIN releases r ON f.release_id = r.id
+WHERE r.release_date >= '2026-01-01'
+```
+
+### Implementation
+
+| Item | Status | Description |
+|------|--------|-------------|
+| Enhance feature sync | 🔄 In Progress | Fetch full feature details including release_id |
+| Store release_id | 🔄 In Progress | Add release_id to features table |
+| Feature→Release relationship | 🔲 Planned | Create relationship in relationships table |
+| `GetFeaturesByReleaseDate` | 🔲 Planned | Query method in sync/db.go |
+| `GetFeaturesByReleaseName` | 🔲 Planned | Query method in sync/db.go |
+| AQL `release.date` support | 🔲 Planned | Executor support for release.date in WHERE |
+| AQL `release.name` support | 🔲 Planned | Executor support for release.name in WHERE |
+| MCP tool exposure | 🔲 Planned | `list_features_by_release` tool |
+
+### Schema Changes
+
+```sql
+-- Add release_id to features table (migration)
+ALTER TABLE features ADD COLUMN release_id TEXT;
+CREATE INDEX idx_features_release ON features(release_id);
+
+-- Feature→Release relationship
+INSERT INTO relationships (from_type, from_id, rel_type, to_type, to_id, product)
+VALUES ('feature', 'feat-123', 'BELONGS_TO', 'release', 'rel-456', 'OBSERV');
+```
+
+### Dependencies
+
+Requires aha-go SDK enhancement to fetch features with release details.
+
+---
+
+## Phase 13: DuckDB Migration (Future)
+
+**Status:** 🔲 Planned
+
+Migrate from SQLite to DuckDB for improved analytical query performance.
+
+### Rationale
+
+- **Columnar storage** - Better for analytical scans and aggregations
+- **Faster JOINs** - More efficient for cross-entity queries
+- **Native Parquet** - Easy data export for external analysis
+- **Modern SQL** - Better window function and CTE support
+
+### Migration Strategy
+
+1. Keep SQLite for sync metadata tracking
+2. Use DuckDB for entity data and AQL queries
+3. Gradual migration with feature flag
+4. Validate performance improvements
+
+### Timeline
+
+- Implement after Phase 12 is complete and validated
+- Learn from real query patterns before optimizing
+
+---
+
 ## Contributing
 
 When implementing a phase:
@@ -1693,9 +1785,11 @@ When implementing a phase:
 | 0.9.0 | Phase 3 | 2024-XX-XX | Additional entities |
 | 1.0.0 | Phase 10a | TBD | Core MCP write tools (create, update, status, assign) |
 | 1.1.0 | Phase 11 | TBD | Web UI & HTTP API (server, Lit component, cache modes) |
-| 1.2.0 | Phase 10b | TBD | Extended CRUD tools |
-| 1.3.0 | Phase 10c | TBD | Statistics and analytics tools |
-| 1.4.0 | Phase 10d | TBD | Integrations and AI workflows |
+| 1.2.0 | Phase 12 | TBD | Feature-Release Query Support (release.date, release.name) |
+| 1.3.0 | Phase 10b | TBD | Extended CRUD tools |
+| 1.4.0 | Phase 10c | TBD | Statistics and analytics tools |
+| 1.5.0 | Phase 13 | TBD | DuckDB migration for analytics performance |
+| 1.6.0 | Phase 10d | TBD | Integrations and AI workflows |
 
 ## Dependencies
 

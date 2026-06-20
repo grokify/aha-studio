@@ -1,5 +1,102 @@
 # CLI Commands
 
+Aha Studio provides two CLI tools: `aha-studio` for AQL queries and `aha-mcp-server` for MCP integration.
+
+---
+
+## aha-studio Commands
+
+The `aha-studio` CLI provides AQL (Aha Query Language) for querying and exporting Aha.io data.
+
+### query
+
+Execute an AQL query.
+
+```bash
+aha-studio query "FROM features LIMIT 10"
+aha-studio query "FROM ideas WHERE status = 'Shipped' LIMIT 5"
+```
+
+| Flag | Description |
+|------|-------------|
+| `-o, --output` | Output format: table, json, csv, markdown, yaml, html, xlsx |
+| `-f, --file` | Output file path (required for xlsx format) |
+| `-p, --product` | Product ID or reference prefix |
+| `-v, --verbose` | Enable verbose output |
+| `--stats` | Show query execution statistics |
+| `--offline` | Use local SQLite cache instead of API |
+
+### sync
+
+Sync data from Aha.io to local SQLite cache.
+
+```bash
+aha-studio sync --product PROD
+aha-studio sync --product PROD --since 2024-01-01
+aha-studio sync --product PROD --since last
+```
+
+| Flag | Description |
+|------|-------------|
+| `-p, --product` | Product ID (required) |
+| `--since` | Sync changes since date (YYYY-MM-DD) or "last" |
+| `--entities` | Specific entities to sync (comma-separated) |
+
+### shell
+
+Start interactive AQL shell.
+
+```bash
+aha-studio shell
+```
+
+### Excel Export Examples
+
+Export features to Excel with various filters:
+
+```bash
+# Export all features ordered by rank
+aha-studio query -o xlsx -f features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace
+   FROM features ORDER BY position ASC"
+
+# Export features for a specific release
+aha-studio query -o xlsx -f release-features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace
+   FROM features WHERE release_id = 'PROD-R-123' ORDER BY position ASC"
+
+# Export features by release name
+aha-studio query -o xlsx -f release-features.xlsx \
+  "SELECT reference_num, name, position, tag_list, workspace
+   FROM features WHERE release = 'Q4 2024 Release' ORDER BY position ASC"
+
+# Export features by release date range
+aha-studio query -o xlsx -f q4-features.xlsx \
+  "SELECT reference_num, name, position, release, release_date, tag_list, workspace
+   FROM features
+   WHERE release_date >= '2024-10-01' AND release_date <= '2024-12-31'
+   ORDER BY release_date ASC, position ASC"
+
+# Export with human-readable column headers
+aha-studio query -o xlsx -f features.xlsx \
+  "SELECT reference_num AS 'Feature Reference',
+          name AS 'Feature Name',
+          position AS 'Feature Rank',
+          tag_list AS 'Feature Tags',
+          workspace AS 'Workspace Name'
+   FROM features ORDER BY position ASC"
+```
+
+**Note:** Release, rank, tags, and workspace data require syncing first:
+
+```bash
+aha-studio sync --product PROD
+```
+
+---
+
+## aha-mcp-server Commands
+
 The Aha! MCP server can also be used as a command-line tool for testing and scripting.
 
 ## Global Flags
