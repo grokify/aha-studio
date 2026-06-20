@@ -20,3 +20,4 @@ site/
 # Local config
 .env
 .env.local
+.envrc
