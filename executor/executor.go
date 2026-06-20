@@ -12,14 +12,33 @@ import (
 	"github.com/grokify/aha-studio/result"
 )
 
+// ProgressFunc is called during query execution to report progress.
+// current is the current item count, total is the estimated total (0 if unknown),
+// and message describes the current operation.
+type ProgressFunc func(current, total int, message string)
+
 // Executor executes query plans against the Aha API.
 type Executor struct {
-	client *aha.Client
+	client     *aha.Client
+	progressFn ProgressFunc
 }
 
 // New creates a new executor with the given Aha client.
 func New(client *aha.Client) *Executor {
 	return &Executor{client: client}
+}
+
+// WithProgress sets a progress callback for the executor.
+func (e *Executor) WithProgress(fn ProgressFunc) *Executor {
+	e.progressFn = fn
+	return e
+}
+
+// reportProgress calls the progress callback if set.
+func (e *Executor) reportProgress(current, total int, message string) {
+	if e.progressFn != nil {
+		e.progressFn(current, total, message)
+	}
 }
 
 // Execute executes a query plan and returns the results.
@@ -116,8 +135,10 @@ func (e *Executor) executeFeatures(ctx context.Context, plan *planner.Plan) ([]r
 		return e.executeFeaturesWithCustomFields(ctx, plan)
 	}
 
-	buildOpts := func() []aha.ListFeaturesOption {
+	buildOpts := func(page int) []aha.ListFeaturesOption {
 		var opts []aha.ListFeaturesOption
+
+		opts = append(opts, aha.WithFeaturePage(page), aha.WithFeaturePerPage(100))
 
 		if plan.APIParams.Query != "" {
 			opts = append(opts, aha.WithFeatureQuery(plan.APIParams.Query))
@@ -140,16 +161,25 @@ func (e *Executor) executeFeatures(ctx context.Context, plan *planner.Plan) ([]r
 	if plan.RequiresPagination {
 		// Fetch all pages
 		page := 1
+		var totalPages int64
 		for {
-			opts := buildOpts()
+			e.reportProgress(len(records), 0, fmt.Sprintf("Fetching features page %d...", page))
+
+			opts := buildOpts(page)
 			list, err := e.client.ListFeatures(ctx, opts...)
 			if err != nil {
 				return nil, fmt.Errorf("listing features: %w", err)
 			}
 
+			if totalPages == 0 {
+				totalPages = list.Pagination.TotalPages
+			}
+
 			for _, f := range list.Features {
 				records = append(records, featureMetaToRecord(f))
 			}
+
+			e.reportProgress(len(records), int(totalPages)*100, fmt.Sprintf("Fetched page %d/%d", page, totalPages))
 
 			if list.Pagination.CurrentPage >= list.Pagination.TotalPages || list.Pagination.TotalPages == 0 {
 				break
@@ -158,7 +188,8 @@ func (e *Executor) executeFeatures(ctx context.Context, plan *planner.Plan) ([]r
 		}
 	} else {
 		// Single page fetch
-		opts := buildOpts()
+		e.reportProgress(0, 0, "Fetching features...")
+		opts := buildOpts(1)
 		list, err := e.client.ListFeatures(ctx, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("listing features: %w", err)
@@ -167,6 +198,7 @@ func (e *Executor) executeFeatures(ctx context.Context, plan *planner.Plan) ([]r
 		for _, f := range list.Features {
 			records = append(records, featureMetaToRecord(f))
 		}
+		e.reportProgress(len(records), len(records), "Features fetched")
 	}
 
 	return records, nil
@@ -230,8 +262,10 @@ func (e *Executor) executeFeaturesWithCustomFields(ctx context.Context, plan *pl
 
 // executeIdeas fetches ideas from the Aha API.
 func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]result.Record, error) {
-	buildOpts := func(_ int) []aha.ListIdeasOption {
+	buildOpts := func(page int) []aha.ListIdeasOption {
 		var opts []aha.ListIdeasOption
+
+		opts = append(opts, aha.WithIdeaPage(page), aha.WithIdeaPerPage(100))
 
 		if plan.APIParams.Query != "" {
 			opts = append(opts, aha.WithIdeaQuery(plan.APIParams.Query))
@@ -248,8 +282,6 @@ func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]resu
 		if plan.APIParams.CreatedSince != nil {
 			opts = append(opts, aha.WithIdeaCreatedSince(*plan.APIParams.CreatedSince))
 		}
-		// Note: pagination options would need to be added to ListIdeasOption
-		// For now, we'll handle pagination at the API level
 
 		return opts
 	}
@@ -258,16 +290,25 @@ func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]resu
 
 	if plan.RequiresPagination {
 		page := 1
+		var totalPages int64
 		for {
+			e.reportProgress(len(records), 0, fmt.Sprintf("Fetching ideas page %d...", page))
+
 			opts := buildOpts(page)
 			list, err := e.client.ListIdeas(ctx, opts...)
 			if err != nil {
 				return nil, fmt.Errorf("listing ideas: %w", err)
 			}
 
+			if totalPages == 0 {
+				totalPages = list.Pagination.TotalPages
+			}
+
 			for _, idea := range list.Ideas {
 				records = append(records, ideaToRecord(idea))
 			}
+
+			e.reportProgress(len(records), int(totalPages)*100, fmt.Sprintf("Fetched page %d/%d", page, totalPages))
 
 			if list.Pagination.CurrentPage >= list.Pagination.TotalPages || list.Pagination.TotalPages == 0 {
 				break
@@ -275,6 +316,7 @@ func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]resu
 			page++
 		}
 	} else {
+		e.reportProgress(0, 0, "Fetching ideas...")
 		opts := buildOpts(1)
 		list, err := e.client.ListIdeas(ctx, opts...)
 		if err != nil {
@@ -284,6 +326,7 @@ func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]resu
 		for _, idea := range list.Ideas {
 			records = append(records, ideaToRecord(idea))
 		}
+		e.reportProgress(len(records), len(records), "Ideas fetched")
 	}
 
 	return records, nil
@@ -300,16 +343,25 @@ func (e *Executor) executeReleases(ctx context.Context, plan *planner.Plan) ([]r
 
 	if plan.RequiresPagination {
 		page := 1
+		var totalPages int64
 		for {
+			e.reportProgress(len(records), 0, fmt.Sprintf("Fetching releases page %d...", page))
+
 			list, err := e.client.ListProductReleases(ctx, plan.APIParams.ProductID,
 				aha.WithPage(page), aha.WithPerPage(100))
 			if err != nil {
 				return nil, fmt.Errorf("listing releases: %w", err)
 			}
 
+			if totalPages == 0 {
+				totalPages = list.Pagination.TotalPages
+			}
+
 			for _, r := range list.Releases {
 				records = append(records, releaseToRecord(r))
 			}
+
+			e.reportProgress(len(records), int(totalPages)*100, fmt.Sprintf("Fetched page %d/%d", page, totalPages))
 
 			if list.Pagination.CurrentPage >= list.Pagination.TotalPages || list.Pagination.TotalPages == 0 {
 				break
@@ -317,6 +369,7 @@ func (e *Executor) executeReleases(ctx context.Context, plan *planner.Plan) ([]r
 			page++
 		}
 	} else {
+		e.reportProgress(0, 0, "Fetching releases...")
 		list, err := e.client.ListProductReleases(ctx, plan.APIParams.ProductID)
 		if err != nil {
 			return nil, fmt.Errorf("listing releases: %w", err)
@@ -325,6 +378,7 @@ func (e *Executor) executeReleases(ctx context.Context, plan *planner.Plan) ([]r
 		for _, r := range list.Releases {
 			records = append(records, releaseToRecord(r))
 		}
+		e.reportProgress(len(records), len(records), "Releases fetched")
 	}
 
 	return records, nil
@@ -332,8 +386,10 @@ func (e *Executor) executeReleases(ctx context.Context, plan *planner.Plan) ([]r
 
 // executeInitiatives fetches initiatives from the Aha API.
 func (e *Executor) executeInitiatives(ctx context.Context, plan *planner.Plan) ([]result.Record, error) {
-	buildOpts := func() []aha.ListInitiativesOption {
+	buildOpts := func(page int) []aha.ListInitiativesOption {
 		var opts []aha.ListInitiativesOption
+
+		opts = append(opts, aha.WithInitiativePage(page), aha.WithInitiativePerPage(100))
 
 		if plan.APIParams.Query != "" {
 			opts = append(opts, aha.WithInitiativeQuery(plan.APIParams.Query))
@@ -349,16 +405,25 @@ func (e *Executor) executeInitiatives(ctx context.Context, plan *planner.Plan) (
 
 	if plan.RequiresPagination {
 		page := 1
+		var totalPages int64
 		for {
-			opts := buildOpts()
+			e.reportProgress(len(records), 0, fmt.Sprintf("Fetching initiatives page %d...", page))
+
+			opts := buildOpts(page)
 			list, err := e.client.ListInitiatives(ctx, opts...)
 			if err != nil {
 				return nil, fmt.Errorf("listing initiatives: %w", err)
 			}
 
+			if totalPages == 0 {
+				totalPages = list.Pagination.TotalPages
+			}
+
 			for _, i := range list.Initiatives {
 				records = append(records, initiativeMetaToRecord(i))
 			}
+
+			e.reportProgress(len(records), int(totalPages)*100, fmt.Sprintf("Fetched page %d/%d", page, totalPages))
 
 			if list.Pagination.CurrentPage >= list.Pagination.TotalPages || list.Pagination.TotalPages == 0 {
 				break
@@ -366,7 +431,8 @@ func (e *Executor) executeInitiatives(ctx context.Context, plan *planner.Plan) (
 			page++
 		}
 	} else {
-		opts := buildOpts()
+		e.reportProgress(0, 0, "Fetching initiatives...")
+		opts := buildOpts(1)
 		list, err := e.client.ListInitiatives(ctx, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("listing initiatives: %w", err)
@@ -375,6 +441,7 @@ func (e *Executor) executeInitiatives(ctx context.Context, plan *planner.Plan) (
 		for _, i := range list.Initiatives {
 			records = append(records, initiativeMetaToRecord(i))
 		}
+		e.reportProgress(len(records), len(records), "Initiatives fetched")
 	}
 
 	return records, nil
@@ -479,6 +546,9 @@ func featureToRecord(f *aha.Feature) result.Record {
 	if f.Release != nil {
 		rec["release"] = f.Release.Name
 		rec["release_id"] = f.Release.ID
+		if f.Release.ReleaseDate != nil {
+			rec["release_date"] = *f.Release.ReleaseDate
+		}
 	}
 	if f.AssignedTo != nil {
 		rec["assigned_to"] = f.AssignedTo.Name()
@@ -550,7 +620,7 @@ func (e *Executor) executeProducts(ctx context.Context, plan *planner.Plan) ([]r
 	if plan.RequiresPagination {
 		page := 1
 		for {
-			list, err := e.client.ListProducts(ctx, aha.WithPage(page), aha.WithPerPage(100))
+			list, err := e.client.ListProducts(ctx, aha.WithProductsPage(page), aha.WithProductsPerPage(100))
 			if err != nil {
 				return nil, fmt.Errorf("listing products: %w", err)
 			}
