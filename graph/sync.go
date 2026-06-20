@@ -92,7 +92,7 @@ func (s *Syncer) syncProducts(ctx context.Context) (int, int, error) {
 	page := 1
 
 	for {
-		list, err := s.ahaClient.ListProducts(ctx, aha.WithPage(page), aha.WithPerPage(100))
+		list, err := s.ahaClient.ListProducts(ctx, aha.WithProductsPage(page), aha.WithProductsPerPage(100))
 		if err != nil {
 			return nodeCount, 0, fmt.Errorf("listing products: %w", err)
 		}
