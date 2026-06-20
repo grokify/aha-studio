@@ -129,6 +129,8 @@ func (e *Executor) Execute(ctx context.Context, plan *planner.Plan) (*result.Res
 }
 
 // executeFeatures fetches features from the Aha API.
+//
+//nolint:dupl // Pagination pattern is similar but type-specific API calls differ
 func (e *Executor) executeFeatures(ctx context.Context, plan *planner.Plan) ([]result.Record, error) {
 	// If custom fields are needed, use the detailed fetch mode
 	if plan.NeedsCustomFields {
@@ -261,6 +263,8 @@ func (e *Executor) executeFeaturesWithCustomFields(ctx context.Context, plan *pl
 }
 
 // executeIdeas fetches ideas from the Aha API.
+//
+//nolint:dupl // Pagination pattern is similar but type-specific API calls differ
 func (e *Executor) executeIdeas(ctx context.Context, plan *planner.Plan) ([]result.Record, error) {
 	buildOpts := func(page int) []aha.ListIdeasOption {
 		var opts []aha.ListIdeasOption
@@ -385,6 +389,8 @@ func (e *Executor) executeReleases(ctx context.Context, plan *planner.Plan) ([]r
 }
 
 // executeInitiatives fetches initiatives from the Aha API.
+//
+//nolint:dupl // Pagination pattern is similar but type-specific API calls differ
 func (e *Executor) executeInitiatives(ctx context.Context, plan *planner.Plan) ([]result.Record, error) {
 	buildOpts := func(page int) []aha.ListInitiativesOption {
 		var opts []aha.ListInitiativesOption
