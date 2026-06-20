@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -89,6 +90,7 @@ func (d *DB) createSchema() error {
 		start_date TEXT,
 		due_date TEXT,
 		release TEXT,
+		release_id TEXT,
 		tags TEXT,
 		url TEXT,
 		created_at DATETIME,
@@ -98,6 +100,7 @@ func (d *DB) createSchema() error {
 	CREATE INDEX IF NOT EXISTS idx_features_product ON features(product);
 	CREATE INDEX IF NOT EXISTS idx_features_status ON features(status);
 	CREATE INDEX IF NOT EXISTS idx_features_updated ON features(updated_at);
+	CREATE INDEX IF NOT EXISTS idx_features_release_id ON features(release_id);
 
 	-- Ideas
 	CREATE TABLE IF NOT EXISTS ideas (
@@ -372,7 +375,41 @@ func (d *DB) createSchema() error {
 	`
 
 	_, err = d.db.Exec(fts)
-	return err
+	if err != nil {
+		return err
+	}
+
+	// Run migrations for schema updates
+	return d.migrate()
+}
+
+// migrate applies schema migrations for existing databases.
+func (d *DB) migrate() error {
+	// Add release_id column to features if not exists
+	_, err := d.db.Exec(`
+		ALTER TABLE features ADD COLUMN release_id TEXT;
+	`)
+	if err != nil && !isColumnExistsError(err) {
+		return fmt.Errorf("migrating features table: %w", err)
+	}
+
+	// Add index on release_id if not exists
+	_, _ = d.db.Exec(`
+		CREATE INDEX IF NOT EXISTS idx_features_release_id ON features(release_id);
+	`)
+
+	return nil
+}
+
+// isColumnExistsError checks if the error is about a column already existing.
+func isColumnExistsError(err error) bool {
+	if err == nil {
+		return false
+	}
+	errStr := err.Error()
+	// SQLite error messages can vary by driver, check for common patterns
+	return strings.Contains(errStr, "duplicate column name") ||
+		strings.Contains(errStr, "column already exists")
 }
 
 // GetLastSync returns the last sync time for an entity/product combination.
@@ -409,8 +446,8 @@ func (d *DB) UpsertFeature(product string, data map[string]any) error {
 
 	_, err = d.db.Exec(`
 		INSERT INTO features (id, product, reference_num, name, description, status,
-			assigned_to, start_date, due_date, release, tags, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			assigned_to, start_date, due_date, release, release_id, tags, url, created_at, updated_at, data)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET
 			reference_num = excluded.reference_num,
 			name = excluded.name,
@@ -420,6 +457,7 @@ func (d *DB) UpsertFeature(product string, data map[string]any) error {
 			start_date = excluded.start_date,
 			due_date = excluded.due_date,
 			release = excluded.release,
+			release_id = excluded.release_id,
 			tags = excluded.tags,
 			url = excluded.url,
 			created_at = excluded.created_at,
@@ -428,7 +466,7 @@ func (d *DB) UpsertFeature(product string, data map[string]any) error {
 	`,
 		data["id"], product, data["reference_num"], data["name"], data["description"],
 		data["status"], data["assigned_to"], data["start_date"], data["due_date"],
-		data["release"], tagsToString(data["tags"]), data["url"],
+		data["release"], data["release_id"], tagsToString(data["tags"]), data["url"],
 		data["created_at"], data["updated_at"], string(jsonData),
 	)
 	return err
@@ -1035,4 +1073,228 @@ func nullString(s string) sql.NullString {
 		return sql.NullString{Valid: false}
 	}
 	return sql.NullString{String: s, Valid: true}
+}
+
+// GetFeaturesByReleaseID returns all features for a given release ID.
+func (d *DB) GetFeaturesByReleaseID(product, releaseID string) ([]map[string]any, error) {
+	rows, err := d.db.Query(`
+		SELECT id, reference_num, name, status, assigned_to, start_date, due_date,
+			   release, release_id, created_at, updated_at
+		FROM features
+		WHERE product = ? AND release_id = ?
+		ORDER BY reference_num
+	`, product, releaseID)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	return scanFeatureRows(rows)
+}
+
+// GetFeaturesByReleaseName returns all features for a given release name.
+func (d *DB) GetFeaturesByReleaseName(product, releaseName string) ([]map[string]any, error) {
+	rows, err := d.db.Query(`
+		SELECT id, reference_num, name, status, assigned_to, start_date, due_date,
+			   release, release_id, created_at, updated_at
+		FROM features
+		WHERE product = ? AND release = ?
+		ORDER BY reference_num
+	`, product, releaseName)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	return scanFeatureRows(rows)
+}
+
+// GetFeaturesByReleaseDate returns all features for releases matching a specific date.
+// The date should be in YYYY-MM-DD format.
+func (d *DB) GetFeaturesByReleaseDate(product, releaseDate string) ([]map[string]any, error) {
+	// Join with releases table to match by release_date
+	rows, err := d.db.Query(`
+		SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
+			   f.release, f.release_id, f.created_at, f.updated_at
+		FROM features f
+		JOIN releases r ON f.release_id = r.id
+		WHERE f.product = ? AND r.release_date = ?
+		ORDER BY f.reference_num
+	`, product, releaseDate)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	return scanFeatureRows(rows)
+}
+
+// GetFeaturesByReleaseDateRange returns all features for releases within a date range.
+// Both dates should be in YYYY-MM-DD format. Either can be empty for open-ended range.
+func (d *DB) GetFeaturesByReleaseDateRange(product, startDate, endDate string) ([]map[string]any, error) {
+	var query string
+	var args []any
+
+	if startDate != "" && endDate != "" {
+		query = `
+			SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
+				   f.release, f.release_id, f.created_at, f.updated_at
+			FROM features f
+			JOIN releases r ON f.release_id = r.id
+			WHERE f.product = ? AND r.release_date >= ? AND r.release_date <= ?
+			ORDER BY r.release_date, f.reference_num
+		`
+		args = []any{product, startDate, endDate}
+	} else if startDate != "" {
+		query = `
+			SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
+				   f.release, f.release_id, f.created_at, f.updated_at
+			FROM features f
+			JOIN releases r ON f.release_id = r.id
+			WHERE f.product = ? AND r.release_date >= ?
+			ORDER BY r.release_date, f.reference_num
+		`
+		args = []any{product, startDate}
+	} else if endDate != "" {
+		query = `
+			SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
+				   f.release, f.release_id, f.created_at, f.updated_at
+			FROM features f
+			JOIN releases r ON f.release_id = r.id
+			WHERE f.product = ? AND r.release_date <= ?
+			ORDER BY r.release_date, f.reference_num
+		`
+		args = []any{product, endDate}
+	} else {
+		// No date filter, return all features with releases
+		query = `
+			SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
+				   f.release, f.release_id, f.created_at, f.updated_at
+			FROM features f
+			WHERE f.product = ? AND f.release_id IS NOT NULL
+			ORDER BY f.reference_num
+		`
+		args = []any{product}
+	}
+
+	rows, err := d.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	return scanFeatureRows(rows)
+}
+
+// scanFeatureRows scans feature rows into a slice of maps.
+func scanFeatureRows(rows *sql.Rows) ([]map[string]any, error) {
+	var results []map[string]any
+	for rows.Next() {
+		var id, refNum, name string
+		var status, assignedTo, startDate, dueDate, release, releaseID sql.NullString
+		var createdAt, updatedAt sql.NullTime
+
+		if err := rows.Scan(&id, &refNum, &name, &status, &assignedTo, &startDate, &dueDate,
+			&release, &releaseID, &createdAt, &updatedAt); err != nil {
+			return nil, err
+		}
+
+		rec := map[string]any{
+			"id":            id,
+			"reference_num": refNum,
+			"name":          name,
+		}
+		if status.Valid {
+			rec["status"] = status.String
+		}
+		if assignedTo.Valid {
+			rec["assigned_to"] = assignedTo.String
+		}
+		if startDate.Valid {
+			rec["start_date"] = startDate.String
+		}
+		if dueDate.Valid {
+			rec["due_date"] = dueDate.String
+		}
+		if release.Valid {
+			rec["release"] = release.String
+		}
+		if releaseID.Valid {
+			rec["release_id"] = releaseID.String
+		}
+		if createdAt.Valid {
+			rec["created_at"] = createdAt.Time
+		}
+		if updatedAt.Valid {
+			rec["updated_at"] = updatedAt.Time
+		}
+
+		results = append(results, rec)
+	}
+
+	return results, rows.Err()
+}
+
+// GetReleaseByDate returns a release matching a specific date.
+func (d *DB) GetReleaseByDate(product, releaseDate string) (*map[string]any, error) {
+	return d.getReleaseByField(product, "release_date", releaseDate)
+}
+
+// GetReleaseByName returns a release matching a specific name.
+func (d *DB) GetReleaseByName(product, releaseName string) (*map[string]any, error) {
+	return d.getReleaseByField(product, "name", releaseName)
+}
+
+// getReleaseByField is a helper that returns a release matching a field value.
+// The field parameter must be a known column name (name or release_date).
+func (d *DB) getReleaseByField(product, field, value string) (*map[string]any, error) {
+	// Validate field to prevent SQL injection (only allow known columns)
+	switch field {
+	case "name", "release_date":
+		// valid
+	default:
+		return nil, fmt.Errorf("invalid field: %s", field)
+	}
+
+	var id, refNum, name string
+	var startDate, relDate sql.NullString
+	var released, parkingLot int
+	var createdAt sql.NullTime
+
+	//nolint:gosec // G201: field is validated above to known column names
+	query := fmt.Sprintf(`
+		SELECT id, reference_num, name, start_date, release_date, released, parking_lot, created_at
+		FROM releases
+		WHERE product = ? AND %s = ?
+		LIMIT 1
+	`, field)
+
+	err := d.db.QueryRow(query, product, value).Scan(
+		&id, &refNum, &name, &startDate, &relDate, &released, &parkingLot, &createdAt)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	rec := map[string]any{
+		"id":            id,
+		"reference_num": refNum,
+		"name":          name,
+		"released":      released == 1,
+		"parking_lot":   parkingLot == 1,
+	}
+	if startDate.Valid {
+		rec["start_date"] = startDate.String
+	}
+	if relDate.Valid {
+		rec["release_date"] = relDate.String
+	}
+	if createdAt.Valid {
+		rec["created_at"] = createdAt.Time
+	}
+
+	return &rec, nil
 }

@@ -5,19 +5,85 @@ import (
 	"fmt"
 	"time"
 
+	genql "github.com/Khan/genqlient/graphql"
 	aha "github.com/grokify/aha-go"
+	"github.com/grokify/aha-go/graphql"
+	"github.com/grokify/aha-go/graphql/generated"
 	"github.com/grokify/aha-studio/result"
 )
 
+// ProgressFunc is called during sync to report progress.
+// current is the current record count, total is the estimated total (0 if unknown),
+// and message describes the current operation.
+type ProgressFunc func(current, total int, message string)
+
 // Syncer synchronizes Aha data to a local SQLite database.
 type Syncer struct {
-	db     *DB
-	client *aha.Client
+	db         *DB
+	client     *aha.Client
+	gqlClient  genql.Client
+	useGraphQL bool
+	progressFn ProgressFunc
 }
 
 // NewSyncer creates a new Syncer with the given database and Aha client.
 func NewSyncer(db *DB, client *aha.Client) *Syncer {
 	return &Syncer{db: db, client: client}
+}
+
+// NewSyncerWithGraphQL creates a new Syncer with GraphQL support for enhanced feature sync.
+// The subdomain and apiKey are used to create a GraphQL client for fetching features with release info.
+func NewSyncerWithGraphQL(db *DB, client *aha.Client, subdomain, apiKey string) *Syncer {
+	return &Syncer{
+		db:         db,
+		client:     client,
+		gqlClient:  graphql.NewGenqlientClient(subdomain, apiKey),
+		useGraphQL: true,
+	}
+}
+
+// WithProgress sets a progress callback for the syncer.
+func (s *Syncer) WithProgress(fn ProgressFunc) *Syncer {
+	s.progressFn = fn
+	return s
+}
+
+// resolveProjectID resolves a reference prefix (like "PROJ") to an internal project ID.
+// If the input is already an internal ID, it's returned as-is.
+func (s *Syncer) resolveProjectID(ctx context.Context, refPrefix string) (string, error) {
+	if s.gqlClient == nil {
+		return refPrefix, nil // Can't resolve without GraphQL client
+	}
+
+	// Try to find the project by listing all projects and matching reference prefix
+	page := 1
+	perPage := 100
+	for {
+		resp, err := generated.ListProjects(ctx, s.gqlClient, &page, &perPage, nil, nil)
+		if err != nil {
+			return "", fmt.Errorf("listing projects: %w", err)
+		}
+
+		for _, p := range resp.Projects.Nodes {
+			if p.ReferencePrefix == refPrefix {
+				return p.Id, nil
+			}
+		}
+
+		if resp.Projects.IsLastPage || resp.Projects.CurrentPage >= resp.Projects.TotalPages {
+			break
+		}
+		page++
+	}
+
+	return "", fmt.Errorf("project with reference prefix %q not found", refPrefix)
+}
+
+// reportProgress calls the progress callback if set.
+func (s *Syncer) reportProgress(current, total int, message string) {
+	if s.progressFn != nil {
+		s.progressFn(current, total, message)
+	}
 }
 
 // SyncOptions configures a sync operation.
@@ -113,9 +179,19 @@ func (s *Syncer) syncEntity(ctx context.Context, entity string, opts SyncOptions
 }
 
 // syncFeatures syncs features from the API.
+// If GraphQL is enabled, it uses the GraphQL API to fetch features with release info.
+func (s *Syncer) syncFeatures(ctx context.Context, product string, since time.Time) (int, error) {
+	// Use GraphQL if available for richer feature data including release info
+	if s.useGraphQL && s.gqlClient != nil {
+		return s.syncFeaturesGraphQL(ctx, product)
+	}
+	return s.syncFeaturesREST(ctx, product, since)
+}
+
+// syncFeaturesREST syncs features using the REST API (original implementation).
 //
 //nolint:dupl // Pagination pattern is similar but type-specific API calls differ
-func (s *Syncer) syncFeatures(ctx context.Context, product string, since time.Time) (int, error) {
+func (s *Syncer) syncFeaturesREST(ctx context.Context, product string, since time.Time) (int, error) {
 	var count int
 	page := 1
 
@@ -140,6 +216,61 @@ func (s *Syncer) syncFeatures(ctx context.Context, product string, since time.Ti
 		}
 
 		if list.Pagination.CurrentPage >= list.Pagination.TotalPages || list.Pagination.TotalPages == 0 {
+			break
+		}
+		page++
+	}
+
+	return count, nil
+}
+
+// syncFeaturesGraphQL syncs features using the GraphQL API to capture release info.
+func (s *Syncer) syncFeaturesGraphQL(ctx context.Context, product string) (int, error) {
+	// Resolve reference prefix to internal project ID
+	s.reportProgress(0, 0, "Resolving project ID...")
+	projectID, err := s.resolveProjectID(ctx, product)
+	if err != nil {
+		return 0, fmt.Errorf("resolving project ID: %w", err)
+	}
+
+	var count int
+	page := 1
+	perPage := 100
+	totalPages := 0
+
+	for {
+		s.reportProgress(count, 0, fmt.Sprintf("Fetching features page %d...", page))
+
+		resp, err := generated.ListFeatures(ctx, s.gqlClient, projectID, &page, &perPage, nil, nil)
+		if err != nil {
+			return count, fmt.Errorf("listing features via GraphQL: %w", err)
+		}
+
+		features := resp.Features
+		if totalPages == 0 {
+			totalPages = features.TotalPages
+		}
+
+		for _, f := range features.Nodes {
+			data := graphqlFeatureToMap(f)
+			if err := s.db.UpsertFeature(product, data); err != nil {
+				return count, fmt.Errorf("upserting feature: %w", err)
+			}
+
+			// Create feature->release relationship if release exists
+			releaseID := f.Release.Id
+			if releaseID != "" {
+				if err := s.db.UpsertRelationship("feature", f.Id, "BELONGS_TO_RELEASE", "release", releaseID, product); err != nil {
+					return count, fmt.Errorf("upserting feature-release relationship: %w", err)
+				}
+			}
+
+			count++
+		}
+
+		s.reportProgress(count, features.TotalCount, fmt.Sprintf("Synced page %d/%d (%d features)", page, totalPages, count))
+
+		if features.IsLastPage || features.CurrentPage >= features.TotalPages {
 			break
 		}
 		page++
@@ -354,7 +485,7 @@ func (s *Syncer) syncProducts(ctx context.Context) (int, error) {
 	page := 1
 
 	for {
-		list, err := s.client.ListProducts(ctx, aha.WithPage(page), aha.WithPerPage(100))
+		list, err := s.client.ListProducts(ctx, aha.WithProductsPage(page), aha.WithProductsPerPage(100))
 		if err != nil {
 			return count, fmt.Errorf("listing products: %w", err)
 		}
@@ -565,4 +696,42 @@ func requirementMetaToMap(r aha.RequirementMeta, featureID string) map[string]an
 		"resource":      r.Resource,
 		"created_at":    r.CreatedAt,
 	}
+}
+
+// graphqlFeatureToMap converts a GraphQL feature response to a map for database storage.
+// This includes release information that is not available in the REST API FeatureMeta.
+func graphqlFeatureToMap(f generated.ListFeaturesFeaturesFeaturePageNodesFeature) map[string]any {
+	rec := result.Record{
+		"id":            f.Id,
+		"reference_num": f.ReferenceNum,
+		"name":          f.Name,
+		"position":      f.Position,
+		"tag_list":      f.TagList,
+		"workspace":     f.Project.Name,
+		"status":        f.WorkflowStatus.Name,
+		"created_at":    f.CreatedAt,
+		"updated_at":    f.UpdatedAt,
+	}
+
+	// Add optional fields
+	if f.DueDate != nil {
+		rec["due_date"] = *f.DueDate
+	}
+	if f.StartDate != nil {
+		rec["start_date"] = *f.StartDate
+	}
+
+	// Add assigned user
+	if f.AssignedToUser != nil {
+		rec["assigned_to"] = f.AssignedToUser.Name
+	}
+
+	// Add release info - this is the key enhancement
+	release := f.Release
+	if release.Id != "" {
+		rec["release_id"] = release.Id
+		rec["release"] = release.Name
+	}
+
+	return rec
 }
