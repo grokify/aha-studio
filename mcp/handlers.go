@@ -532,14 +532,49 @@ func releaseToMap(r *aha.Release) map[string]any {
 }
 
 func initiativeToMap(i *aha.Initiative) map[string]any {
-	return map[string]any{
-		"id":            i.ID,
-		"reference_num": i.ReferenceNum,
-		"name":          i.Name,
-		"description":   i.Description,
-		"url":           i.URL,
-		"created_at":    i.CreatedAt,
+	m := map[string]any{
+		"id":              i.ID,
+		"reference_num":   i.ReferenceNum,
+		"name":            i.Name,
+		"description":     i.Description,
+		"color":           i.Color,
+		"position":        i.Position,
+		"value":           i.Value,
+		"effort":          i.Effort,
+		"presented":       i.Presented,
+		"progress":        i.Progress,
+		"progress_source": i.ProgressSource,
+		"url":             i.URL,
+		"created_at":      i.CreatedAt,
 	}
+	if i.StartDate != nil {
+		m["start_date"] = i.StartDate.Format("2006-01-02")
+	}
+	if i.EndDate != nil {
+		m["end_date"] = i.EndDate.Format("2006-01-02")
+	}
+	if i.UpdatedAt != nil {
+		m["updated_at"] = *i.UpdatedAt
+	}
+	if i.WorkflowStatus != nil {
+		m["workflow_status"] = map[string]any{
+			"id":   i.WorkflowStatus.ID,
+			"name": i.WorkflowStatus.Name,
+		}
+	}
+	if len(i.CustomFields) > 0 {
+		fields := make([]map[string]any, len(i.CustomFields))
+		for idx, f := range i.CustomFields {
+			fields[idx] = map[string]any{
+				"key":   f.Key,
+				"name":  f.Name,
+				"value": f.Value,
+				"type":  f.Type,
+			}
+		}
+		m["custom_fields"] = fields
+	}
+	return m
 }
 
 // Browser automation handlers
