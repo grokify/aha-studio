@@ -1122,6 +1122,444 @@ func (h *ToolHandlers) AddIdeaComment(ctx context.Context, params map[string]any
 	}, nil
 }
 
+// ListCustomFieldDefinitions lists all custom field definitions, optionally filtered by product.
+func (h *ToolHandlers) ListCustomFieldDefinitions(ctx context.Context, params map[string]any) (any, error) {
+	productID, _ := params["product_id"].(string)
+	entityType, _ := params["entity_type"].(string)
+
+	var defs []aha.CustomFieldDefinition
+	var err error
+
+	if productID != "" {
+		defs, err = h.client.ListProductCustomFieldDefinitions(ctx, productID)
+	} else {
+		defs, err = h.client.ListCustomFieldDefinitions(ctx)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("listing custom field definitions: %w", err)
+	}
+
+	// Filter by entity type if specified
+	if entityType != "" {
+		var filtered []aha.CustomFieldDefinition
+		for _, d := range defs {
+			if d.CustomFieldableType == entityType {
+				filtered = append(filtered, d)
+			}
+		}
+		defs = filtered
+	}
+
+	// Group by entity type for better readability
+	byType := make(map[string][]map[string]any)
+	for _, d := range defs {
+		field := map[string]any{
+			"id":   d.ID,
+			"name": d.Name,
+			"key":  d.Key,
+			"type": d.Type,
+		}
+		if d.AllowsOtherOption {
+			field["allows_other"] = true
+		}
+		byType[d.CustomFieldableType] = append(byType[d.CustomFieldableType], field)
+	}
+
+	return map[string]any{
+		"count":            len(defs),
+		"fields_by_entity": byType,
+		"message":          fmt.Sprintf("Found %d custom field definitions", len(defs)),
+	}, nil
+}
+
+// ListCustomFieldOptions lists options for a select custom field.
+func (h *ToolHandlers) ListCustomFieldOptions(ctx context.Context, params map[string]any) (any, error) {
+	fieldID, ok := params["field_id"].(string)
+	if !ok || fieldID == "" {
+		return nil, fmt.Errorf("field_id parameter is required")
+	}
+
+	opts, err := h.client.ListCustomFieldOptions(ctx, fieldID)
+	if err != nil {
+		return nil, fmt.Errorf("listing custom field options: %w", err)
+	}
+
+	var options []map[string]any
+	for _, o := range opts {
+		opt := map[string]any{
+			"id":    o.ID,
+			"value": o.Value,
+		}
+		if o.Position > 0 {
+			opt["position"] = o.Position
+		}
+		if o.Color != "" {
+			opt["color"] = o.Color
+		}
+		options = append(options, opt)
+	}
+
+	return map[string]any{
+		"count":   len(options),
+		"options": options,
+		"message": fmt.Sprintf("Found %d options for field %s", len(options), fieldID),
+	}, nil
+}
+
+// =============================================================================
+// List Tools
+// =============================================================================
+
+// ListFeatures lists features with optional filtering.
+func (h *ToolHandlers) ListFeatures(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	var opts []aha.ListFeaturesOption
+
+	if q, ok := params["q"].(string); ok && q != "" {
+		opts = append(opts, aha.WithFeatureQuery(q))
+	}
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithFeaturePage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithFeaturePerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListFeatures(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing features: %w", err)
+	}
+
+	features := make([]map[string]any, len(list.Features))
+	for i, f := range list.Features {
+		features[i] = map[string]any{
+			"id":            f.ID,
+			"reference_num": f.ReferenceNum,
+			"name":          f.Name,
+			"url":           f.URL,
+		}
+	}
+
+	return map[string]any{
+		"features":   features,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListReleaseFeatures lists features for a specific release.
+func (h *ToolHandlers) ListReleaseFeatures(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	releaseID, ok := params["release_id"].(string)
+	if !ok || releaseID == "" {
+		return nil, fmt.Errorf("release_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListReleaseFeatures(ctx, releaseID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing release features: %w", err)
+	}
+
+	features := make([]map[string]any, len(list.Features))
+	for i, f := range list.Features {
+		features[i] = map[string]any{
+			"id":            f.ID,
+			"reference_num": f.ReferenceNum,
+			"name":          f.Name,
+			"url":           f.URL,
+		}
+	}
+
+	return map[string]any{
+		"features":   features,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListEpics lists epics with optional filtering.
+func (h *ToolHandlers) ListEpics(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	var opts []aha.ListEpicsOption
+
+	if q, ok := params["q"].(string); ok && q != "" {
+		opts = append(opts, aha.WithEpicQuery(q))
+	}
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithEpicPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithEpicPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListEpics(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing epics: %w", err)
+	}
+
+	epics := make([]map[string]any, len(list.Epics))
+	for i, e := range list.Epics {
+		epics[i] = map[string]any{
+			"id":            e.ID,
+			"reference_num": e.ReferenceNum,
+			"name":          e.Name,
+			"url":           e.URL,
+		}
+	}
+
+	return map[string]any{
+		"epics":      epics,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListProductEpics lists epics for a specific product.
+func (h *ToolHandlers) ListProductEpics(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListProductEpics(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing product epics: %w", err)
+	}
+
+	epics := make([]map[string]any, len(list.Epics))
+	for i, e := range list.Epics {
+		epics[i] = map[string]any{
+			"id":            e.ID,
+			"reference_num": e.ReferenceNum,
+			"name":          e.Name,
+			"url":           e.URL,
+		}
+	}
+
+	return map[string]any{
+		"epics":      epics,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListGoals lists goals with optional filtering.
+func (h *ToolHandlers) ListGoals(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	var opts []aha.ListGoalsOption
+
+	if q, ok := params["q"].(string); ok && q != "" {
+		opts = append(opts, aha.WithGoalQuery(q))
+	}
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithGoalPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithGoalPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListGoals(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing goals: %w", err)
+	}
+
+	goals := make([]map[string]any, len(list.Goals))
+	for i, g := range list.Goals {
+		goals[i] = map[string]any{
+			"id":            g.ID,
+			"reference_num": g.ReferenceNum,
+			"name":          g.Name,
+			"url":           g.URL,
+		}
+	}
+
+	return map[string]any{
+		"goals":      goals,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListProductGoals lists goals for a specific product.
+func (h *ToolHandlers) ListProductGoals(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListProductGoals(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing product goals: %w", err)
+	}
+
+	goals := make([]map[string]any, len(list.Goals))
+	for i, g := range list.Goals {
+		goals[i] = map[string]any{
+			"id":            g.ID,
+			"reference_num": g.ReferenceNum,
+			"name":          g.Name,
+			"url":           g.URL,
+		}
+	}
+
+	return map[string]any{
+		"goals":      goals,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListInitiatives lists initiatives with optional filtering.
+func (h *ToolHandlers) ListInitiatives(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	var opts []aha.ListInitiativesOption
+
+	if q, ok := params["q"].(string); ok && q != "" {
+		opts = append(opts, aha.WithInitiativeQuery(q))
+	}
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithInitiativePage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithInitiativePerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListInitiatives(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing initiatives: %w", err)
+	}
+
+	initiatives := make([]map[string]any, len(list.Initiatives))
+	for i, init := range list.Initiatives {
+		initiatives[i] = map[string]any{
+			"id":            init.ID,
+			"reference_num": init.ReferenceNum,
+			"name":          init.Name,
+			"url":           init.URL,
+		}
+	}
+
+	return map[string]any{
+		"initiatives": initiatives,
+		"pagination":  paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListProductInitiatives lists initiatives for a specific product.
+func (h *ToolHandlers) ListProductInitiatives(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListProductInitiatives(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing product initiatives: %w", err)
+	}
+
+	initiatives := make([]map[string]any, len(list.Initiatives))
+	for i, init := range list.Initiatives {
+		initiatives[i] = map[string]any{
+			"id":            init.ID,
+			"reference_num": init.ReferenceNum,
+			"name":          init.Name,
+			"url":           init.URL,
+		}
+	}
+
+	return map[string]any{
+		"initiatives": initiatives,
+		"pagination":  paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListFeatureRequirements lists requirements for a specific feature.
+func (h *ToolHandlers) ListFeatureRequirements(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across list handlers
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListFeatureRequirements(ctx, featureID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing feature requirements: %w", err)
+	}
+
+	requirements := make([]map[string]any, len(list.Requirements))
+	for i, r := range list.Requirements {
+		requirements[i] = map[string]any{
+			"id":            r.ID,
+			"reference_num": r.ReferenceNum,
+			"name":          r.Name,
+			"url":           r.URL,
+		}
+	}
+
+	return map[string]any{
+		"requirements": requirements,
+		"pagination":   paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListUsers lists workspace users.
+func (h *ToolHandlers) ListUsers(ctx context.Context, params map[string]any) (any, error) {
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListUsers(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing users: %w", err)
+	}
+
+	users := make([]map[string]any, len(list.Users))
+	for i, u := range list.Users {
+		users[i] = map[string]any{
+			"id":    u.ID,
+			"name":  u.Name,
+			"email": u.Email,
+		}
+	}
+
+	return map[string]any{
+		"users":      users,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
 // =============================================================================
 // User Tools
 // =============================================================================
@@ -1137,6 +1575,73 @@ func (h *ToolHandlers) GetCurrentUser(ctx context.Context, params map[string]any
 		"id":    user.ID,
 		"name":  user.Name,
 		"email": user.Email,
+	}, nil
+}
+
+// =============================================================================
+// Strategic Model Tools
+// =============================================================================
+
+// ListStrategicModels lists strategic models.
+func (h *ToolHandlers) ListStrategicModels(ctx context.Context, params map[string]any) (any, error) {
+	var opts []aha.ListStrategicModelsOption
+
+	if kind, ok := params["kind"].(string); ok && kind != "" {
+		opts = append(opts, aha.WithStrategicModelKind(kind))
+	}
+
+	list, err := h.client.ListStrategicModels(ctx, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing strategic models: %w", err)
+	}
+
+	models := make([]map[string]any, len(list.StrategicModels))
+	for i, m := range list.StrategicModels {
+		models[i] = map[string]any{
+			"id":   m.ID,
+			"name": m.Name,
+			"kind": m.Kind,
+			"url":  m.URL,
+		}
+	}
+
+	return map[string]any{
+		"strategic_models": models,
+		"pagination":       paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListProductStrategicModels lists strategic models for a product.
+func (h *ToolHandlers) ListProductStrategicModels(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	var opts []aha.ListStrategicModelsOption
+
+	if kind, ok := params["kind"].(string); ok && kind != "" {
+		opts = append(opts, aha.WithStrategicModelKind(kind))
+	}
+
+	list, err := h.client.ListProductStrategicModels(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing product strategic models: %w", err)
+	}
+
+	models := make([]map[string]any, len(list.StrategicModels))
+	for i, m := range list.StrategicModels {
+		models[i] = map[string]any{
+			"id":   m.ID,
+			"name": m.Name,
+			"kind": m.Kind,
+			"url":  m.URL,
+		}
+	}
+
+	return map[string]any{
+		"strategic_models": models,
+		"pagination":       paginationToMap(list.Pagination),
 	}, nil
 }
 
@@ -1169,4 +1674,17 @@ func (h *ToolHandlers) GetStrategicModel(ctx context.Context, params map[string]
 		"url":        model.URL,
 		"components": components,
 	}, nil
+}
+
+// =============================================================================
+// Helper Functions
+// =============================================================================
+
+// paginationToMap converts pagination to a map.
+func paginationToMap(p aha.Pagination) map[string]any {
+	return map[string]any{
+		"total_records": p.TotalRecords,
+		"total_pages":   p.TotalPages,
+		"current_page":  p.CurrentPage,
+	}
 }

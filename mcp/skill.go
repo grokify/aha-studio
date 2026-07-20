@@ -421,6 +421,34 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			},
 			s.handlers.AddIdeaComment),
 
+		// List custom field definitions
+		skill.NewTool("list_custom_fields", "List custom field definitions for a product or all products",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID or reference prefix to filter by (lists all if not specified)",
+				},
+				"entity_type": {
+					Type:        "string",
+					Required:    false,
+					Description: "Filter by entity type (Feature, Initiative, Epic, Idea, etc.)",
+					Enum:        []any{"Feature", "Initiative", "Epic", "Idea", "Goal", "Release", "Requirement"},
+				},
+			},
+			s.handlers.ListCustomFieldDefinitions),
+
+		// List custom field options
+		skill.NewTool("list_custom_field_options", "List options for a select/choice custom field",
+			map[string]skill.Parameter{
+				"field_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Custom field definition ID",
+				},
+			},
+			s.handlers.ListCustomFieldOptions),
+
 		// Describe AQL syntax
 		skill.NewTool("describe_aql", "Get AQL syntax help and examples",
 			map[string]skill.Parameter{
@@ -558,12 +586,250 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.GraphReleaseDeps),
 
 		// =============================================================================
+		// List Tools
+		// =============================================================================
+
+		skill.NewTool("list_features", "List features with optional filtering",
+			map[string]skill.Parameter{
+				"q": {
+					Type:        "string",
+					Required:    false,
+					Description: "Search query to filter features",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListFeatures),
+
+		skill.NewTool("list_release_features", "List features for a specific release",
+			map[string]skill.Parameter{
+				"release_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Release ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListReleaseFeatures),
+
+		skill.NewTool("list_epics", "List epics with optional filtering",
+			map[string]skill.Parameter{
+				"q": {
+					Type:        "string",
+					Required:    false,
+					Description: "Search query to filter epics",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListEpics),
+
+		skill.NewTool("list_product_epics", "List epics for a specific product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListProductEpics),
+
+		skill.NewTool("list_goals", "List goals with optional filtering",
+			map[string]skill.Parameter{
+				"q": {
+					Type:        "string",
+					Required:    false,
+					Description: "Search query to filter goals",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListGoals),
+
+		skill.NewTool("list_product_goals", "List goals for a specific product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListProductGoals),
+
+		skill.NewTool("list_initiatives", "List initiatives with optional filtering",
+			map[string]skill.Parameter{
+				"q": {
+					Type:        "string",
+					Required:    false,
+					Description: "Search query to filter initiatives",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListInitiatives),
+
+		skill.NewTool("list_product_initiatives", "List initiatives for a specific product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListProductInitiatives),
+
+		skill.NewTool("list_feature_requirements", "List requirements for a specific feature",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListFeatureRequirements),
+
+		skill.NewTool("list_users", "List workspace users",
+			map[string]skill.Parameter{
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListUsers),
+
+		// =============================================================================
 		// User Tools
 		// =============================================================================
 
 		skill.NewTool("get_current_user", "Get the authenticated user",
 			map[string]skill.Parameter{},
 			s.handlers.GetCurrentUser),
+
+		// =============================================================================
+		// Strategic Model Tools
+		// =============================================================================
+
+		skill.NewTool("list_strategic_models", "List strategic models",
+			map[string]skill.Parameter{
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListStrategicModels),
+
+		skill.NewTool("list_product_strategic_models", "List strategic models for a product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListProductStrategicModels),
 
 		skill.NewTool("get_strategic_model", "Get a strategic model by ID",
 			map[string]skill.Parameter{
