@@ -1221,6 +1221,85 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.ListUsers),
 
 		// =============================================================================
+		// Comment Tools
+		// =============================================================================
+
+		skill.NewTool("update_comment", "Update an existing comment",
+			map[string]skill.Parameter{
+				"comment_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Comment ID",
+				},
+				"body": {
+					Type:        "string",
+					Required:    true,
+					Description: "New comment body (HTML supported)",
+				},
+			},
+			s.handlers.UpdateComment),
+
+		skill.NewTool("list_feature_comments", "List comments for a feature",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListFeatureComments),
+
+		skill.NewTool("list_idea_comments", "List comments for an idea",
+			map[string]skill.Parameter{
+				"idea_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Idea ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListIdeaComments),
+
+		skill.NewTool("list_epic_comments", "List comments for an epic",
+			map[string]skill.Parameter{
+				"epic_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Epic ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (max 200)",
+				},
+			},
+			s.handlers.ListEpicComments),
+
+		// =============================================================================
 		// User Tools
 		// =============================================================================
 

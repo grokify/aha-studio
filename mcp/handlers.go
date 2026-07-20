@@ -2173,6 +2173,159 @@ func (h *ToolHandlers) ListUsers(ctx context.Context, params map[string]any) (an
 }
 
 // =============================================================================
+// Comment Tools
+// =============================================================================
+
+// UpdateComment updates an existing comment.
+func (h *ToolHandlers) UpdateComment(ctx context.Context, params map[string]any) (any, error) {
+	commentID, ok := params["comment_id"].(string)
+	if !ok || commentID == "" {
+		return nil, fmt.Errorf("comment_id parameter is required")
+	}
+
+	var opts []aha.UpdateCommentOption
+
+	if body, ok := params["body"].(string); ok && body != "" {
+		opts = append(opts, aha.WithUpdateCommentBody(body))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("body parameter is required")
+	}
+
+	comment, err := h.client.UpdateComment(ctx, commentID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating comment: %w", err)
+	}
+
+	return map[string]any{
+		"id":      comment.ID,
+		"body":    comment.Body,
+		"message": "Comment updated successfully",
+	}, nil
+}
+
+// ListFeatureComments lists comments for a feature.
+func (h *ToolHandlers) ListFeatureComments(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across comment list handlers
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListFeatureComments(ctx, featureID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing feature comments: %w", err)
+	}
+
+	comments := make([]map[string]any, len(list.Comments))
+	for i, c := range list.Comments {
+		var userName string
+		if c.User != nil {
+			userName = c.User.Name()
+		}
+		comments[i] = map[string]any{
+			"id":         c.ID,
+			"body":       c.Body,
+			"user":       userName,
+			"created_at": c.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return map[string]any{
+		"comments":   comments,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListIdeaComments lists comments for an idea.
+func (h *ToolHandlers) ListIdeaComments(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across comment list handlers
+	ideaID, ok := params["idea_id"].(string)
+	if !ok || ideaID == "" {
+		return nil, fmt.Errorf("idea_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListIdeaComments(ctx, ideaID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing idea comments: %w", err)
+	}
+
+	comments := make([]map[string]any, len(list.Comments))
+	for i, c := range list.Comments {
+		var userName string
+		if c.User != nil {
+			userName = c.User.Name()
+		}
+		comments[i] = map[string]any{
+			"id":         c.ID,
+			"body":       c.Body,
+			"user":       userName,
+			"created_at": c.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return map[string]any{
+		"comments":   comments,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// ListEpicComments lists comments for an epic.
+func (h *ToolHandlers) ListEpicComments(ctx context.Context, params map[string]any) (any, error) { //nolint:dupl // Similar pagination pattern across comment list handlers
+	epicID, ok := params["epic_id"].(string)
+	if !ok || epicID == "" {
+		return nil, fmt.Errorf("epic_id parameter is required")
+	}
+
+	var opts []aha.ListOption
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithPage(int(page)))
+	}
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListEpicComments(ctx, epicID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing epic comments: %w", err)
+	}
+
+	comments := make([]map[string]any, len(list.Comments))
+	for i, c := range list.Comments {
+		var userName string
+		if c.User != nil {
+			userName = c.User.Name()
+		}
+		comments[i] = map[string]any{
+			"id":         c.ID,
+			"body":       c.Body,
+			"user":       userName,
+			"created_at": c.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return map[string]any{
+		"comments":   comments,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// =============================================================================
 // User Tools
 // =============================================================================
 
