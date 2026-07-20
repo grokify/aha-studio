@@ -61,8 +61,8 @@ func TestAhaSkill_Tools(t *testing.T) {
 	s := NewAhaSkill(cfg)
 	tools := s.Tools()
 
-	// Verify we have the expected number of tools (34 as per documentation)
-	expectedCount := 34
+	// Verify we have the expected number of tools (71 as per documentation)
+	expectedCount := 71
 	if len(tools) != expectedCount {
 		t.Errorf("Tools() returned %d tools, want %d", len(tools), expectedCount)
 	}
@@ -85,22 +85,67 @@ func TestAhaSkill_ToolNames(t *testing.T) {
 
 	// Verify essential tools exist
 	essentialTools := []string{
+		// Query tools
 		"query",
+		"describe_aql",
+		"graph_query",
+		"graph_sync",
+		// Get tools
 		"get_feature",
 		"get_idea",
 		"get_release",
 		"get_initiative",
 		"get_epic",
 		"get_goal",
+		"get_current_user",
+		"get_strategic_model",
+		// List tools
 		"list_ideas",
 		"list_products",
+		"list_features",
+		"list_release_features",
+		"list_epics",
+		"list_product_epics",
+		"list_goals",
+		"list_product_goals",
+		"list_initiatives",
+		"list_product_initiatives",
+		"list_feature_requirements",
+		"list_users",
+		"list_strategic_models",
+		"list_product_strategic_models",
+		"list_custom_fields",
+		// Create tools
 		"create_feature",
+		"create_epic",
+		"create_goal",
+		"create_initiative",
+		"create_requirement",
+		"create_product",
+		"create_strategic_model",
+		// Update tools
+		"update_initiative",
+		"update_epic",
+		"update_goal",
+		"update_feature",
+		"update_requirement",
+		"update_release",
+		"update_idea",
+		"update_product",
+		"update_strategic_model",
+		// Status and assignment tools
 		"change_feature_status",
 		"assign_feature_release",
+		// Comment tools
 		"add_feature_comment",
-		"describe_aql",
-		"graph_query",
-		"graph_sync",
+		"add_idea_comment",
+		"update_comment",
+		"list_feature_comments",
+		"list_idea_comments",
+		"list_epic_comments",
+		// Delete tools
+		"delete_requirement",
+		"delete_comment",
 	}
 
 	for _, name := range essentialTools {
