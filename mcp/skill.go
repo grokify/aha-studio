@@ -1221,6 +1221,30 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.ListUsers),
 
 		// =============================================================================
+		// Delete Tools
+		// =============================================================================
+
+		skill.NewTool("delete_requirement", "Delete a requirement",
+			map[string]skill.Parameter{
+				"requirement_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Requirement ID or reference number",
+				},
+			},
+			s.handlers.DeleteRequirement),
+
+		skill.NewTool("delete_comment", "Delete a comment",
+			map[string]skill.Parameter{
+				"comment_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Comment ID",
+				},
+			},
+			s.handlers.DeleteComment),
+
+		// =============================================================================
 		// Comment Tools
 		// =============================================================================
 

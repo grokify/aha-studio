@@ -2173,6 +2173,44 @@ func (h *ToolHandlers) ListUsers(ctx context.Context, params map[string]any) (an
 }
 
 // =============================================================================
+// Delete Tools
+// =============================================================================
+
+// DeleteRequirement deletes a requirement.
+func (h *ToolHandlers) DeleteRequirement(ctx context.Context, params map[string]any) (any, error) {
+	requirementID, ok := params["requirement_id"].(string)
+	if !ok || requirementID == "" {
+		return nil, fmt.Errorf("requirement_id parameter is required")
+	}
+
+	err := h.client.DeleteRequirement(ctx, requirementID)
+	if err != nil {
+		return nil, fmt.Errorf("deleting requirement: %w", err)
+	}
+
+	return map[string]any{
+		"message": fmt.Sprintf("Requirement %s deleted successfully", requirementID),
+	}, nil
+}
+
+// DeleteComment deletes a comment.
+func (h *ToolHandlers) DeleteComment(ctx context.Context, params map[string]any) (any, error) {
+	commentID, ok := params["comment_id"].(string)
+	if !ok || commentID == "" {
+		return nil, fmt.Errorf("comment_id parameter is required")
+	}
+
+	err := h.client.DeleteComment(ctx, commentID)
+	if err != nil {
+		return nil, fmt.Errorf("deleting comment: %w", err)
+	}
+
+	return map[string]any{
+		"message": fmt.Sprintf("Comment %s deleted successfully", commentID),
+	}, nil
+}
+
+// =============================================================================
 // Comment Tools
 // =============================================================================
 
