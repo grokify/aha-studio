@@ -7,6 +7,37 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.10.0",
+      "date": "2026-07-20",
+      "commit": "f7df5e4",
+      "highlights": [
+        { "description": "37 new MCP tools delivering near-complete CRUD coverage for epics, goals, initiatives, requirements, products, strategic models, and comments" },
+        { "description": "list_ideas now returns votes, categories, and score by default (aha-go v0.7.0)" },
+        { "description": "get_initiative exposes color, position, value, effort, progress, dates, workflow_status, and custom_fields" }
+      ],
+      "added": [
+        { "description": "fields override parameter on list_ideas to customize the optional idea fields requested", "commit": "4df5dc6" },
+        { "description": "get_current_user and get_strategic_model tools", "commit": "69ee7bf" },
+        { "description": "list_features, list_release_features, list_epics, list_product_epics, list_goals, list_product_goals, list_initiatives, list_product_initiatives, list_feature_requirements, list_users, list_custom_fields, list_custom_field_options tools", "commit": "6fb64d9" },
+        { "description": "create_epic, create_goal, create_initiative, create_requirement, create_product, create_strategic_model tools", "commit": "2472828" },
+        { "description": "update_initiative, update_epic, update_goal, update_feature, update_requirement, update_release, update_idea, update_product, update_strategic_model tools", "commit": "7531ba1" },
+        { "description": "update_comment, list_feature_comments, list_idea_comments, list_epic_comments tools", "commit": "537a633" },
+        { "description": "delete_requirement and delete_comment tools", "commit": "07be707" },
+        { "description": "get_initiative/update_initiative responses now include color, position, value, effort, presented, progress, progress_source, start_date, end_date, updated_at, workflow_status, and custom_fields", "commit": "369f50e" }
+      ],
+      "tests": [
+        { "description": "Coverage for all 37 new MCP tools (tool count and name assertions)", "commit": "881e3d2" }
+      ],
+      "documentation": [
+        { "description": "Document new MCP tools in README and write-tools reference", "commit": "559b087" },
+        { "description": "Restructure docs/tools/overview.md into Query/Get/List/Create/Update/Comment/Delete/Browser/Graph sections covering all 71 tools; update tool count in docs/index.md", "commit": "285d7c8" },
+        { "description": "Update ROADMAP Phase 10 status for shipped tools and replace the fictional Version History table with a pointer to CHANGELOG.md", "commit": "f7df5e4" }
+      ],
+      "dependencies": [
+        { "description": "Update github.com/grokify/aha-go to v0.7.0 (ListIdeas votes/categories/score defaults, GetInitiative custom fields) and drop the local development replace directive", "commit": "7d1a7a1" }
+      ]
+    },
+    {
       "version": "v0.9.0",
       "date": "2026-06-20",
       "commit": "f904c7b",
