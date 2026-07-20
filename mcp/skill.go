@@ -585,6 +585,175 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			},
 			s.handlers.GraphReleaseDeps),
 
+		// Create epic
+		skill.NewTool("create_epic", "Create a new epic in a release",
+			map[string]skill.Parameter{
+				"release_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Release ID or reference to create the epic in",
+				},
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Epic name",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "Epic description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initial workflow status ID or name",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"due_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Due date (YYYY-MM-DD format)",
+				},
+				"color": {
+					Type:        "string",
+					Required:    false,
+					Description: "Color hex code (e.g., '#ff0000')",
+				},
+				"initiative": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initiative ID or reference to link",
+				},
+			},
+			s.handlers.CreateEpic),
+
+		// Create goal
+		skill.NewTool("create_goal", "Create a new goal in a product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Goal name",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "Goal description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initial workflow status ID or name",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"end_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "End date (YYYY-MM-DD format)",
+				},
+			},
+			s.handlers.CreateGoal),
+
+		// Create initiative
+		skill.NewTool("create_initiative", "Create a new initiative in a product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Initiative name",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initiative description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initial workflow status ID or name",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"end_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "End date (YYYY-MM-DD format)",
+				},
+				"value": {
+					Type:        "number",
+					Required:    false,
+					Description: "Value score",
+				},
+				"effort": {
+					Type:        "number",
+					Required:    false,
+					Description: "Effort score",
+				},
+				"color": {
+					Type:        "string",
+					Required:    false,
+					Description: "Color hex code (e.g., '#ff0000')",
+				},
+			},
+			s.handlers.CreateInitiative),
+
+		// Create requirement
+		skill.NewTool("create_requirement", "Create a new requirement for a feature",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number to add the requirement to",
+				},
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Requirement name",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "Requirement description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initial workflow status ID or name",
+				},
+				"assigned_to_user": {
+					Type:        "string",
+					Required:    false,
+					Description: "User ID or email to assign",
+				},
+				"original_estimate": {
+					Type:        "number",
+					Required:    false,
+					Description: "Original time estimate",
+				},
+			},
+			s.handlers.CreateRequirement),
+
 		// =============================================================================
 		// List Tools
 		// =============================================================================
@@ -793,6 +962,35 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.GetCurrentUser),
 
 		// =============================================================================
+		// Product Tools
+		// =============================================================================
+
+		skill.NewTool("create_product", "Create a new product (workspace)",
+			map[string]skill.Parameter{
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product name",
+				},
+				"reference_prefix": {
+					Type:        "string",
+					Required:    true,
+					Description: "Reference prefix (e.g., 'PROD')",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product description",
+				},
+				"parent_id": {
+					Type:        "string",
+					Required:    false,
+					Description: "Parent product ID for nested products",
+				},
+			},
+			s.handlers.CreateProduct),
+
+		// =============================================================================
 		// Strategic Model Tools
 		// =============================================================================
 
@@ -840,5 +1038,25 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.GetStrategicModel),
+
+		skill.NewTool("create_strategic_model", "Create a new strategic model",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"kind": {
+					Type:        "string",
+					Required:    true,
+					Description: "Model type (e.g., 'canvas', 'scorecard')",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "Model name",
+				},
+			},
+			s.handlers.CreateStrategicModel),
 	}
 }

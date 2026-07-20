@@ -1206,6 +1206,230 @@ func (h *ToolHandlers) ListCustomFieldOptions(ctx context.Context, params map[st
 	}, nil
 }
 
+// CreateEpic creates a new epic in a release.
+func (h *ToolHandlers) CreateEpic(ctx context.Context, params map[string]any) (any, error) {
+	releaseID, ok := params["release_id"].(string)
+	if !ok || releaseID == "" {
+		return nil, fmt.Errorf("release_id parameter is required")
+	}
+
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	var opts []aha.CreateEpicOption
+	opts = append(opts, aha.WithEpicName(name))
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithEpicDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithEpicStatus(status))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithEpicStartDate(t))
+	}
+
+	if dueDate, ok := params["due_date"].(string); ok && dueDate != "" {
+		t, err := time.Parse("2006-01-02", dueDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid due_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithEpicDueDate(t))
+	}
+
+	if color, ok := params["color"].(string); ok && color != "" {
+		opts = append(opts, aha.WithEpicColor(color))
+	}
+
+	if initiative, ok := params["initiative"].(string); ok && initiative != "" {
+		opts = append(opts, aha.WithEpicInitiative(initiative))
+	}
+
+	epic, err := h.client.CreateEpic(ctx, releaseID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating epic: %w", err)
+	}
+
+	return map[string]any{
+		"id":            epic.ID,
+		"reference_num": epic.ReferenceNum,
+		"name":          epic.Name,
+		"url":           epic.URL,
+		"message":       fmt.Sprintf("Epic %s created successfully", epic.ReferenceNum),
+	}, nil
+}
+
+// CreateGoal creates a new goal in a product.
+func (h *ToolHandlers) CreateGoal(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	var opts []aha.CreateGoalOption
+	opts = append(opts, aha.WithGoalName(name))
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithGoalDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithGoalStatus(status))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithGoalStartDate(t))
+	}
+
+	if endDate, ok := params["end_date"].(string); ok && endDate != "" {
+		t, err := time.Parse("2006-01-02", endDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithGoalEndDate(t))
+	}
+
+	goal, err := h.client.CreateGoal(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating goal: %w", err)
+	}
+
+	return map[string]any{
+		"id":            goal.ID,
+		"reference_num": goal.ReferenceNum,
+		"name":          goal.Name,
+		"url":           goal.URL,
+		"message":       fmt.Sprintf("Goal %s created successfully", goal.ReferenceNum),
+	}, nil
+}
+
+// CreateInitiative creates a new initiative in a product.
+func (h *ToolHandlers) CreateInitiative(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	var opts []aha.CreateInitiativeOption
+	opts = append(opts, aha.WithInitiativeName(name))
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithInitiativeDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithInitiativeStatus(status))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithInitiativeStartDate(t))
+	}
+
+	if endDate, ok := params["end_date"].(string); ok && endDate != "" {
+		t, err := time.Parse("2006-01-02", endDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithInitiativeEndDate(t))
+	}
+
+	if value, ok := params["value"].(float64); ok {
+		opts = append(opts, aha.WithInitiativeValue(value))
+	}
+
+	if effort, ok := params["effort"].(float64); ok {
+		opts = append(opts, aha.WithInitiativeEffort(effort))
+	}
+
+	if color, ok := params["color"].(string); ok && color != "" {
+		opts = append(opts, aha.WithInitiativeColor(color))
+	}
+
+	initiative, err := h.client.CreateInitiative(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating initiative: %w", err)
+	}
+
+	return map[string]any{
+		"id":            initiative.ID,
+		"reference_num": initiative.ReferenceNum,
+		"name":          initiative.Name,
+		"url":           initiative.URL,
+		"message":       fmt.Sprintf("Initiative %s created successfully", initiative.ReferenceNum),
+	}, nil
+}
+
+// CreateRequirement creates a new requirement for a feature.
+func (h *ToolHandlers) CreateRequirement(ctx context.Context, params map[string]any) (any, error) {
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id parameter is required")
+	}
+
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	var opts []aha.CreateRequirementOption
+	opts = append(opts, aha.WithRequirementName(name))
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithRequirementDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithRequirementStatus(status))
+	}
+
+	if user, ok := params["assigned_to_user"].(string); ok && user != "" {
+		opts = append(opts, aha.WithRequirementAssignedTo(user))
+	}
+
+	if estimate, ok := params["original_estimate"].(float64); ok {
+		opts = append(opts, aha.WithRequirementEstimate(estimate))
+	}
+
+	requirement, err := h.client.CreateRequirement(ctx, featureID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating requirement: %w", err)
+	}
+
+	return map[string]any{
+		"id":            requirement.ID,
+		"reference_num": requirement.ReferenceNum,
+		"name":          requirement.Name,
+		"url":           requirement.URL,
+		"message":       fmt.Sprintf("Requirement %s created successfully", requirement.ReferenceNum),
+	}, nil
+}
+
 // =============================================================================
 // List Tools
 // =============================================================================
@@ -1579,6 +1803,44 @@ func (h *ToolHandlers) GetCurrentUser(ctx context.Context, params map[string]any
 }
 
 // =============================================================================
+// Product Tools
+// =============================================================================
+
+// CreateProduct creates a new product.
+func (h *ToolHandlers) CreateProduct(ctx context.Context, params map[string]any) (any, error) {
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	referencePrefix, ok := params["reference_prefix"].(string)
+	if !ok || referencePrefix == "" {
+		return nil, fmt.Errorf("reference_prefix parameter is required")
+	}
+
+	var opts []aha.CreateProductOption
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithProductDescription(desc))
+	}
+	if parentID, ok := params["parent_id"].(string); ok && parentID != "" {
+		opts = append(opts, aha.WithProductParentID(parentID))
+	}
+
+	product, err := h.client.CreateProduct(ctx, name, referencePrefix, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating product: %w", err)
+	}
+
+	return map[string]any{
+		"id":               product.ID,
+		"reference_prefix": product.ReferencePrefix,
+		"name":             product.Name,
+		"message":          fmt.Sprintf("Product %s created successfully", product.ReferencePrefix),
+	}, nil
+}
+
+// =============================================================================
 // Strategic Model Tools
 // =============================================================================
 
@@ -1673,6 +1935,38 @@ func (h *ToolHandlers) GetStrategicModel(ctx context.Context, params map[string]
 		"kind":       model.Kind,
 		"url":        model.URL,
 		"components": components,
+	}, nil
+}
+
+// CreateStrategicModel creates a new strategic model.
+func (h *ToolHandlers) CreateStrategicModel(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	kind, ok := params["kind"].(string)
+	if !ok || kind == "" {
+		return nil, fmt.Errorf("kind parameter is required")
+	}
+
+	var opts []aha.CreateStrategicModelOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithStrategicModelName(name))
+	}
+
+	model, err := h.client.CreateStrategicModel(ctx, productID, kind, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating strategic model: %w", err)
+	}
+
+	return map[string]any{
+		"id":      model.ID,
+		"name":    model.Name,
+		"kind":    model.Kind,
+		"url":     model.URL,
+		"message": fmt.Sprintf("Strategic model created successfully"),
 	}, nil
 }
 
