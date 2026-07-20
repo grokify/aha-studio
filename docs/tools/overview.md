@@ -1,6 +1,6 @@
 # Tools Reference
 
-The MCP server provides 34 tools for accessing, querying, and managing Aha.io data.
+The MCP server provides 71 tools for accessing, querying, and managing Aha.io data.
 
 ## Query Tools
 
@@ -130,6 +130,12 @@ Retrieve a user by ID.
 |-----------|------|----------|-------------|
 | `user_id` | string | Yes | User ID to retrieve |
 
+### get_current_user
+
+Retrieve the authenticated user.
+
+**Parameters:** None
+
 ### get_key_result
 
 Retrieve a key result by ID.
@@ -170,6 +176,16 @@ Retrieve a workflow by ID.
 |-----------|------|----------|-------------|
 | `workflow_id` | string | Yes | Workflow ID to retrieve |
 
+### get_strategic_model
+
+Retrieve a strategic model by ID.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model_id` | string | Yes | Strategic model ID |
+
 ## List Tools
 
 ### list_ideas
@@ -196,6 +212,125 @@ List ideas from Aha with optional filtering and pagination.
 
 List all accessible Aha.io products.
 
+### list_features
+
+List features with optional filtering.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | No | Search query to filter features |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_release_features
+
+List features for a specific release.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `release_id` | string | Yes | Release ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_epics
+
+List epics with optional filtering.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | No | Search query to filter epics |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_product_epics
+
+List epics for a specific product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_goals
+
+List goals with optional filtering.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | No | Search query to filter goals |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_product_goals
+
+List goals for a specific product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_initiatives
+
+List initiatives with optional filtering.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | No | Search query to filter initiatives |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_product_initiatives
+
+List initiatives for a specific product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_feature_requirements
+
+List requirements for a specific feature.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_users
+
+List workspace users.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
 ### list_workflow_statuses
 
 List all workflow statuses for a product.
@@ -216,6 +351,50 @@ List all releases for a product.
 |-----------|------|----------|-------------|
 | `product_id` | string | Yes | Product ID or reference prefix (e.g., 'PROD') |
 
+### list_custom_fields
+
+List custom field definitions for a product or all products.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | No | Product ID or reference prefix to filter by (lists all if not specified) |
+| `entity_type` | string | No | Filter by entity type: Feature, Initiative, Epic, Idea, Goal, Release, Requirement |
+
+### list_custom_field_options
+
+List options for a select/choice custom field.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `field_id` | string | Yes | Custom field definition ID |
+
+### list_strategic_models
+
+List strategic models.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_product_strategic_models
+
+List strategic models for a specific product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
 ### search_documents
 
 Search for Aha! documents using GraphQL.
@@ -227,7 +406,7 @@ Search for Aha! documents using GraphQL.
 | `query` | string | Yes | Search query string |
 | `searchable_type` | string | No | Type of document to search for (defaults to Page) |
 
-## Write Tools
+## Create Tools
 
 ### create_feature
 
@@ -242,6 +421,230 @@ Create a new feature in Aha!
 | `description` | string | No | Feature description (HTML supported) |
 | `workflow_status` | string | No | Initial workflow status ID or name |
 | `assigned_to_user` | string | No | User ID or email to assign the feature to |
+
+### create_epic
+
+Create a new epic in a release.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `release_id` | string | Yes | Release ID or reference to create the epic in |
+| `name` | string | Yes | Epic name |
+| `description` | string | No | Epic description (HTML supported) |
+| `workflow_status` | string | No | Initial workflow status ID or name |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `due_date` | string | No | Due date (YYYY-MM-DD format) |
+| `color` | string | No | Color hex code (e.g., '#ff0000') |
+| `initiative` | string | No | Initiative ID or reference to link |
+
+### create_goal
+
+Create a new goal in a product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `name` | string | Yes | Goal name |
+| `description` | string | No | Goal description (HTML supported) |
+| `workflow_status` | string | No | Initial workflow status ID or name |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `end_date` | string | No | End date (YYYY-MM-DD format) |
+
+### create_initiative
+
+Create a new initiative in a product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `name` | string | Yes | Initiative name |
+| `description` | string | No | Initiative description (HTML supported) |
+| `workflow_status` | string | No | Initial workflow status ID or name |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `end_date` | string | No | End date (YYYY-MM-DD format) |
+| `value` | number | No | Value score |
+| `effort` | number | No | Effort score |
+| `color` | string | No | Color hex code (e.g., '#ff0000') |
+
+### create_requirement
+
+Create a new requirement for a feature.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number to add the requirement to |
+| `name` | string | Yes | Requirement name |
+| `description` | string | No | Requirement description (HTML supported) |
+| `workflow_status` | string | No | Initial workflow status ID or name |
+| `assigned_to_user` | string | No | User ID or email to assign |
+| `original_estimate` | number | No | Original time estimate |
+
+### create_product
+
+Create a new product (workspace).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | Yes | Product name |
+| `reference_prefix` | string | Yes | Reference prefix (e.g., 'PROD') |
+| `description` | string | No | Product description |
+| `parent_id` | string | No | Parent product ID for nested products |
+
+### create_strategic_model
+
+Create a new strategic model.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `kind` | string | Yes | Model type (e.g., 'canvas', 'scorecard') |
+| `name` | string | No | Model name |
+
+## Update Tools
+
+### update_feature
+
+Update a feature's fields (general update tool).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number (e.g., 'FEAT-123') |
+| `name` | string | No | New name for the feature |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `assigned_to_user` | string | No | User ID or email to assign |
+| `release` | string | No | Release ID or reference to assign |
+| `initiative` | string | No | Initiative ID or reference to link |
+| `tags` | string | No | Comma-separated tags |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `due_date` | string | No | Due date (YYYY-MM-DD format) |
+
+### update_epic
+
+Update an epic's fields (name, description, status, progress).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `epic_id` | string | Yes | Epic ID or reference number |
+| `name` | string | No | New name for the epic |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `progress` | number | No | Progress percentage (0-100) |
+
+### update_goal
+
+Update a goal's fields (name, description, status, progress).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `goal_id` | string | Yes | Goal ID or reference number |
+| `name` | string | No | New name for the goal |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `progress` | number | No | Progress percentage (0-100) |
+
+### update_initiative
+
+Update an initiative's fields (name, description, status, dates, etc.).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `initiative_id` | string | Yes | Initiative ID or reference number (e.g., 'INIT-1') |
+| `name` | string | No | New name for the initiative |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `end_date` | string | No | End date (YYYY-MM-DD format) |
+| `value` | number | No | Value score |
+| `effort` | number | No | Effort score |
+| `color` | string | No | Color hex code (e.g., '#ff0000') |
+| `presented` | boolean | No | Whether the initiative is presented |
+
+### update_requirement
+
+Update a requirement's fields (name, description, status, work_done).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `requirement_id` | string | Yes | Requirement ID or reference number |
+| `name` | string | No | New name for the requirement |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `work_done` | number | No | Work done percentage (0-100) |
+
+### update_release
+
+Update a release's fields (name, dates, parking_lot).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `release_id` | string | Yes | Release ID or reference number |
+| `name` | string | No | New name for the release |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `release_date` | string | No | Release date (YYYY-MM-DD format) |
+| `parking_lot` | boolean | No | Whether this is a parking lot release |
+
+### update_idea
+
+Update an idea's fields (name, description, status, visibility).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `idea_id` | string | Yes | Idea ID or reference number (e.g., 'IDEA-123') |
+| `name` | string | No | New name for the idea |
+| `description` | string | No | New description (HTML supported) |
+| `workflow_status` | string | No | New workflow status ID or name |
+| `visibility` | string | No | Visibility (e.g., public, private) |
+
+### update_product
+
+Update an existing product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `name` | string | No | New product name |
+| `description` | string | No | New product description |
+| `reference_prefix` | string | No | New reference prefix |
+
+### update_strategic_model
+
+Update a strategic model.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model_id` | string | Yes | Strategic model ID |
+| `name` | string | No | New model name |
 
 ### change_feature_status
 
@@ -276,6 +679,8 @@ Assign a user to a feature.
 | `feature_id` | string | Yes | Feature ID or reference number (e.g., 'FEAT-123') |
 | `user` | string | Yes | User ID or email address to assign |
 
+## Comment Tools
+
 ### add_feature_comment
 
 Add a comment to a feature.
@@ -297,6 +702,75 @@ Add a comment to an idea.
 |-----------|------|----------|-------------|
 | `idea_id` | string | Yes | Idea ID or reference number (e.g., 'IDEA-456') |
 | `body` | string | Yes | Comment body (HTML supported) |
+
+### update_comment
+
+Update an existing comment.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `comment_id` | string | Yes | Comment ID |
+| `body` | string | Yes | New comment body (HTML supported) |
+
+### list_feature_comments
+
+List comments for a feature.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_idea_comments
+
+List comments for an idea.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `idea_id` | string | Yes | Idea ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+### list_epic_comments
+
+List comments for an epic.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `epic_id` | string | Yes | Epic ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (max 200) |
+
+## Delete Tools
+
+### delete_requirement
+
+Delete a requirement.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `requirement_id` | string | Yes | Requirement ID or reference number |
+
+### delete_comment
+
+Delete a comment.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `comment_id` | string | Yes | Comment ID |
 
 ## Browser Tools
 
