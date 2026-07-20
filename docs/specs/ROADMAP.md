@@ -973,7 +973,7 @@ Recommended implementation order based on value and dependencies.
 | 10 | Phase 10a (Core Write Tools) | ✅ Complete | Essential MCP write operations |
 | 11 | Phase 11 (Web UI & HTTP API) | 🔄 In Progress | HTTP server, Lit component, cache modes |
 | 12 | Phase 12 (Feature-Release Queries) | 🔄 In Progress | Query features by release date/name |
-| 13 | Phase 10b (Extended Write Tools) | 🔲 Planned | Full CRUD for all entities |
+| 13 | Phase 10b (Extended Write Tools) | 🔄 Mostly Complete | Full CRUD for features, epics, goals, initiatives, requirements, products, strategic models, and comments |
 | 14 | Phase 10c (Analytics Tools) | 🔲 Planned | Statistics and metrics |
 | 15 | Phase 13 (DuckDB Migration) | 🔲 Planned | Columnar DB for analytics |
 | 16 | Phase 10d (Integrations) | 🔲 Planned | Jira, Confluence, AI workflows |
@@ -1126,13 +1126,13 @@ Based on analysis of alternate MCP implementations, this phase adds write operat
 | Tool | Priority | Status | Description |
 |------|----------|--------|-------------|
 | `create_feature` | 🔴 High | ✅ | Create a new feature with name, description, release, status |
-| `update_feature` | 🔴 High | 🔲 | Update feature properties (name, description, custom fields) |
+| `update_feature` | 🔴 High | ✅ | Update feature properties (name, description, status, release, tags, dates) |
 | `assign_user_to_feature` | 🔴 High | ✅ | Assign a user to a feature by user ID or email |
 | `change_feature_status` | 🔴 High | ✅ | Change feature workflow status (by name or ID) |
 | `assign_feature_release` | 🔴 High | ✅ | Assign a feature to a release (by name or ID) |
 | `add_feature_comment` | 🔴 High | ✅ | Add a comment to a feature |
-| `list_features` | 🟡 Medium | 🔲 | List features for a product with filters and pagination |
-| `list_features_by_release` | 🟡 Medium | 🔲 | List all features in a specific release |
+| `list_features` | 🟡 Medium | ✅ | List features for a product with filters and pagination |
+| `list_features_by_release` | 🟡 Medium | ✅ | List all features in a specific release (`list_release_features`) |
 | `get_feature_ideas` | 🟡 Medium | 🔲 | Get ideas promoted to a feature |
 
 #### Example: Create Feature
@@ -1159,8 +1159,10 @@ These tools enable AI agents to resolve human-readable names to IDs required by 
 |------|----------|--------|-------------|
 | `list_workflow_statuses` | 🔴 High | ✅ | List all workflow statuses for a product (enables status lookup by name) |
 | `list_releases` | 🔴 High | ✅ | List all releases for a product (enables release lookup by name) |
-| `list_users` | 🟡 Medium | 🔲 | List users in the account (enables user lookup by name/email) |
-| `list_goals` | 🟡 Medium | 🔲 | List goals for a product |
+| `list_users` | 🟡 Medium | ✅ | List users in the account (enables user lookup by name/email) |
+| `list_goals` | 🟡 Medium | ✅ | List goals for a product |
+| `list_custom_fields` | 🟡 Medium | ✅ | List custom field definitions for a product or all products |
+| `list_custom_field_options` | 🟡 Medium | ✅ | List options for a select/choice custom field |
 | `list_idea_categories` | 🟡 Medium | 🔲 | List idea categories with caching |
 
 #### Workflow Status Lookup Example
@@ -1179,9 +1181,12 @@ Agent:
 | Tool | Priority | Status | Description |
 |------|----------|--------|-------------|
 | `create_idea` | 🟡 Medium | 🔲 | Create a new idea |
-| `update_idea` | 🟡 Medium | 🔲 | Update idea properties |
+| `update_idea` | 🟡 Medium | ✅ | Update idea properties (name, description, status, visibility) |
 | `delete_idea` | 🟠 Low | 🔲 | Delete an idea |
 | `add_idea_comment` | 🔴 High | ✅ | Add an internal comment to an idea |
+| `update_comment` | 🟡 Medium | ✅ | Update an existing comment (feature/idea/epic) |
+| `delete_comment` | 🟠 Low | ✅ | Delete a comment |
+| `list_feature_comments` / `list_idea_comments` / `list_epic_comments` | 🟡 Medium | ✅ | List comments on a feature, idea, or epic |
 | `list_ideas_by_category` | 🟡 Medium | 🔲 | List ideas filtered by category |
 | `list_ideas_without_release` | 🟠 Low | 🔲 | List ideas in status without a release |
 
@@ -1189,30 +1194,74 @@ Agent:
 
 ### Release Management Tools
 
-| Tool | Priority | Description |
-|------|----------|-------------|
-| `create_release` | 🟡 Medium | Create a new release |
-| `update_release` | 🟡 Medium | Update release properties |
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `create_release` | 🟡 Medium | 🔲 | Create a new release |
+| `update_release` | 🟡 Medium | ✅ | Update release properties (name, dates, parking_lot) |
 
 ---
 
 ### Requirement Management Tools
 
-| Tool | Priority | Description |
-|------|----------|-------------|
-| `list_requirements` | 🟡 Medium | List requirements for a feature |
-| `create_requirement` | 🟡 Medium | Create a requirement on a feature |
-| `update_requirement` | 🟡 Medium | Update a requirement |
-| `delete_requirement` | 🟠 Low | Delete a requirement |
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `list_requirements` | 🟡 Medium | ✅ | List requirements for a feature (`list_feature_requirements`) |
+| `create_requirement` | 🟡 Medium | ✅ | Create a requirement on a feature |
+| `update_requirement` | 🟡 Medium | ✅ | Update a requirement |
+| `delete_requirement` | 🟠 Low | ✅ | Delete a requirement |
 
 ---
 
 ### Goal Management Tools
 
-| Tool | Priority | Description |
-|------|----------|-------------|
-| `add_goal_to_feature` | 🟡 Medium | Link a goal to a feature |
-| `remove_goal_from_feature` | 🟠 Low | Unlink a goal from a feature |
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `list_goals` / `list_product_goals` | 🟡 Medium | ✅ | List goals, optionally scoped to a product |
+| `create_goal` | 🟡 Medium | ✅ | Create a new goal in a product |
+| `update_goal` | 🟡 Medium | ✅ | Update goal properties (name, description, status, progress) |
+| `add_goal_to_feature` | 🟡 Medium | 🔲 | Link a goal to a feature |
+| `remove_goal_from_feature` | 🟠 Low | 🔲 | Unlink a goal from a feature |
+
+---
+
+### Epic Management Tools
+
+Not originally scoped in Phase 10, added alongside the extended write tools.
+
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `list_epics` / `list_product_epics` | 🟡 Medium | ✅ | List epics, optionally scoped to a product |
+| `create_epic` | 🟡 Medium | ✅ | Create a new epic in a release |
+| `update_epic` | 🟡 Medium | ✅ | Update epic properties (name, description, status, progress) |
+| `list_epic_comments` | 🟡 Medium | ✅ | List comments for an epic |
+
+---
+
+### Initiative Management Tools
+
+Not originally scoped in Phase 10, added alongside the extended write tools.
+
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `list_initiatives` / `list_product_initiatives` | 🟡 Medium | ✅ | List initiatives, optionally scoped to a product |
+| `create_initiative` | 🟡 Medium | ✅ | Create a new initiative in a product |
+| `update_initiative` | 🟡 Medium | ✅ | Update initiative properties (name, description, dates, value, effort, color, presented) |
+
+---
+
+### Product & Strategic Model Tools
+
+Not originally scoped in Phase 10, added alongside the extended write tools.
+
+| Tool | Priority | Status | Description |
+|------|----------|--------|-------------|
+| `create_product` | 🟡 Medium | ✅ | Create a new product (workspace) |
+| `update_product` | 🟡 Medium | ✅ | Update an existing product |
+| `list_strategic_models` / `list_product_strategic_models` | 🟡 Medium | ✅ | List strategic models, optionally scoped to a product |
+| `get_strategic_model` | 🟡 Medium | ✅ | Get a strategic model by ID |
+| `create_strategic_model` | 🟡 Medium | ✅ | Create a new strategic model |
+| `update_strategic_model` | 🟡 Medium | ✅ | Update a strategic model |
+| `get_current_user` | 🟡 Medium | ✅ | Get the authenticated user |
 
 ---
 
@@ -1276,16 +1325,21 @@ Specialized tools for AI-assisted product management workflows.
 7. ✅ `add_feature_comment` - Add comments
 8. ✅ `add_idea_comment` - Add idea comments
 
-**Phase 10b - Extended Write Operations (Medium Priority)**
+**Phase 10b - Extended Write Operations (Medium Priority)** 🔄 Mostly Complete
 
-1. `update_feature` - Full feature updates
-2. `list_features` - List with pagination
-3. `list_features_by_release` - Release-scoped list
-4. `create_idea` / `update_idea` - Idea management
-5. `create_release` - Release management
-6. `list_requirements` / `create_requirement` - Requirements
-7. `list_goals` / `add_goal_to_feature` - Goal linking
-8. `list_users` - User lookup
+1. ✅ `update_feature` - Full feature updates
+2. ✅ `list_features` - List with pagination
+3. ✅ `list_features_by_release` - Release-scoped list (`list_release_features`)
+4. 🔲 `create_idea` / ✅ `update_idea` - Idea management
+5. 🔲 `create_release` / ✅ `update_release` - Release management
+6. ✅ `list_requirements` / ✅ `create_requirement` / ✅ `update_requirement` / ✅ `delete_requirement` - Requirements
+7. ✅ `list_goals` / 🔲 `add_goal_to_feature` - Goal linking
+8. ✅ `list_users` - User lookup
+
+Delivered beyond the original scope: full CRUD for epics, initiatives, products,
+and strategic models; comment update/delete/list (feature, idea, epic); custom
+field definitions and options lookup; `get_current_user`. See the Epic,
+Initiative, and Product & Strategic Model tables above for details.
 
 **Phase 10c - Analytics & Statistics (Medium Priority)**
 
@@ -1772,24 +1826,20 @@ When implementing a phase:
 
 ## Version History
 
-| Version | Phase | Release Date | Notes |
-|---------|-------|--------------|-------|
-| 0.1.0 | Phase 1 | 2024-XX-XX | Initial release with core AQL |
-| 0.2.0 | Phase 5 | 2024-XX-XX | REPL, config, history, saved queries |
-| 0.3.0 | Phase 2 | 2024-XX-XX | Aggregations, GROUP BY, JOINs, subqueries |
-| 0.4.0 | Phase 7 | 2024-XX-XX | MCP server via OmniSkill |
-| 0.5.0 | Phase 4 | 2024-XX-XX | Mutations (INSERT, UPDATE, DELETE) |
-| 0.6.0 | Phase 6 | 2024-XX-XX | Export and reporting |
-| 0.7.0 | Phase 8 | 2024-XX-XX | Performance and caching |
-| 0.8.0 | Phase 9 | 2024-XX-XX | Excel, SQLite sync, tags, custom fields |
-| 0.9.0 | Phase 3 | 2024-XX-XX | Additional entities |
-| 1.0.0 | Phase 10a | TBD | Core MCP write tools (create, update, status, assign) |
-| 1.1.0 | Phase 11 | TBD | Web UI & HTTP API (server, Lit component, cache modes) |
-| 1.2.0 | Phase 12 | TBD | Feature-Release Query Support (release.date, release.name) |
-| 1.3.0 | Phase 10b | TBD | Extended CRUD tools |
-| 1.4.0 | Phase 10c | TBD | Statistics and analytics tools |
-| 1.5.0 | Phase 13 | TBD | DuckDB migration for analytics performance |
-| 1.6.0 | Phase 10d | TBD | Integrations and AI workflows |
+See [CHANGELOG.md](https://github.com/grokify/aha-studio/blob/main/CHANGELOG.md)
+and the [release notes](../releases/v0.9.0.md) for accurate, per-release history with
+commit references. The phase-to-version mapping below is directional planning
+only, not a record of what actually shipped in each release.
+
+| Phase | Target Version | Status | Notes |
+|-------|-----------------|--------|-------|
+| Phase 10a | v0.10.0 or earlier | ✅ Complete | Core MCP write tools (create, update, status, assign) |
+| Phase 11 | TBD | 🔄 In Progress | Web UI & HTTP API (server, Lit component, cache modes) |
+| Phase 12 | TBD | 🔄 In Progress | Feature-Release Query Support (release.date, release.name) |
+| Phase 10b | v0.10.0 | 🔄 Mostly Complete | Extended CRUD tools |
+| Phase 10c | TBD | 🔲 Planned | Statistics and analytics tools |
+| Phase 13 | TBD | 🔲 Planned | DuckDB migration for analytics performance |
+| Phase 10d | TBD | 🔲 Planned | Integrations and AI workflows |
 
 ## Dependencies
 
