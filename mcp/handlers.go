@@ -1122,6 +1122,78 @@ func (h *ToolHandlers) AddIdeaComment(ctx context.Context, params map[string]any
 	}, nil
 }
 
+// UpdateInitiative updates an initiative's fields.
+func (h *ToolHandlers) UpdateInitiative(ctx context.Context, params map[string]any) (any, error) {
+	initiativeID, ok := params["initiative_id"].(string)
+	if !ok || initiativeID == "" {
+		return nil, fmt.Errorf("initiative_id parameter is required")
+	}
+
+	var opts []aha.UpdateInitiativeOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateInitiativeName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateInitiativeDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateInitiativeStatus(status))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithUpdateInitiativeStartDate(t))
+	}
+
+	if endDate, ok := params["end_date"].(string); ok && endDate != "" {
+		t, err := time.Parse("2006-01-02", endDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithUpdateInitiativeEndDate(t))
+	}
+
+	if value, ok := params["value"].(float64); ok {
+		opts = append(opts, aha.WithUpdateInitiativeValue(value))
+	}
+
+	if effort, ok := params["effort"].(float64); ok {
+		opts = append(opts, aha.WithUpdateInitiativeEffort(effort))
+	}
+
+	if color, ok := params["color"].(string); ok && color != "" {
+		opts = append(opts, aha.WithUpdateInitiativeColor(color))
+	}
+
+	if presented, ok := params["presented"].(bool); ok {
+		opts = append(opts, aha.WithUpdateInitiativePresented(presented))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	initiative, err := h.client.UpdateInitiative(ctx, initiativeID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating initiative: %w", err)
+	}
+
+	return map[string]any{
+		"id":            initiative.ID,
+		"reference_num": initiative.ReferenceNum,
+		"name":          initiative.Name,
+		"description":   initiative.Description,
+		"url":           initiative.URL,
+		"message":       fmt.Sprintf("Initiative %s updated successfully", initiative.ReferenceNum),
+	}, nil
+}
+
 // ListCustomFieldDefinitions lists all custom field definitions, optionally filtered by product.
 func (h *ToolHandlers) ListCustomFieldDefinitions(ctx context.Context, params map[string]any) (any, error) {
 	productID, _ := params["product_id"].(string)
@@ -1203,6 +1275,272 @@ func (h *ToolHandlers) ListCustomFieldOptions(ctx context.Context, params map[st
 		"count":   len(options),
 		"options": options,
 		"message": fmt.Sprintf("Found %d options for field %s", len(options), fieldID),
+	}, nil
+}
+
+// UpdateEpic updates an epic's fields.
+//
+//nolint:dupl // Similar pattern for different entity types
+func (h *ToolHandlers) UpdateEpic(ctx context.Context, params map[string]any) (any, error) {
+	epicID, ok := params["epic_id"].(string)
+	if !ok || epicID == "" {
+		return nil, fmt.Errorf("epic_id parameter is required")
+	}
+
+	var opts []aha.UpdateEpicOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateEpicName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateEpicDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateEpicStatus(status))
+	}
+
+	if progress, ok := params["progress"].(float64); ok {
+		opts = append(opts, aha.WithUpdateEpicProgress(progress))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	epic, err := h.client.UpdateEpic(ctx, epicID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating epic: %w", err)
+	}
+
+	return map[string]any{
+		"id":            epic.ID,
+		"reference_num": epic.ReferenceNum,
+		"name":          epic.Name,
+		"url":           epic.URL,
+		"message":       fmt.Sprintf("Epic %s updated successfully", epic.ReferenceNum),
+	}, nil
+}
+
+// UpdateGoal updates a goal's fields.
+//
+//nolint:dupl // Similar pattern for different entity types
+func (h *ToolHandlers) UpdateGoal(ctx context.Context, params map[string]any) (any, error) {
+	goalID, ok := params["goal_id"].(string)
+	if !ok || goalID == "" {
+		return nil, fmt.Errorf("goal_id parameter is required")
+	}
+
+	var opts []aha.UpdateGoalOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateGoalName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateGoalDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateGoalStatus(status))
+	}
+
+	if progress, ok := params["progress"].(float64); ok {
+		opts = append(opts, aha.WithUpdateGoalProgress(progress))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	goal, err := h.client.UpdateGoal(ctx, goalID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating goal: %w", err)
+	}
+
+	return map[string]any{
+		"id":            goal.ID,
+		"reference_num": goal.ReferenceNum,
+		"name":          goal.Name,
+		"url":           goal.URL,
+		"message":       fmt.Sprintf("Goal %s updated successfully", goal.ReferenceNum),
+	}, nil
+}
+
+// UpdateFeature updates a feature's fields (general update tool).
+func (h *ToolHandlers) UpdateFeature(ctx context.Context, params map[string]any) (any, error) {
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id parameter is required")
+	}
+
+	var opts []aha.UpdateFeatureOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateFeatureName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateFeatureDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateFeatureStatus(status))
+	}
+
+	if user, ok := params["assigned_to_user"].(string); ok && user != "" {
+		opts = append(opts, aha.WithUpdateFeatureAssignedToUser(user))
+	}
+
+	if release, ok := params["release"].(string); ok && release != "" {
+		opts = append(opts, aha.WithUpdateFeatureRelease(release))
+	}
+
+	if initiative, ok := params["initiative"].(string); ok && initiative != "" {
+		opts = append(opts, aha.WithUpdateFeatureInitiative(initiative))
+	}
+
+	if tags, ok := params["tags"].(string); ok && tags != "" {
+		opts = append(opts, aha.WithUpdateFeatureTags(tags))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithUpdateFeatureStartDate(t))
+	}
+
+	if dueDate, ok := params["due_date"].(string); ok && dueDate != "" {
+		t, err := time.Parse("2006-01-02", dueDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid due_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithUpdateFeatureDueDate(t))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	feature, err := h.client.UpdateFeature(ctx, featureID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating feature: %w", err)
+	}
+
+	var statusName string
+	if feature.WorkflowStatus != nil {
+		statusName = feature.WorkflowStatus.Name
+	}
+
+	return map[string]any{
+		"id":            feature.ID,
+		"reference_num": feature.ReferenceNum,
+		"name":          feature.Name,
+		"status":        statusName,
+		"url":           feature.URL,
+		"message":       fmt.Sprintf("Feature %s updated successfully", feature.ReferenceNum),
+	}, nil
+}
+
+// UpdateRequirement updates a requirement's fields.
+//
+//nolint:dupl // Similar pattern for different entity types
+func (h *ToolHandlers) UpdateRequirement(ctx context.Context, params map[string]any) (any, error) {
+	requirementID, ok := params["requirement_id"].(string)
+	if !ok || requirementID == "" {
+		return nil, fmt.Errorf("requirement_id parameter is required")
+	}
+
+	var opts []aha.UpdateRequirementOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateRequirementName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateRequirementDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateRequirementStatus(status))
+	}
+
+	if workDone, ok := params["work_done"].(float64); ok {
+		opts = append(opts, aha.WithUpdateRequirementWorkDone(workDone))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	req, err := h.client.UpdateRequirement(ctx, requirementID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating requirement: %w", err)
+	}
+
+	return map[string]any{
+		"id":            req.ID,
+		"reference_num": req.ReferenceNum,
+		"name":          req.Name,
+		"url":           req.URL,
+		"message":       fmt.Sprintf("Requirement %s updated successfully", req.ReferenceNum),
+	}, nil
+}
+
+// UpdateRelease updates a release's fields.
+//
+//nolint:dupl // Similar pattern for different entity types
+func (h *ToolHandlers) UpdateRelease(ctx context.Context, params map[string]any) (any, error) {
+	releaseID, ok := params["release_id"].(string)
+	if !ok || releaseID == "" {
+		return nil, fmt.Errorf("release_id parameter is required")
+	}
+
+	var opts []aha.UpdateReleaseOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithReleaseName(name))
+	}
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithReleaseStartDate(t))
+	}
+
+	if releaseDate, ok := params["release_date"].(string); ok && releaseDate != "" {
+		t, err := time.Parse("2006-01-02", releaseDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid release_date format (expected YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithReleaseDate(t))
+	}
+
+	if parkingLot, ok := params["parking_lot"].(bool); ok {
+		opts = append(opts, aha.WithReleaseParkingLot(parkingLot))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	release, err := h.client.UpdateRelease(ctx, releaseID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating release: %w", err)
+	}
+
+	return map[string]any{
+		"id":            release.ID,
+		"reference_num": release.ReferenceNum,
+		"name":          release.Name,
+		"parking_lot":   release.ParkingLot,
+		"url":           release.URL,
+		"message":       fmt.Sprintf("Release %s updated successfully", release.ReferenceNum),
 	}, nil
 }
 
@@ -1427,6 +1765,56 @@ func (h *ToolHandlers) CreateRequirement(ctx context.Context, params map[string]
 		"name":          requirement.Name,
 		"url":           requirement.URL,
 		"message":       fmt.Sprintf("Requirement %s created successfully", requirement.ReferenceNum),
+	}, nil
+}
+
+// UpdateIdea updates an idea's fields.
+//
+//nolint:dupl // Similar pattern for different entity types
+func (h *ToolHandlers) UpdateIdea(ctx context.Context, params map[string]any) (any, error) {
+	ideaID, ok := params["idea_id"].(string)
+	if !ok || ideaID == "" {
+		return nil, fmt.Errorf("idea_id parameter is required")
+	}
+
+	var opts []aha.UpdateIdeaOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateIdeaName(name))
+	}
+
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateIdeaDescription(desc))
+	}
+
+	if status, ok := params["workflow_status"].(string); ok && status != "" {
+		opts = append(opts, aha.WithUpdateIdeaStatus(status))
+	}
+
+	if visibility, ok := params["visibility"].(string); ok && visibility != "" {
+		opts = append(opts, aha.WithUpdateIdeaVisibility(visibility))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	idea, err := h.client.UpdateIdea(ctx, ideaID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating idea: %w", err)
+	}
+
+	var statusName string
+	if idea.WorkflowStatus != nil {
+		statusName = idea.WorkflowStatus.Name
+	}
+
+	return map[string]any{
+		"id":            idea.ID,
+		"reference_num": idea.ReferenceNum,
+		"name":          idea.Name,
+		"status":        statusName,
+		"message":       fmt.Sprintf("Idea %s updated successfully", idea.ReferenceNum),
 	}, nil
 }
 
@@ -1840,6 +2228,42 @@ func (h *ToolHandlers) CreateProduct(ctx context.Context, params map[string]any)
 	}, nil
 }
 
+// UpdateProduct updates an existing product.
+func (h *ToolHandlers) UpdateProduct(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+
+	var opts []aha.UpdateProductOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateProductName(name))
+	}
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateProductDescription(desc))
+	}
+	if prefix, ok := params["reference_prefix"].(string); ok && prefix != "" {
+		opts = append(opts, aha.WithUpdateProductReferencePrefix(prefix))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	product, err := h.client.UpdateProduct(ctx, productID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating product: %w", err)
+	}
+
+	return map[string]any{
+		"id":               product.ID,
+		"reference_prefix": product.ReferencePrefix,
+		"name":             product.Name,
+		"message":          fmt.Sprintf("Product %s updated successfully", product.ReferencePrefix),
+	}, nil
+}
+
 // =============================================================================
 // Strategic Model Tools
 // =============================================================================
@@ -1967,6 +2391,40 @@ func (h *ToolHandlers) CreateStrategicModel(ctx context.Context, params map[stri
 		"kind":    model.Kind,
 		"url":     model.URL,
 		"message": fmt.Sprintf("Strategic model created successfully"),
+	}, nil
+}
+
+// UpdateStrategicModel updates a strategic model.
+func (h *ToolHandlers) UpdateStrategicModel(ctx context.Context, params map[string]any) (any, error) {
+	modelID, ok := params["model_id"].(string)
+	if !ok || modelID == "" {
+		return nil, fmt.Errorf("model_id parameter is required")
+	}
+
+	var opts []aha.UpdateStrategicModelOption
+
+	if name, ok := params["name"].(string); ok && name != "" {
+		opts = append(opts, aha.WithUpdateStrategicModelName(name))
+	}
+	if desc, ok := params["description"].(string); ok && desc != "" {
+		opts = append(opts, aha.WithUpdateStrategicModelDescription(desc))
+	}
+
+	if len(opts) == 0 {
+		return nil, fmt.Errorf("at least one field to update is required")
+	}
+
+	model, err := h.client.UpdateStrategicModel(ctx, modelID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("updating strategic model: %w", err)
+	}
+
+	return map[string]any{
+		"id":      model.ID,
+		"name":    model.Name,
+		"kind":    model.Kind,
+		"url":     model.URL,
+		"message": "Strategic model updated successfully",
 	}, nil
 }
 

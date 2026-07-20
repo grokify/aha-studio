@@ -421,6 +421,62 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			},
 			s.handlers.AddIdeaComment),
 
+		// Update initiative
+		skill.NewTool("update_initiative", "Update an initiative's fields (name, description, status, dates, etc.)",
+			map[string]skill.Parameter{
+				"initiative_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Initiative ID or reference number (e.g., 'INIT-1')",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the initiative",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"end_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "End date (YYYY-MM-DD format)",
+				},
+				"value": {
+					Type:        "number",
+					Required:    false,
+					Description: "Value score",
+				},
+				"effort": {
+					Type:        "number",
+					Required:    false,
+					Description: "Effort score",
+				},
+				"color": {
+					Type:        "string",
+					Required:    false,
+					Description: "Color hex code (e.g., '#ff0000')",
+				},
+				"presented": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Whether the initiative is presented",
+				},
+			},
+			s.handlers.UpdateInitiative),
+
 		// List custom field definitions
 		skill.NewTool("list_custom_fields", "List custom field definitions for a product or all products",
 			map[string]skill.Parameter{
@@ -448,6 +504,155 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.ListCustomFieldOptions),
+
+		// Update epic
+		skill.NewTool("update_epic", "Update an epic's fields (name, description, status, progress)",
+			map[string]skill.Parameter{
+				"epic_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Epic ID or reference number",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the epic",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"progress": {
+					Type:        "number",
+					Required:    false,
+					Description: "Progress percentage (0-100)",
+				},
+			},
+			s.handlers.UpdateEpic),
+
+		// Update goal
+		skill.NewTool("update_goal", "Update a goal's fields (name, description, status, progress)",
+			map[string]skill.Parameter{
+				"goal_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Goal ID or reference number",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the goal",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"progress": {
+					Type:        "number",
+					Required:    false,
+					Description: "Progress percentage (0-100)",
+				},
+			},
+			s.handlers.UpdateGoal),
+
+		// Update feature (general)
+		skill.NewTool("update_feature", "Update a feature's fields (general update tool)",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number (e.g., 'FEAT-123')",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the feature",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"assigned_to_user": {
+					Type:        "string",
+					Required:    false,
+					Description: "User ID or email to assign",
+				},
+				"release": {
+					Type:        "string",
+					Required:    false,
+					Description: "Release ID or reference to assign",
+				},
+				"initiative": {
+					Type:        "string",
+					Required:    false,
+					Description: "Initiative ID or reference to link",
+				},
+				"tags": {
+					Type:        "string",
+					Required:    false,
+					Description: "Comma-separated tags",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"due_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Due date (YYYY-MM-DD format)",
+				},
+			},
+			s.handlers.UpdateFeature),
+
+		// Update requirement
+		skill.NewTool("update_requirement", "Update a requirement's fields (name, description, status, work_done)",
+			map[string]skill.Parameter{
+				"requirement_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Requirement ID or reference number",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the requirement",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"work_done": {
+					Type:        "number",
+					Required:    false,
+					Description: "Work done percentage (0-100)",
+				},
+			},
+			s.handlers.UpdateRequirement),
 
 		// Describe AQL syntax
 		skill.NewTool("describe_aql", "Get AQL syntax help and examples",
@@ -584,6 +789,37 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.GraphReleaseDeps),
+
+		// Update release
+		skill.NewTool("update_release", "Update a release's fields (name, dates, parking_lot)",
+			map[string]skill.Parameter{
+				"release_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Release ID or reference number",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the release",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"release_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Release date (YYYY-MM-DD format)",
+				},
+				"parking_lot": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Whether this is a parking lot release",
+				},
+			},
+			s.handlers.UpdateRelease),
 
 		// Create epic
 		skill.NewTool("create_epic", "Create a new epic in a release",
@@ -753,6 +989,37 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.CreateRequirement),
+
+		// Update idea
+		skill.NewTool("update_idea", "Update an idea's fields (name, description, status, visibility)",
+			map[string]skill.Parameter{
+				"idea_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Idea ID or reference number (e.g., 'IDEA-123')",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New name for the idea",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description (HTML supported)",
+				},
+				"workflow_status": {
+					Type:        "string",
+					Required:    false,
+					Description: "New workflow status ID or name",
+				},
+				"visibility": {
+					Type:        "string",
+					Required:    false,
+					Description: "Visibility (e.g., public, private)",
+				},
+			},
+			s.handlers.UpdateIdea),
 
 		// =============================================================================
 		// List Tools
@@ -990,6 +1257,31 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			},
 			s.handlers.CreateProduct),
 
+		skill.NewTool("update_product", "Update an existing product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New product name",
+				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New product description",
+				},
+				"reference_prefix": {
+					Type:        "string",
+					Required:    false,
+					Description: "New reference prefix",
+				},
+			},
+			s.handlers.UpdateProduct),
+
 		// =============================================================================
 		// Strategic Model Tools
 		// =============================================================================
@@ -1058,5 +1350,20 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.CreateStrategicModel),
+
+		skill.NewTool("update_strategic_model", "Update a strategic model",
+			map[string]skill.Parameter{
+				"model_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Strategic model ID",
+				},
+				"name": {
+					Type:        "string",
+					Required:    false,
+					Description: "New model name",
+				},
+			},
+			s.handlers.UpdateStrategicModel),
 	}
 }
