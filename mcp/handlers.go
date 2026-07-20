@@ -1121,3 +1121,52 @@ func (h *ToolHandlers) AddIdeaComment(ctx context.Context, params map[string]any
 		"message":    fmt.Sprintf("Comment added to idea %s", ideaID),
 	}, nil
 }
+
+// =============================================================================
+// User Tools
+// =============================================================================
+
+// GetCurrentUser returns the authenticated user.
+func (h *ToolHandlers) GetCurrentUser(ctx context.Context, params map[string]any) (any, error) {
+	user, err := h.client.GetCurrentUser(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting current user: %w", err)
+	}
+
+	return map[string]any{
+		"id":    user.ID,
+		"name":  user.Name,
+		"email": user.Email,
+	}, nil
+}
+
+// GetStrategicModel retrieves a strategic model by ID.
+func (h *ToolHandlers) GetStrategicModel(ctx context.Context, params map[string]any) (any, error) {
+	modelID, ok := params["model_id"].(string)
+	if !ok || modelID == "" {
+		return nil, fmt.Errorf("model_id parameter is required")
+	}
+
+	model, err := h.client.GetStrategicModel(ctx, modelID)
+	if err != nil {
+		return nil, fmt.Errorf("getting strategic model: %w", err)
+	}
+
+	components := make([]map[string]any, len(model.Components))
+	for i, c := range model.Components {
+		components[i] = map[string]any{
+			"id":          c.ID,
+			"name":        c.Name,
+			"description": c.Description,
+			"position":    c.Position,
+		}
+	}
+
+	return map[string]any{
+		"id":         model.ID,
+		"name":       model.Name,
+		"kind":       model.Kind,
+		"url":        model.URL,
+		"components": components,
+	}, nil
+}

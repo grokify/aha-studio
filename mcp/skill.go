@@ -556,5 +556,23 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.GraphReleaseDeps),
+
+		// =============================================================================
+		// User Tools
+		// =============================================================================
+
+		skill.NewTool("get_current_user", "Get the authenticated user",
+			map[string]skill.Parameter{},
+			s.handlers.GetCurrentUser),
+
+		skill.NewTool("get_strategic_model", "Get a strategic model by ID",
+			map[string]skill.Parameter{
+				"model_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Strategic model ID",
+				},
+			},
+			s.handlers.GetStrategicModel),
 	}
 }
