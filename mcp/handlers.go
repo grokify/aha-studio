@@ -319,6 +319,17 @@ func (h *ToolHandlers) ListIdeas(ctx context.Context, params map[string]any) (an
 	if perPage, ok := params["per_page"].(float64); ok {
 		opts = append(opts, aha.WithIdeaPerPage(int(perPage)))
 	}
+	if raw, ok := params["fields"].([]any); ok {
+		var fields []string
+		for _, v := range raw {
+			if s, ok := v.(string); ok {
+				fields = append(fields, s)
+			}
+		}
+		if len(fields) > 0 {
+			opts = append(opts, aha.WithIdeaFields(fields...))
+		}
+	}
 
 	ideas, err := h.client.ListIdeas(ctx, opts...)
 	if err != nil {

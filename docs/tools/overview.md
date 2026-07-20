@@ -190,6 +190,7 @@ List ideas from Aha with optional filtering and pagination.
 | `tag` | string | No | Filter by tag value |
 | `page` | integer | No | Page number |
 | `per_page` | integer | No | Results per page |
+| `fields` | array | No | Override the idea fields returned beyond id/name/reference_num/created_at/updated_at. Defaults to description, votes, categories, score, status_changed_at, workflow_status, feature, url, resource |
 
 ### list_products
 

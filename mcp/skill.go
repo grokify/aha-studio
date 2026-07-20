@@ -256,6 +256,11 @@ func (s *AhaSkill) Tools() []skill.Tool {
 					Required:    false,
 					Description: "Results per page",
 				},
+				"fields": {
+					Type:        "array",
+					Required:    false,
+					Description: "Override the idea fields returned beyond id/name/reference_num/created_at/updated_at (Aha's list endpoint would otherwise omit votes/categories/score). Defaults to description, votes, categories, score, status_changed_at, workflow_status, feature, url, resource.",
+				},
 			},
 			s.handlers.ListIdeas),
 
