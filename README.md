@@ -35,12 +35,12 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (34 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (71 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - 🔍 **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- 🛠️ **34 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
+- 🛠️ **71 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
 - 💾 **Local SQLite sync** - Offline queries and fast local caching
 - 🔗 **Neo4j integration** - Graph analytics and relationship queries
 - 🌐 **Browser automation** - Strategic template creation via headless Chrome
@@ -162,7 +162,7 @@ SELECT status, COUNT(*) as count FROM features GROUP BY status
 
 ## MCP Tools
 
-The MCP server provides 34 tools organized by category.
+The MCP server provides 71 tools organized by category.
 
 **Backend Legend:** Tools marked with 🌐 require browser credentials. Tools marked with 🔗 require Neo4j.
 
@@ -186,10 +186,12 @@ The MCP server provides 34 tools organized by category.
 | `get_comment` | Get comment by ID |
 | `get_requirement` | Get requirement by ID |
 | `get_user` | Get user by ID |
+| `get_current_user` | Get current authenticated user |
 | `get_key_result` | Get key result by ID |
 | `get_persona` | Get persona by ID |
 | `get_team` | Get team by ID |
 | `get_workflow` | Get workflow by ID |
+| `get_strategic_model` | Get strategic model by ID |
 
 ### List Tools (Aha API)
 
@@ -197,20 +199,70 @@ The MCP server provides 34 tools organized by category.
 |------|-------------|
 | `list_ideas` | List ideas with filters |
 | `list_products` | List all products |
+| `list_features` | List features with filters |
+| `list_release_features` | List features for a release |
+| `list_epics` | List epics with filters |
+| `list_product_epics` | List epics for a product |
+| `list_goals` | List goals with filters |
+| `list_product_goals` | List goals for a product |
+| `list_initiatives` | List initiatives with filters |
+| `list_product_initiatives` | List initiatives for a product |
+| `list_feature_requirements` | List requirements for a feature |
+| `list_users` | List workspace users |
 | `list_workflow_statuses` | List workflow statuses |
 | `list_releases` | List releases for product |
+| `list_custom_fields` | List custom field definitions |
+| `list_custom_field_options` | List options for select custom fields |
+| `list_strategic_models` | List strategic models |
+| `list_product_strategic_models` | List strategic models for a product |
 | `search_documents` | Search documents via GraphQL |
 
-### Write Tools (Aha API)
+### Create Tools (Aha API)
 
 | Tool | Description |
 |------|-------------|
-| `create_feature` | Create a new feature |
+| `create_feature` | Create a new feature in a release |
+| `create_epic` | Create a new epic in a release |
+| `create_goal` | Create a new goal in a product |
+| `create_initiative` | Create a new initiative in a product |
+| `create_requirement` | Create a new requirement for a feature |
+| `create_product` | Create a new product |
+| `create_strategic_model` | Create a new strategic model |
+
+### Update Tools (Aha API)
+
+| Tool | Description |
+|------|-------------|
+| `update_feature` | Update feature fields |
+| `update_epic` | Update epic fields |
+| `update_goal` | Update goal fields |
+| `update_initiative` | Update initiative fields |
+| `update_requirement` | Update requirement fields |
+| `update_release` | Update release fields |
+| `update_idea` | Update idea fields |
+| `update_product` | Update product fields |
+| `update_strategic_model` | Update strategic model fields |
+| `update_comment` | Update comment body |
 | `change_feature_status` | Change feature workflow status |
 | `assign_feature_release` | Assign feature to release |
 | `assign_user_to_feature` | Assign user to feature |
+
+### Comment Tools (Aha API)
+
+| Tool | Description |
+|------|-------------|
 | `add_feature_comment` | Add comment to feature |
 | `add_idea_comment` | Add comment to idea |
+| `list_feature_comments` | List comments for a feature |
+| `list_idea_comments` | List comments for an idea |
+| `list_epic_comments` | List comments for an epic |
+
+### Delete Tools (Aha API)
+
+| Tool | Description |
+|------|-------------|
+| `delete_requirement` | Delete a requirement |
+| `delete_comment` | Delete a comment |
 
 ### Template Tools
 

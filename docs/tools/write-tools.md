@@ -4,14 +4,42 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 
 ## Available Tools
 
+### Create Tools
+
 | Feature | Tool Name | Description |
 |---------|-----------|-------------|
 | Create a feature | `create_feature` | Create a new feature in a release |
+| Create an epic | `create_epic` | Create a new epic in a release |
+| Create a goal | `create_goal` | Create a new goal in a product |
+| Create an initiative | `create_initiative` | Create a new initiative in a product |
+| Create a requirement | `create_requirement` | Create a new requirement for a feature |
+
+### Update Tools
+
+| Feature | Tool Name | Description |
+|---------|-----------|-------------|
+| Update feature | `update_feature` | Update feature fields (name, description, status, dates) |
+| Update epic | `update_epic` | Update epic fields (name, description, status, progress) |
+| Update goal | `update_goal` | Update goal fields (name, description, status, progress) |
+| Update initiative | `update_initiative` | Update initiative fields (name, description, dates, scores) |
+| Update requirement | `update_requirement` | Update requirement fields (name, description, status) |
+| Update release | `update_release` | Update release fields (name, dates, parking_lot) |
+| Update idea | `update_idea` | Update idea fields (name, description, status, visibility) |
+
+### Status & Assignment Tools
+
+| Feature | Tool Name | Description |
+|---------|-----------|-------------|
 | Assign user to feature | `assign_user_to_feature` | Assign a user to a feature |
 | Change status | `change_feature_status` | Change the workflow status of a feature |
-| Lookup statuses | `list_workflow_statuses` | List all workflow statuses for a product (lookup IDs by name) |
 | Assign release | `assign_feature_release` | Assign a feature to a different release |
+| Lookup statuses | `list_workflow_statuses` | List all workflow statuses for a product (lookup IDs by name) |
 | Lookup releases | `list_releases` | List all releases for a product (lookup IDs by name) |
+
+### Comment Tools
+
+| Feature | Tool Name | Description |
+|---------|-----------|-------------|
 | Add feature comments | `add_feature_comment` | Add a comment to a feature |
 | Add idea comments | `add_idea_comment` | Add a comment to an idea |
 
