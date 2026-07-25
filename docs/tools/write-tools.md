@@ -23,7 +23,7 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 | Update goal | `update_goal` | Update goal fields (name, description, status, progress) |
 | Update initiative | `update_initiative` | Update initiative fields (name, description, dates, scores) |
 | Update requirement | `update_requirement` | Update requirement fields (name, description, status) |
-| Update release | `update_release` | Update release fields (name, dates, parking_lot) |
+| Update release | `update_release` | Update release fields (name, dates, parking_lot, description) |
 | Update idea | `update_idea` | Update idea fields (name, description, status, visibility) |
 
 ### Status & Assignment Tools

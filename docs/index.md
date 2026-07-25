@@ -18,6 +18,7 @@ Aha Studio provides two command-line tools:
 - **Local SQLite sync** - Offline queries and fast local caching
 - **Neo4j integration** - Graph analytics and relationship queries
 - **Browser automation** - Strategic template creation via headless Chrome
+- **OmniSignal provider** - Emit signals from Aha ideas to ProductContext pipeline
 
 ## What is MCP?
 
