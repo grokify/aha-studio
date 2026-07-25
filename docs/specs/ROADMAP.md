@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-AHASTUDIO-001`
 **Repository:** `github.com/grokify/aha-studio`
-**Status:** Planned — 0 of 7 phases completed
+**Status:** In Progress — 1 of 7 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry the trailer `Refs: RMI-AHASTUDIO-NNN`. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md); this file covers remaining work only. See [PLAN.md](PLAN.md) for workstream rationale and sequencing.
 
@@ -42,22 +42,28 @@
 ## Phase 3 — OmniSignal Adapter
 
 **Theme:** Bridge Aha Ideas into the ProductContext signal layer.
-**Status:** Not started — 0 of 6 items completed
+**Status:** Completed — 6 of 6 items completed
 
-- [ ] `RMI-AHASTUDIO-012` IR schema coordination with signal-spec and omnisignal
+- [x] `RMI-AHASTUDIO-012` IR schema coordination with signal-spec and omnisignal
   - Acceptance: cross-repo gate — `plexusone/signal-spec` defines the enhancement signal type (schema is owned there, not here); field mapping for Aha Idea agreed and recorded in TRD.md before implementation starts
-- [ ] `RMI-AHASTUDIO-013` Adapter package mapping Aha Idea to enhancement signal IR
+  - Delivered: signal-spec v0.2.0 `TypeEnhancementRequest`; field mapping in omnisignal `docs/metadata-conventions.md`
+- [x] `RMI-AHASTUDIO-013` Adapter package mapping Aha Idea to enhancement signal IR
   - Depends on: `RMI-AHASTUDIO-012`
   - Acceptance: raw facts only (votes, dates, counts); derived metrics such as frustration score are computed by OmniSignal, not here
-- [ ] `RMI-AHASTUDIO-014` Product and category normalization to canonical IDs
+  - Delivered: `omnisignal/provider.go` with `normalizeIdea()` function
+- [x] `RMI-AHASTUDIO-014` Product and category normalization to canonical IDs
   - Depends on: `RMI-AHASTUDIO-013`
-- [ ] `RMI-AHASTUDIO-015` Metrics and lifecycle extraction: votes, subscribers, organizations, named customers, opportunities, estimated ARR; workflow status mapping and `ageDays`
+  - Delivered: `normalizeIdea()` extracts product ref and category refs as typed IDs
+- [x] `RMI-AHASTUDIO-015` Metrics and lifecycle extraction: votes, subscribers, organizations, named customers, opportunities, estimated ARR; workflow status mapping and `ageDays`
   - Depends on: `RMI-AHASTUDIO-013`
-- [ ] `RMI-AHASTUDIO-016` Batch export command (`aha-studio signals export`) and/or provider registration with `plexusone/omnisignal`
+  - Delivered: `normalizeIdea()` populates metadata with votes, workflow status, ageDays calculation
+- [x] `RMI-AHASTUDIO-016` Batch export command (`aha-studio signals export`) and/or provider registration with `plexusone/omnisignal`
   - Depends on: `RMI-AHASTUDIO-014`, `RMI-AHASTUDIO-015`
-- [ ] `RMI-AHASTUDIO-017` Round-trip tests against recorded fixtures
+  - Delivered: `init()` registers "aha" provider with omnisignal registry
+- [x] `RMI-AHASTUDIO-017` Round-trip tests against recorded fixtures
   - Depends on: `RMI-AHASTUDIO-016`
   - Acceptance: no live API calls in unit tests
+  - Delivered: `omnisignal/provider_test.go` with mock client
 
 ## Phase 4 — HTTP API Remainder
 
