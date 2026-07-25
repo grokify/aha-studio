@@ -38,6 +38,7 @@ Aha Studio provides two command-line tools:
 
 - 🔍 **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
 - 🛠️ **71 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
+- 📡 **OmniSignal provider** - Normalizes Aha Ideas into vendor-neutral signals for the ProductContext signal pipeline
 - 💾 **Local SQLite sync** - Offline queries and fast local caching
 - 🔗 **Neo4j integration** - Graph analytics and relationship queries
 - 🌐 **Browser automation** - Strategic template creation via headless Chrome
@@ -235,7 +236,7 @@ The MCP server provides 71 tools organized by category.
 | `update_goal` | Update goal fields |
 | `update_initiative` | Update initiative fields |
 | `update_requirement` | Update requirement fields |
-| `update_release` | Update release fields |
+| `update_release` | Update release fields, including `description` (Aha's release theme) |
 | `update_idea` | Update idea fields |
 | `update_product` | Update product fields |
 | `update_strategic_model` | Update strategic model fields |
