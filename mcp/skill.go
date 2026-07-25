@@ -818,6 +818,11 @@ func (s *AhaSkill) Tools() []skill.Tool {
 					Required:    false,
 					Description: "Whether this is a parking lot release",
 				},
+				"description": {
+					Type:        "string",
+					Required:    false,
+					Description: "New description for the release (HTML supported). Aha calls this field 'theme' internally.",
+				},
 			},
 			s.handlers.UpdateRelease),
 

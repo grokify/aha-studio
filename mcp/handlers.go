@@ -520,6 +520,7 @@ func releaseToMap(r *aha.Release) map[string]any {
 		"name":          r.Name,
 		"released":      r.Released,
 		"parking_lot":   r.ParkingLot,
+		"description":   r.Theme,
 		"url":           r.URL,
 	}
 	if r.StartDate != nil {
@@ -1525,6 +1526,10 @@ func (h *ToolHandlers) UpdateRelease(ctx context.Context, params map[string]any)
 		opts = append(opts, aha.WithReleaseParkingLot(parkingLot))
 	}
 
+	if description, ok := params["description"].(string); ok && description != "" {
+		opts = append(opts, aha.WithReleaseTheme(description))
+	}
+
 	if len(opts) == 0 {
 		return nil, fmt.Errorf("at least one field to update is required")
 	}
@@ -1539,6 +1544,7 @@ func (h *ToolHandlers) UpdateRelease(ctx context.Context, params map[string]any)
 		"reference_num": release.ReferenceNum,
 		"name":          release.Name,
 		"parking_lot":   release.ParkingLot,
+		"description":   release.Theme,
 		"url":           release.URL,
 		"message":       fmt.Sprintf("Release %s updated successfully", release.ReferenceNum),
 	}, nil
