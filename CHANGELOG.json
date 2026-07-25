@@ -7,6 +7,29 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.11.0",
+      "date": "2026-07-25",
+      "commit": "921d1a4",
+      "highlights": [
+        { "description": "New OmniSignal provider maps Aha Ideas into vendor-neutral enhancement_request signals for the ProductContext signal pipeline" },
+        { "description": "MCP release tools now support the description field (update_release accepts it, get_release/list_releases return it)" }
+      ],
+      "added": [
+        { "description": "omnisignal package implementing omnisignal.Provider for Aha Ideas, preserving votes, categories, score, and linked feature info, with capability-ref mapping and fingerprinted enhancement_request signals", "commit": "aa63f9b" },
+        { "description": "update_release accepts a description parameter; get_release and list_releases return the description field, backed by Release.Theme via aha-go's WithReleaseTheme", "commit": "84a0024" }
+      ],
+      "documentation": [
+        { "description": "Add CLAUDE.md and docs/specs (ARCHITECTURE.md, PRD.md, TRD.md, PLAN.md, ROADMAP.md) documenting repo conventions and design", "commit": "412afc7" },
+        { "description": "Update README.md shields", "commit": "921d1a4" }
+      ],
+      "dependencies": [
+        { "description": "Update github.com/grokify/aha-go to v0.8.0 (Release.Theme, DescriptionObject fix)", "commit": "da3404d" },
+        { "description": "Update github.com/plexusone/omnisignal to v0.2.0 (curated signals, consolidation)", "commit": "da3404d" },
+        { "description": "Update github.com/plexusone/signal-spec to v0.2.0 (metadata constants, fingerprinting)", "commit": "da3404d" },
+        { "description": "Remove local development replace directives for released versions", "commit": "da3404d" }
+      ]
+    },
+    {
       "version": "v0.10.0",
       "date": "2026-07-20",
       "commit": "f7df5e4",
