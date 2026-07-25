@@ -3,7 +3,6 @@
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
 [![Go SAST][go-sast-svg]][go-sast-url]
-[![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![Docs][docs-mkdoc-svg]][docs-mkdoc-url]
 [![Visualization][viz-svg]][viz-url]
@@ -15,8 +14,6 @@
  [go-lint-url]: https://github.com/grokify/aha-studio/actions/workflows/go-lint.yaml
  [go-sast-svg]: https://github.com/grokify/aha-studio/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
  [go-sast-url]: https://github.com/grokify/aha-studio/actions/workflows/go-sast-codeql.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/aha-studio
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/aha-studio
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/aha-studio
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/aha-studio
  [docs-mkdoc-svg]: https://img.shields.io/badge/Go-dev%20guide-blue.svg
