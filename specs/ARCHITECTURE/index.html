@@ -10,10 +10,8 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/aha-studio/specs/ROADMAP/">
+        <link rel="canonical" href="https://grokify.github.io/aha-studio/specs/ARCHITECTURE/">
       
-      
-        <link rel="prev" href="../../releases/v0.6.0/">
       
       
       
@@ -25,7 +23,7 @@
     
     
       
-        <title>Roadmap - Aha Studio</title>
+        <title>Aha Studio Architecture - Aha Studio</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aha-studio-roadmap" class="md-skip">
+        <a href="#aha-studio-architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Roadmap
+              Aha Studio Architecture
             
           </span>
         </div>
@@ -377,11 +375,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../ROADMAP/" class="md-tabs__link">
         
   
   
@@ -1311,37 +1307,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Roadmap
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
         
   
   
@@ -1357,103 +1326,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#phase-1-release-query-completion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 1 — Release Query Completion
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-2-write-tool-gaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 2 — Write Tool Gaps
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-3-omnisignal-adapter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 3 — OmniSignal Adapter
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-4-http-api-remainder" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 4 — HTTP API Remainder
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-5-analytics-tools" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 5 — Analytics Tools
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-6-duckdb-evaluation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 6 — DuckDB Evaluation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-7-external-integrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 7 — External Integrations
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1485,10 +1357,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#phase-1-release-query-completion" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 1 — Release Query Completion
+        Overview
       
     </span>
   </a>
@@ -1496,10 +1368,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-2-write-tool-gaps" class="md-nav__link">
+  <a href="#system-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 2 — Write Tool Gaps
+        System Architecture
       
     </span>
   </a>
@@ -1507,10 +1379,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-3-omnisignal-adapter" class="md-nav__link">
+  <a href="#aql-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 3 — OmniSignal Adapter
+        AQL Pipeline
       
     </span>
   </a>
@@ -1518,10 +1390,99 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-4-http-api-remainder" class="md-nav__link">
+  <a href="#mcp-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 4 — HTTP API Remainder
+        MCP Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MCP Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aha-api-aha-go" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aha API (aha-go)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite (sync/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j (graph/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in-memory-cache-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In-Memory Cache (cache/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP API
       
     </span>
   </a>
@@ -1529,10 +1490,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-5-analytics-tools" class="md-nav__link">
+  <a href="#ecosystem-position" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 5 — Analytics Tools
+        Ecosystem Position
       
     </span>
   </a>
@@ -1540,21 +1501,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-6-duckdb-evaluation" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 6 — DuckDB Evaluation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-7-external-integrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 7 — External Integrations
+        Dependencies
       
     </span>
   </a>
@@ -1581,109 +1531,203 @@
   
 
 
-<h1 id="aha-studio-roadmap">Aha Studio — Roadmap<a class="headerlink" href="#aha-studio-roadmap" title="Permanent link">&para;</a></h1>
-<p><strong>Initiative:</strong> <code>INIT-AHASTUDIO-001</code>
-<strong>Repository:</strong> <code>github.com/grokify/aha-studio</code>
-<strong>Status:</strong> Planned — 0 of 7 phases completed</p>
-<blockquote>
-<p>RMI IDs are stable and permanent. Commits implementing an item carry the trailer <code>Refs: RMI-AHASTUDIO-NNN</code>. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in <a href="../ROADMAP_HISTORY/">ROADMAP_HISTORY.md</a>; this file covers remaining work only. See <a href="../PLAN/">PLAN.md</a> for workstream rationale and sequencing.</p>
-</blockquote>
-<h2 id="phase-1-release-query-completion">Phase 1 — Release Query Completion<a class="headerlink" href="#phase-1-release-query-completion" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Finish feature-release queries and clear the release blocker.
-<strong>Status:</strong> Not started — 0 of 5 items completed</p>
+<h1 id="aha-studio-architecture">Aha Studio Architecture<a class="headerlink" href="#aha-studio-architecture" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Aha Studio is a Go application providing AQL (Aha Query Language), MCP server integration, local SQLite sync, Neo4j graph analytics, and an HTTP API for Aha.io product management data.</p>
+<h2 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    ┌──────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    │         Entry Points          │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                    │                               │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                    │  CLI (cobra)    MCP (stdio)   │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                    │  REPL           HTTP API      │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                    └──────────┬───────────────────┘
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                               │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                    ┌──────────▼───────────────────┐
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    │       Studio (Facade)         │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                    │       studio/studio.go        │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                    └──────────┬───────────────────┘
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                               │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>          ┌────────────────────┼────────────────────┐
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>          │                    │                     │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a> ┌────────▼────────┐ ┌────────▼────────┐  ┌────────▼────────┐
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a> │  AQL Pipeline   │ │   MCP Server    │  │   HTTP Server   │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a> │                 │ │   mcp/          │  │   httpserver/   │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a> │ lexer → parser  │ │                 │  │                 │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a> │   → ast         │ │ OmniSkill skill │  │ REST endpoints  │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a> │   → validator   │ │ 40+ tools       │  │ CORS/Auth       │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a> │   → planner     │ │ Resources       │  │ Query modes     │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a> │   → executor    │ │                 │  │                 │
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a> └────────┬────────┘ └────────┬────────┘  └────────┬────────┘
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>          │                   │                     │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>          └────────────┬──────┴─────────────────────┘
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>                       │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>          ┌────────────▼────────────────────────────┐
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>          │              Data Layer                  │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>          │                                          │
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>          │  ┌──────────┐ ┌──────────┐ ┌──────────┐ │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>          │  │ Aha API  │ │ SQLite   │ │ Neo4j    │ │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>          │  │ (live)   │ │ (cache)  │ │ (graph)  │ │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>          │  │ aha-go   │ │ sync/    │ │ graph/   │ │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>          │  └──────────┘ └──────────┘ └──────────┘ │
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>          └─────────────────────────────────────────┘
+</code></pre></div>
+<h2 id="aql-pipeline">AQL Pipeline<a class="headerlink" href="#aql-pipeline" title="Permanent link">&para;</a></h2>
+<p>The query engine follows a classic compiler pipeline:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>AQL string
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    ▼
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Lexer (aql/lexer/)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    │  Tokenization
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ▼
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Parser (aql/parser/)
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    │  Recursive descent, operator precedence
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    ▼
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>AST (aql/ast/)
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    │  SELECT, FROM, WHERE, JOIN, GROUP BY, HAVING,
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    │  ORDER BY, LIMIT, INSERT, UPDATE, DELETE
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    ▼
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>Validator (aql/validator/)
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    │  Semantic validation against entity schema
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    ▼
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>Planner (planner/)
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    │  Filter pushdown, custom field detection,
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    │  JOIN strategy, aggregation planning
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    ▼
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>Executor (executor/)
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    │  API calls, client-side filtering, aggregation,
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    │  JOIN resolution, mutation execution
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    ▼
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>Result (result/)
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>    │  Records, metadata, formatting
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    ▼
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>Output (table / JSON / CSV / YAML / Markdown / HTML / XLSX)
+</code></pre></div>
+<h2 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h2>
+<p>Built on the OmniSkill framework (<code>github.com/plexusone/omniskill</code>), which provides:</p>
 <ul>
-<li>[ ] <code>RMI-AHASTUDIO-001</code> Feature→Release relationship rows during sync</li>
-<li>Acceptance: sync inserts <code>BELONGS_TO</code> rows into the relationships table for every feature with a <code>release_id</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-002</code> <code>GetFeaturesByReleaseDate</code> and <code>GetFeaturesByReleaseName</code> in <code>sync/db.go</code></li>
-<li>Depends on: <code>RMI-AHASTUDIO-001</code></li>
-<li>Acceptance: date-indexed and name-based lookups joining features to releases, with unit tests</li>
-<li>[ ] <code>RMI-AHASTUDIO-003</code> AQL <code>release.date</code> and <code>release.name</code> qualifier support in planner and executor</li>
-<li>Depends on: <code>RMI-AHASTUDIO-002</code></li>
-<li>Acceptance: <code>FROM features WHERE release.date = '2026-10-31'</code> and <code>release.name = 'Q4 2026'</code> work in offline and prefer-cache modes; extends the existing <code>custom.*</code> qualifier mechanism</li>
-<li>[ ] <code>RMI-AHASTUDIO-004</code> <code>list_features_by_release_date</code> MCP tool</li>
-<li>Depends on: <code>RMI-AHASTUDIO-002</code></li>
-<li>Acceptance: thin wrapper over the db methods, registered in the Aha skill</li>
-<li>[ ] <code>RMI-AHASTUDIO-005</code> Remove local <code>replace github.com/grokify/aha-go =&gt; ../aha-go</code> from <code>go.mod</code></li>
-<li>Acceptance: required <code>aha-go</code> changes released and tagged upstream; <code>go.mod</code> pins a published version; pre-push checklist passes</li>
+<li>Skill/Tool abstraction over the MCP protocol</li>
+<li>Transport options: stdio (Claude Desktop), HTTP/SSE</li>
+<li>Direct library-mode invocation without JSON-RPC overhead</li>
 </ul>
-<h2 id="phase-2-write-tool-gaps">Phase 2 — Write Tool Gaps<a class="headerlink" href="#phase-2-write-tool-gaps" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Close out remaining legacy Phase 10b MCP write tools as one batch release.
-<strong>Status:</strong> Not started — 0 of 6 items completed</p>
+<p>The MCP server exposes 40+ tools across entity types (features, ideas, releases, epics, goals, initiatives, requirements, products, strategic models, comments) with full CRUD operations plus lookup/reference helpers.</p>
+<h3 id="key-files">Key files<a class="headerlink" href="#key-files" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp/skill.go</code></td>
+<td>AhaSkill definition, tool registration</td>
+</tr>
+<tr>
+<td><code>mcp/handlers.go</code></td>
+<td>Tool handler implementations</td>
+</tr>
+<tr>
+<td><code>mcp/config.go</code></td>
+<td>MCP server configuration</td>
+</tr>
+</tbody>
+</table>
+<h2 id="data-layer">Data Layer<a class="headerlink" href="#data-layer" title="Permanent link">&para;</a></h2>
+<h3 id="aha-api-aha-go">Aha API (aha-go)<a class="headerlink" href="#aha-api-aha-go" title="Permanent link">&para;</a></h3>
+<p>Primary data source. All live queries go through <code>github.com/grokify/aha-go</code>, which wraps the Aha.io REST API.</p>
+<h3 id="sqlite-sync">SQLite (sync/)<a class="headerlink" href="#sqlite-sync" title="Permanent link">&para;</a></h3>
+<p>Local cache for offline and hybrid query modes.</p>
 <ul>
-<li>[ ] <code>RMI-AHASTUDIO-006</code> <code>create_idea</code> MCP tool</li>
-<li>[ ] <code>RMI-AHASTUDIO-007</code> <code>create_release</code> MCP tool</li>
-<li>Acceptance: pairs with the existing <code>update_release</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-008</code> <code>add_goal_to_feature</code> and <code>remove_goal_from_feature</code> MCP tools</li>
-<li>[ ] <code>RMI-AHASTUDIO-009</code> <code>get_feature_ideas</code> MCP tool (ideas promoted to a feature)</li>
-<li>[ ] <code>RMI-AHASTUDIO-010</code> <code>list_idea_categories</code> MCP tool with caching</li>
-<li>[ ] <code>RMI-AHASTUDIO-011</code> <code>delete_idea</code> MCP tool with confirmation semantics</li>
-<li>Acceptance: destructive operation requires explicit confirmation parameter; documented in tool description</li>
+<li>Full entity sync with incremental updates via <code>updated_since</code></li>
+<li>Schema migrations for evolving entity models</li>
+<li>FTS5 full-text search across entities</li>
+<li>Saved filters persistence</li>
+<li>Three query modes: <code>api</code> (live only), <code>offline</code> (cache only), <code>prefer-cache</code> (cache first, API fallback)</li>
 </ul>
-<h2 id="phase-3-omnisignal-adapter">Phase 3 — OmniSignal Adapter<a class="headerlink" href="#phase-3-omnisignal-adapter" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Bridge Aha Ideas into the ProductContext signal layer.
-<strong>Status:</strong> Not started — 0 of 6 items completed</p>
+<h3 id="neo4j-graph">Neo4j (graph/)<a class="headerlink" href="#neo4j-graph" title="Permanent link">&para;</a></h3>
+<p>Graph analytics for entity relationships.</p>
 <ul>
-<li>[ ] <code>RMI-AHASTUDIO-012</code> IR schema coordination with signal-spec and omnisignal</li>
-<li>Acceptance: cross-repo gate — <code>plexusone/signal-spec</code> defines the enhancement signal type (schema is owned there, not here); field mapping for Aha Idea agreed and recorded in TRD.md before implementation starts</li>
-<li>[ ] <code>RMI-AHASTUDIO-013</code> Adapter package mapping Aha Idea to enhancement signal IR</li>
-<li>Depends on: <code>RMI-AHASTUDIO-012</code></li>
-<li>Acceptance: raw facts only (votes, dates, counts); derived metrics such as frustration score are computed by OmniSignal, not here</li>
-<li>[ ] <code>RMI-AHASTUDIO-014</code> Product and category normalization to canonical IDs</li>
-<li>Depends on: <code>RMI-AHASTUDIO-013</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-015</code> Metrics and lifecycle extraction: votes, subscribers, organizations, named customers, opportunities, estimated ARR; workflow status mapping and <code>ageDays</code></li>
-<li>Depends on: <code>RMI-AHASTUDIO-013</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-016</code> Batch export command (<code>aha-studio signals export</code>) and/or provider registration with <code>plexusone/omnisignal</code></li>
-<li>Depends on: <code>RMI-AHASTUDIO-014</code>, <code>RMI-AHASTUDIO-015</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-017</code> Round-trip tests against recorded fixtures</li>
-<li>Depends on: <code>RMI-AHASTUDIO-016</code></li>
-<li>Acceptance: no live API calls in unit tests</li>
+<li>Feature dependency graphs</li>
+<li>Release dependency analysis</li>
+<li>Initiative impact mapping</li>
+<li>Product overview aggregation</li>
+<li>Raw Cypher query support</li>
 </ul>
-<h2 id="phase-4-http-api-remainder">Phase 4 — HTTP API Remainder<a class="headerlink" href="#phase-4-http-api-remainder" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Complete the legacy Phase 11 HTTP surface.
-<strong>Status:</strong> Not started — 0 of 3 items completed</p>
-<ul>
-<li>[ ] <code>RMI-AHASTUDIO-018</code> OpenAPI 3.0 specification served at <code>/api/openapi.json</code></li>
-<li>Acceptance: covers all existing endpoints; enables client generation</li>
-<li>[ ] <code>RMI-AHASTUDIO-019</code> <code>/metrics</code> Prometheus endpoint</li>
-<li>Acceptance: query counts, latencies, cache hit rate</li>
-<li>[ ] <code>RMI-AHASTUDIO-020</code> WebSocket streaming for large result sets</li>
-<li>Acceptance: deferred until a concrete consumer exists; re-scope before starting</li>
-</ul>
-<h2 id="phase-5-analytics-tools">Phase 5 — Analytics Tools<a class="headerlink" href="#phase-5-analytics-tools" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Aggregated statistics without fetching all records to the client (legacy Phase 10c).
-<strong>Status:</strong> Not started — 0 of 3 items completed</p>
-<ul>
-<li>[ ] <code>RMI-AHASTUDIO-021</code> <code>get_ideas_statistics</code> MCP tool</li>
-<li>Acceptance: counts by status/category, vote statistics, top ideas per group; computed from the SQLite cache when synced, API aggregation as fallback</li>
-<li>[ ] <code>RMI-AHASTUDIO-022</code> <code>get_features_statistics</code> MCP tool</li>
-<li>Acceptance: counts by release/status, requirements summary; cache-first</li>
-<li>[ ] <code>RMI-AHASTUDIO-023</code> <code>get_idea_voter_domains</code> MCP tool</li>
-<li>Acceptance: unique voter domain analytics for an idea</li>
-</ul>
-<h2 id="phase-6-duckdb-evaluation">Phase 6 — DuckDB Evaluation<a class="headerlink" href="#phase-6-duckdb-evaluation" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Columnar engine for analytics, benchmark-first (legacy Phase 13).
-<strong>Status:</strong> Not started — 0 of 4 items completed</p>
-<ul>
-<li>[ ] <code>RMI-AHASTUDIO-024</code> Benchmark current SQLite performance on representative analytics queries</li>
-<li>Depends on: <code>RMI-AHASTUDIO-021</code>, <code>RMI-AHASTUDIO-022</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-025</code> Feature-flagged DuckDB backend for entity data</li>
-<li>Depends on: <code>RMI-AHASTUDIO-024</code></li>
-<li>Acceptance: SQLite retained for sync metadata</li>
-<li>[ ] <code>RMI-AHASTUDIO-026</code> Parquet export support</li>
-<li>Depends on: <code>RMI-AHASTUDIO-025</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-027</code> Validate and flip default, or drop DuckDB if SQLite proves sufficient</li>
-<li>Depends on: <code>RMI-AHASTUDIO-025</code></li>
-<li>Acceptance: decision recorded with benchmark evidence</li>
-</ul>
-<h2 id="phase-7-external-integrations">Phase 7 — External Integrations<a class="headerlink" href="#phase-7-external-integrations" title="Permanent link">&para;</a></h2>
-<p><strong>Theme:</strong> Cross-system tools and AI workflows (legacy Phase 10d); lowest priority.
-<strong>Status:</strong> Not started — 0 of 3 items completed</p>
-<ul>
-<li>[ ] <code>RMI-AHASTUDIO-028</code> Jira integration tools: <code>fetch_jira_issue</code>, <code>search_jira_issues</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-029</code> Confluence integration tools: <code>read_confluence_page</code>, <code>search_confluence</code></li>
-<li>[ ] <code>RMI-AHASTUDIO-030</code> AI workflow tools: <code>review_idea</code>, <code>triage_new_ideas</code>, <code>groom_feature</code></li>
-<li>Acceptance: re-scope this phase after the OmniSignal adapter ships — some cross-system use cases may be better served at the OmniSignal layer</li>
-</ul>
+<h3 id="in-memory-cache-cache">In-Memory Cache (cache/)<a class="headerlink" href="#in-memory-cache-cache" title="Permanent link">&para;</a></h3>
+<p>LRU cache with TTL for API response caching. Thread-safe, configurable size and expiration.</p>
+<h2 id="http-api">HTTP API<a class="headerlink" href="#http-api" title="Permanent link">&para;</a></h2>
+<p>REST server (<code>httpserver/</code>) exposing AQL queries, sync management, saved filters, full-text search, and Neo4j graph endpoints. See ROADMAP.md Phase 11 for the full endpoint list.</p>
+<h2 id="ecosystem-position">Ecosystem Position<a class="headerlink" href="#ecosystem-position" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Grokify Org
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>─────────────────────────────────
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>aha-go          Aha.io API client
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>aha-studio      AQL + MCP + sync + graph
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>         │
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>         │ OmniSignal adapter
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>         │ (Aha Ideas → enhancement signals)
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>         ▼
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>PlexusOne Org
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>─────────────────────────────────
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>omniskill       MCP skill framework
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>omnisignal      Signal normalization
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>         │
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>         │ references
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>         ▼
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>ProductBuildersHQ Org
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>─────────────────────────────────
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>market-spec     Market intelligence entities
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>organization-spec  Customer/prospect entities
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>prism-roadmap   Strategic planning
+</code></pre></div>
+<p>Aha Studio bridges Aha.io into the broader ProductContext ecosystem. The OmniSignal adapter converts Aha-specific concepts (Ideas, Idea Portals, custom fields) into vendor-neutral signals that OmniSignal can aggregate with evidence from other sources.</p>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>github.com/grokify/aha-go</code></td>
+<td>Aha.io REST API client</td>
+</tr>
+<tr>
+<td><code>github.com/plexusone/omniskill</code></td>
+<td>MCP skill infrastructure</td>
+</tr>
+<tr>
+<td><code>github.com/modelcontextprotocol/go-sdk</code></td>
+<td>Official MCP Go SDK</td>
+</tr>
+<tr>
+<td><code>github.com/spf13/cobra</code></td>
+<td>CLI framework</td>
+</tr>
+<tr>
+<td><code>github.com/c-bata/go-prompt</code></td>
+<td>Interactive REPL</td>
+</tr>
+<tr>
+<td><code>github.com/xuri/excelize/v2</code></td>
+<td>Excel export</td>
+</tr>
+<tr>
+<td><code>modernc.org/sqlite</code></td>
+<td>Pure Go SQLite driver</td>
+</tr>
+<tr>
+<td><code>github.com/neo4j/neo4j-go-driver</code></td>
+<td>Neo4j graph database</td>
+</tr>
+</tbody>
+</table>
 
 
 
