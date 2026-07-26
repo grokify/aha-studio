@@ -26,11 +26,28 @@ type Result struct {
 type Record map[string]any
 
 // Get returns the value for a field, or nil if not found.
-// Supports custom field lookup using "custom.fieldname" syntax.
+// Supports special field prefixes:
+//   - "custom.fieldname" for custom fields
+//   - "release.date" maps to "release_date"
+//   - "release.name" maps to "release" (the release name field)
 func (r Record) Get(field string) any {
 	// Check for custom field syntax (custom.fieldname)
 	if strings.HasPrefix(field, "custom.") {
 		return r[field] // Custom fields are stored with full key
+	}
+	// Check for release field syntax (release.date, release.name)
+	if strings.HasPrefix(field, "release.") {
+		suffix := strings.TrimPrefix(field, "release.")
+		switch suffix {
+		case "date":
+			return r["release_date"]
+		case "name":
+			return r["release"]
+		case "id":
+			return r["release_id"]
+		default:
+			// Fall through to check if field exists as-is
+		}
 	}
 	return r[field]
 }

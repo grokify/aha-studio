@@ -2,28 +2,33 @@
 
 **Initiative:** `INIT-AHASTUDIO-001`
 **Repository:** `github.com/grokify/aha-studio`
-**Status:** In Progress — 1 of 7 phases completed
+**Status:** In Progress — 2 of 7 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry the trailer `Refs: RMI-AHASTUDIO-NNN`. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md); this file covers remaining work only. See [PLAN.md](PLAN.md) for workstream rationale and sequencing.
 
 ## Phase 1 — Release Query Completion
 
 **Theme:** Finish feature-release queries and clear the release blocker.
-**Status:** Not started — 0 of 5 items completed
+**Status:** Completed — 5 of 5 items completed
 
-- [ ] `RMI-AHASTUDIO-001` Feature→Release relationship rows during sync
+- [x] `RMI-AHASTUDIO-001` Feature→Release relationship rows during sync
   - Acceptance: sync inserts `BELONGS_TO` rows into the relationships table for every feature with a `release_id`
-- [ ] `RMI-AHASTUDIO-002` `GetFeaturesByReleaseDate` and `GetFeaturesByReleaseName` in `sync/db.go`
+  - Delivered: `syncFeaturesGraphQL()` calls `UpsertRelationship("feature", f.Id, "BELONGS_TO_RELEASE", "release", releaseID, product)` in sync/sync.go:263
+- [x] `RMI-AHASTUDIO-002` `GetFeaturesByReleaseDate` and `GetFeaturesByReleaseName` in `sync/db.go`
   - Depends on: `RMI-AHASTUDIO-001`
   - Acceptance: date-indexed and name-based lookups joining features to releases, with unit tests
-- [ ] `RMI-AHASTUDIO-003` AQL `release.date` and `release.name` qualifier support in planner and executor
+  - Delivered: `GetFeaturesByReleaseDate`, `GetFeaturesByReleaseDateRange`, `GetFeaturesByReleaseName`, `GetFeaturesByReleaseID` in sync/db.go
+- [x] `RMI-AHASTUDIO-003` AQL `release.date` and `release.name` qualifier support in planner and executor
   - Depends on: `RMI-AHASTUDIO-002`
   - Acceptance: `FROM features WHERE release.date = '2026-10-31'` and `release.name = 'Q4 2026'` work in offline and prefer-cache modes; extends the existing `custom.*` qualifier mechanism
-- [ ] `RMI-AHASTUDIO-004` `list_features_by_release_date` MCP tool
+  - Delivered: `Record.Get()` maps `release.*` prefix to release fields; `featureToRecord()` populates `release.date`, `release.name`, `release.id`; planner recognizes `release.*` in `checkCustomFieldsNeeded()`
+- [x] `RMI-AHASTUDIO-004` `list_features_by_release_date` MCP tool
   - Depends on: `RMI-AHASTUDIO-002`
   - Acceptance: thin wrapper over the db methods, registered in the Aha skill
-- [ ] `RMI-AHASTUDIO-005` Remove local `replace github.com/grokify/aha-go => ../aha-go` from `go.mod`
+  - Delivered: `list_features_by_release_date` and `list_features_by_release_name` tools in mcp/skill.go; handlers wrap sync/db.go methods
+- [x] `RMI-AHASTUDIO-005` Remove local `replace github.com/grokify/aha-go => ../aha-go` from `go.mod`
   - Acceptance: required `aha-go` changes released and tagged upstream; `go.mod` pins a published version; pre-push checklist passes
+  - Delivered: go.mod has no aha-go replace directive; dependency pinned to published v0.8.0
 
 ## Phase 2 — Write Tool Gaps
 

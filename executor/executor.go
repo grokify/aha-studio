@@ -552,8 +552,12 @@ func featureToRecord(f *aha.Feature) result.Record {
 	if f.Release != nil {
 		rec["release"] = f.Release.Name
 		rec["release_id"] = f.Release.ID
+		// Store release fields with both formats for AQL compatibility
+		rec["release.name"] = f.Release.Name
+		rec["release.id"] = f.Release.ID
 		if f.Release.ReleaseDate != nil {
 			rec["release_date"] = *f.Release.ReleaseDate
+			rec["release.date"] = *f.Release.ReleaseDate
 		}
 	}
 	if f.AssignedTo != nil {

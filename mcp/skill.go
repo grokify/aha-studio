@@ -1473,5 +1473,49 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.UpdateStrategicModel),
+
+		// =============================================================================
+		// Offline/Cache-Based Tools (require synced SQLite database)
+		// =============================================================================
+
+		skill.NewTool("list_features_by_release_date", "List features by release date from the local cache (requires sync)",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"release_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Exact release date to match (YYYY-MM-DD format)",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start of release date range (YYYY-MM-DD format)",
+				},
+				"end_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "End of release date range (YYYY-MM-DD format)",
+				},
+			},
+			s.handlers.ListFeaturesByReleaseDate),
+
+		skill.NewTool("list_features_by_release_name", "List features by release name from the local cache (requires sync)",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"release_name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Release name to match exactly",
+				},
+			},
+			s.handlers.ListFeaturesByReleaseName),
 	}
 }

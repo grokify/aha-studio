@@ -61,8 +61,8 @@ func TestAhaSkill_Tools(t *testing.T) {
 	s := NewAhaSkill(cfg)
 	tools := s.Tools()
 
-	// Verify we have the expected number of tools (71 as per documentation)
-	expectedCount := 71
+	// Verify we have the expected number of tools (73: 71 original + 2 cache-based tools)
+	expectedCount := 73
 	if len(tools) != expectedCount {
 		t.Errorf("Tools() returned %d tools, want %d", len(tools), expectedCount)
 	}
@@ -146,6 +146,9 @@ func TestAhaSkill_ToolNames(t *testing.T) {
 		// Delete tools
 		"delete_requirement",
 		"delete_comment",
+		// Cache-based tools
+		"list_features_by_release_date",
+		"list_features_by_release_name",
 	}
 
 	for _, name := range essentialTools {

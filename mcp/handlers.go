@@ -19,6 +19,7 @@ import (
 	"github.com/grokify/aha-studio/executor"
 	"github.com/grokify/aha-studio/graph"
 	"github.com/grokify/aha-studio/planner"
+	"github.com/grokify/aha-studio/sync"
 )
 
 // ToolHandlers provides handler functions for Aha MCP tools.
@@ -28,6 +29,7 @@ type ToolHandlers struct {
 	executor      *executor.Executor
 	graphClient   *graph.Client
 	graphqlClient genql.Client
+	syncDB        *sync.DB
 }
 
 // NewToolHandlers creates a new ToolHandlers instance.
@@ -56,6 +58,17 @@ func (h *ToolHandlers) Init(ctx context.Context) error {
 			fmt.Printf("Warning: Neo4j connection failed: %v\n", err)
 		} else {
 			h.graphClient = graphClient
+		}
+	}
+
+	// Initialize sync DB if configured
+	if h.config.DBPath != "" {
+		db, err := sync.Open(h.config.DBPath)
+		if err != nil {
+			// Log warning but don't fail - sync DB is optional
+			fmt.Printf("Warning: Sync DB connection failed: %v\n", err)
+		} else {
+			h.syncDB = db
 		}
 	}
 
@@ -2622,6 +2635,86 @@ func (h *ToolHandlers) UpdateStrategicModel(ctx context.Context, params map[stri
 		"kind":    model.Kind,
 		"url":     model.URL,
 		"message": "Strategic model updated successfully",
+	}, nil
+}
+
+// =============================================================================
+// Offline/Cache-Based Tools (require synced SQLite database)
+// =============================================================================
+
+// ListFeaturesByReleaseDate lists features by release date from the local cache.
+// This tool queries the synced SQLite database, not the live Aha API.
+func (h *ToolHandlers) ListFeaturesByReleaseDate(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncDB == nil {
+		return nil, fmt.Errorf("sync database not configured (set AHA_DB_PATH environment variable)")
+	}
+
+	product, _ := params["product"].(string)
+	if product == "" {
+		product = h.config.DefaultProduct
+	}
+	if product == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	releaseDate, _ := params["release_date"].(string)
+	startDate, _ := params["start_date"].(string)
+	endDate, _ := params["end_date"].(string)
+
+	var features []map[string]any
+	var err error
+
+	if releaseDate != "" {
+		// Exact date match
+		features, err = h.syncDB.GetFeaturesByReleaseDate(product, releaseDate)
+	} else if startDate != "" || endDate != "" {
+		// Date range
+		features, err = h.syncDB.GetFeaturesByReleaseDateRange(product, startDate, endDate)
+	} else {
+		return nil, fmt.Errorf("one of release_date, start_date, or end_date is required")
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("querying features by release date: %w", err)
+	}
+
+	return map[string]any{
+		"product":  product,
+		"count":    len(features),
+		"features": features,
+	}, nil
+}
+
+// ListFeaturesByReleaseName lists features by release name from the local cache.
+// This tool queries the synced SQLite database, not the live Aha API.
+func (h *ToolHandlers) ListFeaturesByReleaseName(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncDB == nil {
+		return nil, fmt.Errorf("sync database not configured (set AHA_DB_PATH environment variable)")
+	}
+
+	product, _ := params["product"].(string)
+	if product == "" {
+		product = h.config.DefaultProduct
+	}
+	if product == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	releaseName, ok := params["release_name"].(string)
+	if !ok || releaseName == "" {
+		return nil, fmt.Errorf("release_name parameter is required")
+	}
+
+	features, err := h.syncDB.GetFeaturesByReleaseName(product, releaseName)
+	if err != nil {
+		return nil, fmt.Errorf("querying features by release name: %w", err)
+	}
+
+	return map[string]any{
+		"product":      product,
+		"release_name": releaseName,
+		"count":        len(features),
+		"features":     features,
 	}, nil
 }
 

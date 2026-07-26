@@ -23,6 +23,10 @@ type Config struct {
 
 	// BrowserPassword is the password for browser automation login.
 	BrowserPassword string
+
+	// DBPath is the path to the SQLite cache database for offline queries.
+	// If empty, cache-based tools will return an error.
+	DBPath string
 }
 
 // ConfigFromEnv creates a Config from environment variables.
@@ -43,6 +47,7 @@ func ConfigFromEnv() (*Config, error) {
 		DefaultProduct:  os.Getenv("AHA_DEFAULT_PRODUCT"),
 		BrowserEmail:    os.Getenv("AHA_EMAIL"),
 		BrowserPassword: os.Getenv("AHA_PASSWORD"),
+		DBPath:          os.Getenv("AHA_DB_PATH"),
 	}, nil
 }
 
