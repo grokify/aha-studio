@@ -607,6 +607,7 @@ Update a release's fields (name, dates, parking_lot).
 | `start_date` | string | No | Start date (YYYY-MM-DD format) |
 | `release_date` | string | No | Release date (YYYY-MM-DD format) |
 | `parking_lot` | boolean | No | Whether this is a parking lot release |
+| `description` | string | No | New description for the release (HTML supported). Aha calls this field 'theme' internally. |
 
 ### update_idea
 

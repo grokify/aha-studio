@@ -53,7 +53,13 @@ nav:
       - v0.8.0: releases/v0.8.0.md
       - v0.7.0: releases/v0.7.0.md
       - v0.6.0: releases/v0.6.0.md
-  - Roadmap: specs/ROADMAP.md
+  - Specs:
+      - Roadmap: specs/ROADMAP.md
+      - Roadmap History: specs/ROADMAP_HISTORY.md
+      - Architecture: specs/ARCHITECTURE.md
+      - Product Requirements: specs/PRD.md
+      - Technical Requirements: specs/TRD.md
+      - Implementation Plan: specs/PLAN.md
 
 markdown_extensions:
   - pymdownx.highlight:
