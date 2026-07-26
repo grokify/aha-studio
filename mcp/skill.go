@@ -1475,6 +1475,51 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.UpdateStrategicModel),
 
 		// =============================================================================
+		// Create Tools (GraphQL mutations)
+		// =============================================================================
+
+		skill.NewTool("create_idea", "Create a new idea using the GraphQL API",
+			map[string]skill.Parameter{
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Name of the idea",
+				},
+				"product_id": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID or reference prefix (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"skip_required_fields_validation": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Skip validation of required custom fields",
+				},
+			},
+			s.handlers.CreateIdea),
+
+		skill.NewTool("add_goal_to_feature", "Link a goal to a feature using the GraphQL API",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number (e.g., 'FEAT-123')",
+				},
+				"goal_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Goal ID to link",
+				},
+				"link_type": {
+					Type:        "string",
+					Required:    false,
+					Description: "Type of link (default: RELATES_TO)",
+					Enum:        []any{"RELATES_TO", "IMPACTS", "DEPENDS_ON"},
+				},
+			},
+			s.handlers.AddGoalToFeature),
+
+		// =============================================================================
 		// Offline/Cache-Based Tools (require synced SQLite database)
 		// =============================================================================
 

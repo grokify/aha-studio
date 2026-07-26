@@ -33,16 +33,23 @@
 ## Phase 2 — Write Tool Gaps
 
 **Theme:** Close out remaining legacy Phase 10b MCP write tools as one batch release.
-**Status:** Not started — 0 of 6 items completed
+**Status:** In progress — 2 of 6 items completed
 
-- [ ] `RMI-AHASTUDIO-006` `create_idea` MCP tool
+- [x] `RMI-AHASTUDIO-006` `create_idea` MCP tool
+  - Delivered: GraphQL CreateIdea mutation wrapper in mcp/handlers.go
 - [ ] `RMI-AHASTUDIO-007` `create_release` MCP tool
   - Acceptance: pairs with the existing `update_release`
-- [ ] `RMI-AHASTUDIO-008` `add_goal_to_feature` and `remove_goal_from_feature` MCP tools
+  - Blocked: aha-go REST API does not expose POST /products/{id}/releases endpoint
+- [x] `RMI-AHASTUDIO-008` `add_goal_to_feature` and `remove_goal_from_feature` MCP tools
+  - Delivered: `add_goal_to_feature` via GraphQL CreateRecordLink
+  - Note: `remove_goal_from_feature` blocked — no DeleteRecordLink mutation in aha-go
 - [ ] `RMI-AHASTUDIO-009` `get_feature_ideas` MCP tool (ideas promoted to a feature)
+  - Blocked: need API to list ideas linked to a feature
 - [ ] `RMI-AHASTUDIO-010` `list_idea_categories` MCP tool with caching
+  - Blocked: no list idea categories endpoint in aha-go
 - [ ] `RMI-AHASTUDIO-011` `delete_idea` MCP tool with confirmation semantics
   - Acceptance: destructive operation requires explicit confirmation parameter; documented in tool description
+  - Blocked: no DELETE /ideas/{id} endpoint in aha-go
 
 ## Phase 3 — OmniSignal Adapter
 

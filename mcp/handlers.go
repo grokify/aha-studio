@@ -2639,6 +2639,132 @@ func (h *ToolHandlers) UpdateStrategicModel(ctx context.Context, params map[stri
 }
 
 // =============================================================================
+// Create Tools (GraphQL mutations)
+// =============================================================================
+
+// CreateIdea creates a new idea using the GraphQL API.
+func (h *ToolHandlers) CreateIdea(ctx context.Context, params map[string]any) (any, error) {
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name parameter is required")
+	}
+
+	productID, _ := params["product_id"].(string)
+	if productID == "" {
+		productID = h.config.DefaultProduct
+	}
+	if productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	// Optional: skip required fields validation
+	var skipValidation *bool
+	if skip, ok := params["skip_required_fields_validation"].(bool); ok {
+		skipValidation = &skip
+	}
+
+	// Use GraphQL mutation
+	resp, err := generated.CreateIdea(ctx, h.graphqlClient, name, productID, skipValidation)
+	if err != nil {
+		return nil, fmt.Errorf("creating idea: %w", err)
+	}
+
+	if resp.CreateIdea == nil {
+		return nil, fmt.Errorf("creating idea: no response")
+	}
+
+	// Check for errors
+	if len(resp.CreateIdea.Errors.Attributes) > 0 {
+		var errMsgs []string
+		for _, attr := range resp.CreateIdea.Errors.Attributes {
+			for _, msg := range attr.FullMessages {
+				errMsgs = append(errMsgs, fmt.Sprintf("%s: %s", attr.Name, msg))
+			}
+		}
+		return nil, fmt.Errorf("creating idea: %s", errMsgs)
+	}
+
+	if resp.CreateIdea.Idea == nil {
+		return nil, fmt.Errorf("creating idea: no idea returned")
+	}
+
+	idea := resp.CreateIdea.Idea
+	return map[string]any{
+		"id":              idea.Id,
+		"reference_num":   idea.ReferenceNum,
+		"name":            idea.Name,
+		"workflow_status": idea.WorkflowStatus.Name,
+		"created_at":      idea.CreatedAt.Format(time.RFC3339),
+		"message":         "Idea created successfully",
+	}, nil
+}
+
+// AddGoalToFeature links a goal to a feature using the GraphQL CreateRecordLink mutation.
+func (h *ToolHandlers) AddGoalToFeature(ctx context.Context, params map[string]any) (any, error) {
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id parameter is required")
+	}
+
+	goalID, ok := params["goal_id"].(string)
+	if !ok || goalID == "" {
+		return nil, fmt.Errorf("goal_id parameter is required")
+	}
+
+	// Default link type is RELATES_TO
+	linkType := generated.RecordLinkTypeEnumRelatesTo
+	if lt, ok := params["link_type"].(string); ok && lt != "" {
+		switch lt {
+		case "RELATES_TO":
+			linkType = generated.RecordLinkTypeEnumRelatesTo
+		case "IMPACTS":
+			linkType = generated.RecordLinkTypeEnumImpacts
+		case "DEPENDS_ON":
+			linkType = generated.RecordLinkTypeEnumDependsOn
+		default:
+			return nil, fmt.Errorf("invalid link_type: %s (valid: RELATES_TO, IMPACTS, DEPENDS_ON)", lt)
+		}
+	}
+
+	resp, err := generated.CreateRecordLink(ctx, h.graphqlClient,
+		generated.LinkableRecordTypesEnumGoal,
+		goalID,
+		generated.LinkableRecordTypesEnumFeature,
+		featureID,
+		linkType,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("creating record link: %w", err)
+	}
+
+	if resp.CreateRecordLink == nil {
+		return nil, fmt.Errorf("creating record link: no response")
+	}
+
+	// Check for errors
+	if len(resp.CreateRecordLink.Errors.Attributes) > 0 {
+		var errMsgs []string
+		for _, attr := range resp.CreateRecordLink.Errors.Attributes {
+			for _, msg := range attr.FullMessages {
+				errMsgs = append(errMsgs, fmt.Sprintf("%s: %s", attr.Name, msg))
+			}
+		}
+		return nil, fmt.Errorf("creating record link: %s", errMsgs)
+	}
+
+	if resp.CreateRecordLink.RecordLink == nil {
+		return nil, fmt.Errorf("creating record link: no link returned")
+	}
+
+	link := resp.CreateRecordLink.RecordLink
+	return map[string]any{
+		"id":        link.Id,
+		"link_type": string(link.LinkType),
+		"message":   fmt.Sprintf("Goal %s linked to feature %s", goalID, featureID),
+	}, nil
+}
+
+// =============================================================================
 // Offline/Cache-Based Tools (require synced SQLite database)
 // =============================================================================
 
