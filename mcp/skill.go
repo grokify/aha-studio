@@ -1520,6 +1520,90 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			s.handlers.AddGoalToFeature),
 
 		// =============================================================================
+		// Phase 2 Write Tool Gaps (REST API)
+		// =============================================================================
+
+		skill.NewTool("create_release", "Create a new release for a product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"name": {
+					Type:        "string",
+					Required:    true,
+					Description: "Name of the release",
+				},
+				"start_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Start date (YYYY-MM-DD format)",
+				},
+				"release_date": {
+					Type:        "string",
+					Required:    false,
+					Description: "Release date (YYYY-MM-DD format)",
+				},
+				"parking_lot": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Whether this is a parking lot release",
+				},
+				"theme": {
+					Type:        "string",
+					Required:    false,
+					Description: "Theme/description of the release (HTML allowed)",
+				},
+			},
+			s.handlers.CreateRelease),
+
+		skill.NewTool("delete_idea", "Delete an idea (destructive operation, requires confirmation)",
+			map[string]skill.Parameter{
+				"idea_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Idea ID or reference number to delete",
+				},
+				"confirm": {
+					Type:        "boolean",
+					Required:    true,
+					Description: "Must be true to confirm deletion (safety check)",
+				},
+			},
+			s.handlers.DeleteIdea),
+
+		skill.NewTool("list_idea_categories", "List idea categories for a product",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+			},
+			s.handlers.ListIdeaCategories),
+
+		skill.NewTool("get_feature_ideas", "List ideas linked to or promoted from a feature",
+			map[string]skill.Parameter{
+				"feature_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Feature ID or reference number",
+				},
+				"page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Page number for pagination",
+				},
+				"per_page": {
+					Type:        "number",
+					Required:    false,
+					Description: "Results per page (default 30)",
+				},
+			},
+			s.handlers.GetFeatureIdeas),
+
+		// =============================================================================
 		// Offline/Cache-Based Tools (require synced SQLite database)
 		// =============================================================================
 
@@ -1562,5 +1646,39 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.ListFeaturesByReleaseName),
+
+		// =============================================================================
+		// Analytics Tools (Phase 5)
+		// =============================================================================
+
+		skill.NewTool("get_ideas_statistics", "Get aggregated statistics for ideas from the local cache (requires sync)",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"top_count": {
+					Type:        "integer",
+					Required:    false,
+					Description: "Number of top ideas by votes to include (default: 10)",
+				},
+			},
+			s.handlers.GetIdeasStatistics),
+
+		skill.NewTool("get_features_statistics", "Get aggregated statistics for features from the local cache (requires sync)",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"upcoming_releases_count": {
+					Type:        "integer",
+					Required:    false,
+					Description: "Number of upcoming releases to include (default: 5)",
+				},
+			},
+			s.handlers.GetFeaturesStatistics),
 	}
 }

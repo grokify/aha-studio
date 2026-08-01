@@ -2811,6 +2811,66 @@ func (h *ToolHandlers) ListFeaturesByReleaseDate(ctx context.Context, params map
 	}, nil
 }
 
+// GetIdeasStatistics returns aggregated statistics for ideas from the local cache.
+func (h *ToolHandlers) GetIdeasStatistics(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncDB == nil {
+		return nil, fmt.Errorf("sync database not configured (set AHA_DB_PATH environment variable)")
+	}
+
+	product, _ := params["product"].(string)
+	if product == "" {
+		product = h.config.DefaultProduct
+	}
+	if product == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	limit := 10
+	if l, ok := params["top_count"].(float64); ok && l > 0 {
+		limit = int(l)
+	}
+
+	stats, err := h.syncDB.GetIdeasStatistics(product, limit)
+	if err != nil {
+		return nil, fmt.Errorf("getting ideas statistics: %w", err)
+	}
+
+	return map[string]any{
+		"product":    product,
+		"statistics": stats,
+	}, nil
+}
+
+// GetFeaturesStatistics returns aggregated statistics for features from the local cache.
+func (h *ToolHandlers) GetFeaturesStatistics(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncDB == nil {
+		return nil, fmt.Errorf("sync database not configured (set AHA_DB_PATH environment variable)")
+	}
+
+	product, _ := params["product"].(string)
+	if product == "" {
+		product = h.config.DefaultProduct
+	}
+	if product == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	limit := 5
+	if l, ok := params["upcoming_releases_count"].(float64); ok && l > 0 {
+		limit = int(l)
+	}
+
+	stats, err := h.syncDB.GetFeaturesStatistics(product, limit)
+	if err != nil {
+		return nil, fmt.Errorf("getting features statistics: %w", err)
+	}
+
+	return map[string]any{
+		"product":    product,
+		"statistics": stats,
+	}, nil
+}
+
 // ListFeaturesByReleaseName lists features by release name from the local cache.
 // This tool queries the synced SQLite database, not the live Aha API.
 func (h *ToolHandlers) ListFeaturesByReleaseName(ctx context.Context, params map[string]any) (any, error) {
@@ -2845,6 +2905,167 @@ func (h *ToolHandlers) ListFeaturesByReleaseName(ctx context.Context, params map
 }
 
 // =============================================================================
+// Phase 2 Write Tool Gaps
+// =============================================================================
+
+// CreateRelease creates a new release for a product.
+func (h *ToolHandlers) CreateRelease(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id is required")
+	}
+
+	name, ok := params["name"].(string)
+	if !ok || name == "" {
+		return nil, fmt.Errorf("name is required")
+	}
+
+	var opts []aha.CreateReleaseOption
+
+	if startDate, ok := params["start_date"].(string); ok && startDate != "" {
+		t, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_date format (use YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithCreateReleaseStartDate(t))
+	}
+
+	if releaseDate, ok := params["release_date"].(string); ok && releaseDate != "" {
+		t, err := time.Parse("2006-01-02", releaseDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid release_date format (use YYYY-MM-DD): %w", err)
+		}
+		opts = append(opts, aha.WithCreateReleaseDate(t))
+	}
+
+	if parkingLot, ok := params["parking_lot"].(bool); ok {
+		opts = append(opts, aha.WithCreateReleaseParkingLot(parkingLot))
+	}
+
+	if theme, ok := params["theme"].(string); ok && theme != "" {
+		opts = append(opts, aha.WithCreateReleaseTheme(theme))
+	}
+
+	release, err := h.client.CreateRelease(ctx, productID, name, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("creating release: %w", err)
+	}
+
+	return map[string]any{
+		"id":            release.ID,
+		"reference_num": release.ReferenceNum,
+		"name":          release.Name,
+		"start_date":    formatTimePtr(release.StartDate),
+		"release_date":  formatTimePtr(release.ReleaseDate),
+		"parking_lot":   release.ParkingLot,
+		"theme":         release.Theme,
+		"url":           release.URL,
+	}, nil
+}
+
+// DeleteIdea deletes an idea by ID.
+func (h *ToolHandlers) DeleteIdea(ctx context.Context, params map[string]any) (any, error) {
+	ideaID, ok := params["idea_id"].(string)
+	if !ok || ideaID == "" {
+		return nil, fmt.Errorf("idea_id is required")
+	}
+
+	confirm, ok := params["confirm"].(bool)
+	if !ok || !confirm {
+		return nil, fmt.Errorf("confirm must be true to delete an idea (destructive operation)")
+	}
+
+	err := h.client.DeleteIdea(ctx, ideaID)
+	if err != nil {
+		return nil, fmt.Errorf("deleting idea: %w", err)
+	}
+
+	return map[string]any{
+		"status":  "deleted",
+		"idea_id": ideaID,
+	}, nil
+}
+
+// ListIdeaCategories lists idea categories for a product.
+func (h *ToolHandlers) ListIdeaCategories(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id is required")
+	}
+
+	list, err := h.client.ListProductIdeaCategories(ctx, productID)
+	if err != nil {
+		return nil, fmt.Errorf("listing idea categories: %w", err)
+	}
+
+	categories := make([]map[string]any, len(list.Categories))
+	for i, cat := range list.Categories {
+		categories[i] = map[string]any{
+			"id":         cat.ID,
+			"name":       cat.Name,
+			"parent_id":  cat.ParentID,
+			"project_id": cat.ProjectID,
+			"created_at": cat.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return map[string]any{
+		"categories": categories,
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// GetFeatureIdeas lists ideas linked to a feature.
+func (h *ToolHandlers) GetFeatureIdeas(ctx context.Context, params map[string]any) (any, error) {
+	featureID, ok := params["feature_id"].(string)
+	if !ok || featureID == "" {
+		return nil, fmt.Errorf("feature_id is required")
+	}
+
+	var opts []aha.ListFeatureIdeasOption
+
+	if page, ok := params["page"].(float64); ok && page > 0 {
+		opts = append(opts, aha.WithFeatureIdeasPage(int(page)))
+	}
+
+	if perPage, ok := params["per_page"].(float64); ok && perPage > 0 {
+		opts = append(opts, aha.WithFeatureIdeasPerPage(int(perPage)))
+	}
+
+	list, err := h.client.ListFeatureIdeas(ctx, featureID, opts...)
+	if err != nil {
+		return nil, fmt.Errorf("listing feature ideas: %w", err)
+	}
+
+	ideas := make([]map[string]any, len(list.Ideas))
+	for i, idea := range list.Ideas {
+		ideas[i] = map[string]any{
+			"id":            idea.ID,
+			"reference_num": idea.ReferenceNum,
+			"name":          idea.Name,
+			"description":   idea.Description,
+			"votes":         idea.Votes,
+			"score":         idea.Score,
+			"created_at":    idea.CreatedAt.Format(time.RFC3339),
+			"updated_at":    idea.UpdatedAt.Format(time.RFC3339),
+		}
+		if idea.WorkflowStatus != nil {
+			ideas[i]["workflow_status"] = map[string]any{
+				"id":   idea.WorkflowStatus.ID,
+				"name": idea.WorkflowStatus.Name,
+			}
+		}
+	}
+
+	return map[string]any{
+		"feature_id": featureID,
+		"ideas":      ideas,
+		"count":      len(ideas),
+		"pagination": paginationToMap(list.Pagination),
+	}, nil
+}
+
+// =============================================================================
 // Helper Functions
 // =============================================================================
 
@@ -2855,4 +3076,12 @@ func paginationToMap(p aha.Pagination) map[string]any {
 		"total_pages":   p.TotalPages,
 		"current_page":  p.CurrentPage,
 	}
+}
+
+// formatTimePtr formats a time pointer to ISO8601 string or empty if nil.
+func formatTimePtr(t *time.Time) string {
+	if t == nil {
+		return ""
+	}
+	return t.Format("2006-01-02")
 }

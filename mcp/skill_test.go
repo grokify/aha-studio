@@ -61,8 +61,8 @@ func TestAhaSkill_Tools(t *testing.T) {
 	s := NewAhaSkill(cfg)
 	tools := s.Tools()
 
-	// Verify we have the expected number of tools (75: 71 original + 2 cache-based + 2 GraphQL tools)
-	expectedCount := 75
+	// Verify we have the expected number of tools (81: 71 original + 2 cache-based + 2 GraphQL + 2 analytics + 4 Phase 2)
+	expectedCount := 81
 	if len(tools) != expectedCount {
 		t.Errorf("Tools() returned %d tools, want %d", len(tools), expectedCount)
 	}
@@ -152,6 +152,14 @@ func TestAhaSkill_ToolNames(t *testing.T) {
 		// GraphQL create tools
 		"create_idea",
 		"add_goal_to_feature",
+		// Phase 2 write tool gaps
+		"create_release",
+		"delete_idea",
+		"list_idea_categories",
+		"get_feature_ideas",
+		// Analytics tools
+		"get_ideas_statistics",
+		"get_features_statistics",
 	}
 
 	for _, name := range essentialTools {
