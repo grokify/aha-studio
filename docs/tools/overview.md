@@ -1,6 +1,6 @@
 # Tools Reference
 
-The MCP server provides 71 tools for accessing, querying, and managing Aha.io data.
+The MCP server provides 81 tools for accessing, querying, and managing Aha.io data.
 
 ## Query Tools
 

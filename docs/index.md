@@ -9,12 +9,13 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (71 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (81 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- **71 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, and more
+- **81 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
+- **HTTP API** - REST endpoints with OpenAPI spec and Prometheus metrics
 - **Local SQLite sync** - Offline queries and fast local caching
 - **Neo4j integration** - Graph analytics and relationship queries
 - **Browser automation** - Strategic template creation via headless Chrome
