@@ -180,10 +180,16 @@ func (s *Syncer) syncEntity(ctx context.Context, entity string, opts SyncOptions
 
 // syncFeatures syncs features from the API.
 // If GraphQL is enabled, it uses the GraphQL API to fetch features with release info.
+// Falls back to REST API if GraphQL project resolution fails.
 func (s *Syncer) syncFeatures(ctx context.Context, product string, since time.Time) (int, error) {
 	// Use GraphQL if available for richer feature data including release info
 	if s.useGraphQL && s.gqlClient != nil {
-		return s.syncFeaturesGraphQL(ctx, product)
+		count, err := s.syncFeaturesGraphQL(ctx, product)
+		if err == nil {
+			return count, nil
+		}
+		// Fall back to REST if GraphQL fails (e.g., project not found in GraphQL API)
+		s.reportProgress(0, 0, "GraphQL failed, falling back to REST API...")
 	}
 	return s.syncFeaturesREST(ctx, product, since)
 }
