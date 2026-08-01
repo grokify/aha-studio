@@ -1298,3 +1298,248 @@ func (d *DB) getReleaseByField(product, field, value string) (*map[string]any, e
 
 	return &rec, nil
 }
+
+// =============================================================================
+// Statistics Methods (Phase 5 Analytics Tools)
+// =============================================================================
+
+// IdeaStatistics holds aggregated statistics for ideas.
+type IdeaStatistics struct {
+	TotalCount    int            `json:"total_count"`
+	ByStatus      map[string]int `json:"by_status"`
+	TotalVotes    int            `json:"total_votes"`
+	AvgVotes      float64        `json:"avg_votes"`
+	MaxVotes      int            `json:"max_votes"`
+	TopIdeas      []IdeaSummary  `json:"top_ideas"`
+	RecentCount   int            `json:"recent_count"`   // ideas in last 30 days
+	UpdatedRecent int            `json:"updated_recent"` // updated in last 7 days
+}
+
+// IdeaSummary is a brief summary of an idea for statistics.
+type IdeaSummary struct {
+	ID           string `json:"id"`
+	ReferenceNum string `json:"reference_num"`
+	Name         string `json:"name"`
+	Status       string `json:"status"`
+	Votes        int    `json:"votes"`
+}
+
+// GetIdeasStatistics returns aggregated statistics for ideas in a product.
+func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, error) {
+	if limit <= 0 {
+		limit = 10
+	}
+
+	stats := &IdeaStatistics{
+		ByStatus: make(map[string]int),
+	}
+
+	// Total count and vote stats
+	err := d.db.QueryRow(`
+		SELECT COUNT(*), COALESCE(SUM(votes), 0), COALESCE(AVG(votes), 0), COALESCE(MAX(votes), 0)
+		FROM ideas WHERE product = ?
+	`, product).Scan(&stats.TotalCount, &stats.TotalVotes, &stats.AvgVotes, &stats.MaxVotes)
+	if err != nil {
+		return nil, fmt.Errorf("querying idea totals: %w", err)
+	}
+
+	// Count by status
+	rows, err := d.db.Query(`
+		SELECT COALESCE(status, 'unknown'), COUNT(*)
+		FROM ideas WHERE product = ?
+		GROUP BY status
+	`, product)
+	if err != nil {
+		return nil, fmt.Errorf("querying idea status counts: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var status string
+		var count int
+		if err := rows.Scan(&status, &count); err != nil {
+			return nil, err
+		}
+		stats.ByStatus[status] = count
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Recent ideas (last 30 days)
+	err = d.db.QueryRow(`
+		SELECT COUNT(*) FROM ideas
+		WHERE product = ? AND created_at >= datetime('now', '-30 days')
+	`, product).Scan(&stats.RecentCount)
+	if err != nil {
+		return nil, fmt.Errorf("querying recent ideas: %w", err)
+	}
+
+	// Recently updated (last 7 days)
+	err = d.db.QueryRow(`
+		SELECT COUNT(*) FROM ideas
+		WHERE product = ? AND updated_at >= datetime('now', '-7 days')
+	`, product).Scan(&stats.UpdatedRecent)
+	if err != nil {
+		return nil, fmt.Errorf("querying updated ideas: %w", err)
+	}
+
+	// Top ideas by votes
+	topRows, err := d.db.Query(`
+		SELECT id, reference_num, name, COALESCE(status, ''), votes
+		FROM ideas WHERE product = ?
+		ORDER BY votes DESC
+		LIMIT ?
+	`, product, limit)
+	if err != nil {
+		return nil, fmt.Errorf("querying top ideas: %w", err)
+	}
+	defer func() { _ = topRows.Close() }()
+
+	for topRows.Next() {
+		var idea IdeaSummary
+		if err := topRows.Scan(&idea.ID, &idea.ReferenceNum, &idea.Name, &idea.Status, &idea.Votes); err != nil {
+			return nil, err
+		}
+		stats.TopIdeas = append(stats.TopIdeas, idea)
+	}
+
+	return stats, topRows.Err()
+}
+
+// FeatureStatistics holds aggregated statistics for features.
+type FeatureStatistics struct {
+	TotalCount       int              `json:"total_count"`
+	ByStatus         map[string]int   `json:"by_status"`
+	ByRelease        map[string]int   `json:"by_release"`
+	WithRelease      int              `json:"with_release"`
+	WithoutRelease   int              `json:"without_release"`
+	RecentCount      int              `json:"recent_count"`   // features in last 30 days
+	UpdatedRecent    int              `json:"updated_recent"` // updated in last 7 days
+	UpcomingReleases []ReleaseSummary `json:"upcoming_releases"`
+}
+
+// ReleaseSummary is a brief summary of a release for statistics.
+type ReleaseSummary struct {
+	ID           string `json:"id"`
+	ReferenceNum string `json:"reference_num"`
+	Name         string `json:"name"`
+	ReleaseDate  string `json:"release_date"`
+	FeatureCount int    `json:"feature_count"`
+}
+
+// GetFeaturesStatistics returns aggregated statistics for features in a product.
+func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistics, error) {
+	if limit <= 0 {
+		limit = 5
+	}
+
+	stats := &FeatureStatistics{
+		ByStatus:  make(map[string]int),
+		ByRelease: make(map[string]int),
+	}
+
+	// Total count
+	err := d.db.QueryRow(`SELECT COUNT(*) FROM features WHERE product = ?`, product).Scan(&stats.TotalCount)
+	if err != nil {
+		return nil, fmt.Errorf("querying feature total: %w", err)
+	}
+
+	// With/without release
+	err = d.db.QueryRow(`
+		SELECT COUNT(*) FROM features WHERE product = ? AND release_id IS NOT NULL AND release_id != ''
+	`, product).Scan(&stats.WithRelease)
+	if err != nil {
+		return nil, fmt.Errorf("querying features with release: %w", err)
+	}
+	stats.WithoutRelease = stats.TotalCount - stats.WithRelease
+
+	// Count by status
+	rows, err := d.db.Query(`
+		SELECT COALESCE(status, 'unknown'), COUNT(*)
+		FROM features WHERE product = ?
+		GROUP BY status
+	`, product)
+	if err != nil {
+		return nil, fmt.Errorf("querying feature status counts: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var status string
+		var count int
+		if err := rows.Scan(&status, &count); err != nil {
+			return nil, err
+		}
+		stats.ByStatus[status] = count
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Count by release
+	relRows, err := d.db.Query(`
+		SELECT COALESCE(release, 'unassigned'), COUNT(*)
+		FROM features WHERE product = ?
+		GROUP BY release
+	`, product)
+	if err != nil {
+		return nil, fmt.Errorf("querying feature release counts: %w", err)
+	}
+	defer func() { _ = relRows.Close() }()
+
+	for relRows.Next() {
+		var release string
+		var count int
+		if err := relRows.Scan(&release, &count); err != nil {
+			return nil, err
+		}
+		stats.ByRelease[release] = count
+	}
+	if err := relRows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Recent features (last 30 days)
+	err = d.db.QueryRow(`
+		SELECT COUNT(*) FROM features
+		WHERE product = ? AND created_at >= datetime('now', '-30 days')
+	`, product).Scan(&stats.RecentCount)
+	if err != nil {
+		return nil, fmt.Errorf("querying recent features: %w", err)
+	}
+
+	// Recently updated (last 7 days)
+	err = d.db.QueryRow(`
+		SELECT COUNT(*) FROM features
+		WHERE product = ? AND updated_at >= datetime('now', '-7 days')
+	`, product).Scan(&stats.UpdatedRecent)
+	if err != nil {
+		return nil, fmt.Errorf("querying updated features: %w", err)
+	}
+
+	// Upcoming releases with feature counts
+	upRows, err := d.db.Query(`
+		SELECT r.id, r.reference_num, r.name, COALESCE(r.release_date, ''),
+			   (SELECT COUNT(*) FROM features f WHERE f.release_id = r.id)
+		FROM releases r
+		WHERE r.product = ? AND r.released = 0 AND r.parking_lot = 0
+			  AND r.release_date >= date('now')
+		ORDER BY r.release_date ASC
+		LIMIT ?
+	`, product, limit)
+	if err != nil {
+		return nil, fmt.Errorf("querying upcoming releases: %w", err)
+	}
+	defer func() { _ = upRows.Close() }()
+
+	for upRows.Next() {
+		var rel ReleaseSummary
+		if err := upRows.Scan(&rel.ID, &rel.ReferenceNum, &rel.Name, &rel.ReleaseDate, &rel.FeatureCount); err != nil {
+			return nil, err
+		}
+		stats.UpcomingReleases = append(stats.UpcomingReleases, rel)
+	}
+
+	return stats, upRows.Err()
+}
