@@ -9,6 +9,8 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 	// Health and info endpoints (no auth required)
 	mux.HandleFunc("GET /health", s.handleHealth)
 	mux.HandleFunc("GET /api/version", s.handleVersion)
+	mux.HandleFunc("GET /api/openapi.json", s.handleOpenAPI)
+	mux.HandleFunc("GET /metrics", s.handleMetrics)
 
 	// Query endpoints
 	mux.HandleFunc("GET /api/query", s.handleQueryGET)
