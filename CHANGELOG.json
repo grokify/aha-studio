@@ -7,6 +7,45 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.12.0",
+      "date": "2026-08-01",
+      "commit": "72de791",
+      "highlights": [
+        { "description": "Phase 2 complete: create_release, delete_idea, list_idea_categories, get_feature_ideas MCP tools" },
+        { "description": "Phase 4 complete: OpenAPI 3.0 spec at /api/openapi.json and Prometheus metrics at /metrics" },
+        { "description": "Phase 5 complete: get_ideas_statistics and get_features_statistics analytics tools" },
+        { "description": "Sync resilience: GraphQL feature sync falls back to REST when project resolution fails" }
+      ],
+      "added": [
+        { "description": "create_release MCP tool for creating releases with dates, parking lot, and theme", "commit": "abd24bc" },
+        { "description": "delete_idea MCP tool with required confirm parameter for safety", "commit": "abd24bc" },
+        { "description": "list_idea_categories MCP tool to list idea categories for a product", "commit": "abd24bc" },
+        { "description": "get_feature_ideas MCP tool to list ideas linked to a feature", "commit": "abd24bc" },
+        { "description": "get_ideas_statistics MCP tool for aggregated idea stats from SQLite cache", "commit": "abd24bc" },
+        { "description": "get_features_statistics MCP tool for aggregated feature stats from SQLite cache", "commit": "abd24bc" },
+        { "description": "GetIdeasStatistics and GetFeaturesStatistics methods in sync/db.go", "commit": "e9479a1" },
+        { "description": "OpenAPI 3.0.3 specification at /api/openapi.json documenting all HTTP endpoints", "commit": "765f906" },
+        { "description": "Prometheus metrics endpoint at /metrics with request counts, latencies, cache hit rate, sync metrics", "commit": "0e30ad1" },
+        { "description": "create_idea MCP tool via GraphQL CreateIdea mutation", "commit": "7a793a0" },
+        { "description": "add_goal_to_feature MCP tool via GraphQL CreateRecordLink", "commit": "7a793a0" },
+        { "description": "list_features_by_release_date, list_features_by_release_name, list_releases_by_date MCP tools for release queries", "commit": "1ac837b" },
+        { "description": "AQL release.* qualifier support (release.name, release.date)", "commit": "1ac837b" }
+      ],
+      "fixed": [
+        { "description": "GraphQL feature sync falls back to REST API when project resolution fails", "commit": "3a59ca5" }
+      ],
+      "documentation": [
+        { "description": "Add omnisignal package reference page", "commit": "37c989c" },
+        { "description": "Fix mkdocs nav orphans and update_release parameter docs", "commit": "bd9f11e" },
+        { "description": "Mark Phase 3 OmniSignal Adapter complete in roadmap", "commit": "f8c9007" },
+        { "description": "Mark Phases 2, 4, 5 complete in roadmap (5/7 phases done)", "commit": "72de791" }
+      ],
+      "dependencies": [
+        { "description": "Update github.com/grokify/aha-go to v0.9.0 (CreateRelease, DeleteIdea, ListProductIdeaCategories, ListFeatureIdeas)", "commit": "b319140" },
+        { "description": "Update indirect dependencies (golang.org/x/exp, google.golang.org/api, grpc)", "commit": "b319140" }
+      ]
+    },
+    {
       "version": "v0.11.0",
       "date": "2026-07-25",
       "commit": "921d1a4",
