@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-AHASTUDIO-001`
 **Repository:** `github.com/grokify/aha-studio`
-**Status:** In Progress — 2 of 7 phases completed
+**Status:** In Progress — 5 of 7 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry the trailer `Refs: RMI-AHASTUDIO-NNN`. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md); this file covers remaining work only. See [PLAN.md](PLAN.md) for workstream rationale and sequencing.
 
@@ -33,23 +33,23 @@
 ## Phase 2 — Write Tool Gaps
 
 **Theme:** Close out remaining legacy Phase 10b MCP write tools as one batch release.
-**Status:** In progress — 2 of 6 items completed
+**Status:** Completed — 6 of 6 items completed
 
 - [x] `RMI-AHASTUDIO-006` `create_idea` MCP tool
   - Delivered: GraphQL CreateIdea mutation wrapper in mcp/handlers.go
-- [ ] `RMI-AHASTUDIO-007` `create_release` MCP tool
+- [x] `RMI-AHASTUDIO-007` `create_release` MCP tool
   - Acceptance: pairs with the existing `update_release`
-  - Blocked: aha-go REST API does not expose POST /products/{id}/releases endpoint
+  - Delivered: aha-go REST API CreateRelease; MCP tool `create_release` in mcp/handlers.go
 - [x] `RMI-AHASTUDIO-008` `add_goal_to_feature` and `remove_goal_from_feature` MCP tools
   - Delivered: `add_goal_to_feature` via GraphQL CreateRecordLink
   - Note: `remove_goal_from_feature` blocked — no DeleteRecordLink mutation in aha-go
-- [ ] `RMI-AHASTUDIO-009` `get_feature_ideas` MCP tool (ideas promoted to a feature)
-  - Blocked: need API to list ideas linked to a feature
-- [ ] `RMI-AHASTUDIO-010` `list_idea_categories` MCP tool with caching
-  - Blocked: no list idea categories endpoint in aha-go
-- [ ] `RMI-AHASTUDIO-011` `delete_idea` MCP tool with confirmation semantics
+- [x] `RMI-AHASTUDIO-009` `get_feature_ideas` MCP tool (ideas promoted to a feature)
+  - Delivered: aha-go REST API ListFeatureIdeas; MCP tool `get_feature_ideas` in mcp/handlers.go
+- [x] `RMI-AHASTUDIO-010` `list_idea_categories` MCP tool with caching
+  - Delivered: aha-go REST API ListProductIdeaCategories; MCP tool `list_idea_categories` in mcp/handlers.go
+- [x] `RMI-AHASTUDIO-011` `delete_idea` MCP tool with confirmation semantics
   - Acceptance: destructive operation requires explicit confirmation parameter; documented in tool description
-  - Blocked: no DELETE /ideas/{id} endpoint in aha-go
+  - Delivered: aha-go REST API DeleteIdea; MCP tool `delete_idea` with `confirm` parameter in mcp/handlers.go
 
 ## Phase 3 — OmniSignal Adapter
 
@@ -80,26 +80,31 @@
 ## Phase 4 — HTTP API Remainder
 
 **Theme:** Complete the legacy Phase 11 HTTP surface.
-**Status:** Not started — 0 of 3 items completed
+**Status:** Completed — 2 of 2 required items completed (1 blocked/deferred)
 
-- [ ] `RMI-AHASTUDIO-018` OpenAPI 3.0 specification served at `/api/openapi.json`
+- [x] `RMI-AHASTUDIO-018` OpenAPI 3.0 specification served at `/api/openapi.json`
   - Acceptance: covers all existing endpoints; enables client generation
-- [ ] `RMI-AHASTUDIO-019` `/metrics` Prometheus endpoint
+  - Delivered: `httpserver/openapi.go` with full OpenAPI 3.0.3 spec at `/api/openapi.json`
+- [x] `RMI-AHASTUDIO-019` `/metrics` Prometheus endpoint
   - Acceptance: query counts, latencies, cache hit rate
-- [ ] `RMI-AHASTUDIO-020` WebSocket streaming for large result sets
+  - Delivered: `httpserver/metrics.go` with Prometheus exposition format at `/metrics`
+- [~] `RMI-AHASTUDIO-020` WebSocket streaming for large result sets — **blocked/deferred**
   - Acceptance: deferred until a concrete consumer exists; re-scope before starting
 
 ## Phase 5 — Analytics Tools
 
 **Theme:** Aggregated statistics without fetching all records to the client (legacy Phase 10c).
-**Status:** Not started — 0 of 3 items completed
+**Status:** Completed — 2 of 2 required items completed (1 blocked/descoped)
 
-- [ ] `RMI-AHASTUDIO-021` `get_ideas_statistics` MCP tool
+- [x] `RMI-AHASTUDIO-021` `get_ideas_statistics` MCP tool
   - Acceptance: counts by status/category, vote statistics, top ideas per group; computed from the SQLite cache when synced, API aggregation as fallback
-- [ ] `RMI-AHASTUDIO-022` `get_features_statistics` MCP tool
+  - Delivered: sync/db.go GetIdeasStatistics with status counts, vote stats, recent/updated counts, top ideas by votes
+- [x] `RMI-AHASTUDIO-022` `get_features_statistics` MCP tool
   - Acceptance: counts by release/status, requirements summary; cache-first
-- [ ] `RMI-AHASTUDIO-023` `get_idea_voter_domains` MCP tool
+  - Delivered: sync/db.go GetFeaturesStatistics with status/release counts, with/without release, upcoming releases with feature counts
+- [~] `RMI-AHASTUDIO-023` `get_idea_voter_domains` MCP tool — **blocked/descoped**
   - Acceptance: unique voter domain analytics for an idea
+  - Blocked: voter/endorser data not available in Aha API (only aggregate numEndorsements); descoped from phase
 
 ## Phase 6 — DuckDB Evaluation
 
@@ -117,12 +122,23 @@
   - Depends on: `RMI-AHASTUDIO-025`
   - Acceptance: decision recorded with benchmark evidence
 
-## Phase 7 — External Integrations
+## Phase 7 — Atlassian Integration & Cross-Tool Workflows
 
-**Theme:** Cross-system tools and AI workflows (legacy Phase 10d); lowest priority.
+**Theme:** Compose mcp-atlassian skills into aha-studio and add cross-tool Aha↔Jira tools leveraging the Integration field.
 **Status:** Not started — 0 of 3 items completed
 
-- [ ] `RMI-AHASTUDIO-028` Jira integration tools: `fetch_jira_issue`, `search_jira_issues`
-- [ ] `RMI-AHASTUDIO-029` Confluence integration tools: `read_confluence_page`, `search_confluence`
-- [ ] `RMI-AHASTUDIO-030` AI workflow tools: `review_idea`, `triage_new_ideas`, `groom_feature`
-  - Acceptance: re-scope this phase after the OmniSignal adapter ships — some cross-system use cases may be better served at the OmniSignal layer
+- [ ] `RMI-AHASTUDIO-028` Compose mcp-atlassian Jira skill into aha-studio MCP server
+  - Acceptance: when Atlassian credentials are configured, aha-studio exposes all Jira tools from `plexusone/mcp-atlassian/skills/jira`; skill composition uses omniskill interfaces
+  - Note: skills remain independent in mcp-atlassian for standalone use
+- [ ] `RMI-AHASTUDIO-029` Compose mcp-atlassian Confluence skill into aha-studio MCP server
+  - Acceptance: when Atlassian credentials are configured, aha-studio exposes all Confluence tools from `plexusone/mcp-atlassian/skills/confluence`
+- [ ] `RMI-AHASTUDIO-030` Cross-tool Aha↔Jira tools leveraging the Integration field
+  - Depends on: `RMI-AHASTUDIO-028`
+  - Tools:
+    - `get_feature_with_jira` — fetch Aha Feature + linked Jira Epic/Issue in one call (Aha is product management source, Jira is engineering implementation source)
+    - `sync_feature_status` — sync workflow status between Aha Feature and linked Jira Epic
+    - `link_feature_to_epic` — set the Aha Feature Integration field to a Jira Epic URL/key
+    - `unlink_feature_from_epic` — clear the Integration field
+    - `list_features_with_jira_links` — find all features with Jira integrations
+    - `get_jira_epic_with_feature` — fetch Jira Epic + linked Aha Feature (reverse lookup)
+  - Acceptance: tools handle the Integration field parsing (Jira URL → issue key extraction); bidirectional lookups work
