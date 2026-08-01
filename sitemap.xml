@@ -2,102 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://grokify.github.io/aha-studio/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/aql/entities/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/aql/syntax/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/cli/commands/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/configuration/claude-desktop/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/configuration/credentials/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/configuration/environment/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/getting-started/installation/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/getting-started/quickstart/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/getting-started/setup/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/packages/omnisignal/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.10.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.11.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/aha-studio/releases/v0.12.0/</loc>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.6.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.7.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.8.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/releases/v0.9.0/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/ARCHITECTURE/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/PLAN/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/PRD/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/ROADMAP/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/ROADMAP_HISTORY/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/specs/TRD/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/tools/overview/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/aha-studio/tools/write-tools/</loc>
-         <lastmod>2026-07-26</lastmod>
+         <lastmod>2026-08-01</lastmod>
     </url>
 </urlset>
