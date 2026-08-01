@@ -105,6 +105,7 @@ type Server struct {
 	scheduler   *sync.Scheduler
 	graphClient *graph.Client
 	logger      *slog.Logger
+	metrics     *Metrics
 }
 
 // New creates a new HTTP server with the given configuration.
@@ -185,6 +186,7 @@ func New(cfg Config) (*Server, error) {
 		syncer:      syncer,
 		graphClient: graphClient,
 		logger:      logger,
+		metrics:     NewMetrics(),
 	}
 
 	// Set up routes
