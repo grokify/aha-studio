@@ -7,7 +7,7 @@ require (
 	github.com/Khan/genqlient v0.8.1
 	github.com/c-bata/go-prompt v0.2.6
 	github.com/grokify/aha-go v0.9.0
-	github.com/grokify/mogo v0.74.6
+	github.com/grokify/mogo v0.74.7
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/neo4j/neo4j-go-driver/v5 v5.28.4
 	github.com/olekukonko/tablewriter v1.1.4
