@@ -2,20 +2,36 @@
 package sync
 
 import (
+	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
+	entschema "entgo.io/ent/dialect/sql/schema"
+
+	"github.com/grokify/aha-studio/ent"
+	"github.com/grokify/aha-studio/ent/feature"
+	"github.com/grokify/aha-studio/ent/relationship"
+	"github.com/grokify/aha-studio/ent/savedfilter"
+	"github.com/grokify/aha-studio/ent/syncmeta"
+
 	_ "modernc.org/sqlite"
 )
 
-// DB wraps a SQLite database connection for Aha data caching.
+// DB wraps a SQLite database connection for Aha data caching. The 13
+// core tables (features, initiatives, etc.) are managed by the generated
+// Ent client; the FTS5 virtual tables/triggers stay hand-written SQL
+// against the shared *sql.DB connection (Ent has no concept of SQLite
+// virtual tables). See
+// /Users/johnwang/.claude/plans/sprightly-waddling-platypus.md.
 type DB struct {
 	db      *sql.DB
+	ent     *ent.Client
 	dbPath  string
 	product string
 }
@@ -34,7 +50,13 @@ func Open(dbPath string) (*DB, error) {
 		return nil, fmt.Errorf("creating database directory: %w", err)
 	}
 
-	db, err := sql.Open("sqlite", dbPath)
+	// _pragma=foreign_keys(1): required for Ent's SQLite schema inspector to
+	// run Schema.Create below (it needs to read the foreign_keys pragma to
+	// introspect the existing schema, independent of whether Ent is asked to
+	// emit new FK constraints via WithForeignKeys(false)). This is
+	// modernc.org/sqlite's DSN convention, not the mattn/go-sqlite3 cgo
+	// driver's `_fk=1`.
+	db, err := sql.Open("sqlite", dbPath+"?_pragma=foreign_keys(1)")
 	if err != nil {
 		return nil, fmt.Errorf("opening database: %w", err)
 	}
@@ -45,19 +67,39 @@ func Open(dbPath string) (*DB, error) {
 		return nil, fmt.Errorf("enabling WAL mode: %w", err)
 	}
 
-	d := &DB{db: db, dbPath: dbPath}
+	// Wire Ent over the same *sql.DB connection modernc.org/sqlite opened
+	// above (not ent.Open(), which hardcodes the cgo mattn/go-sqlite3
+	// driver name).
+	drv := entsql.OpenDB(dialect.SQLite, db)
+	entClient := ent.NewClient(ent.Driver(drv))
 
-	// Create schema
-	if err := d.createSchema(); err != nil {
+	d := &DB{db: db, ent: entClient, dbPath: dbPath}
+
+	// Create the 13 Ent-managed tables (append-only: adds new
+	// tables/columns/indexes, never drops - safe to run against an
+	// existing populated database on every Open()). No edges/FK
+	// constraints are modeled (see plan non-goals), hence
+	// WithForeignKeys(false).
+	if err := entClient.Schema.Create(context.Background(), entschema.WithForeignKeys(false)); err != nil {
 		_ = db.Close()
-		return nil, fmt.Errorf("creating schema: %w", err)
+		return nil, fmt.Errorf("creating ent schema: %w", err)
+	}
+
+	// Create the FTS5 virtual tables/triggers, which live outside Ent's
+	// schema model entirely (SQLite-specific, no Ent equivalent).
+	if err := d.createFTSSchema(); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("creating FTS schema: %w", err)
 	}
 
 	return d, nil
 }
 
-// Close closes the database connection.
+// Close closes the database connection (and the Ent client sharing it).
 func (d *DB) Close() error {
+	if err := d.ent.Close(); err != nil {
+		return err
+	}
 	return d.db.Close()
 }
 
@@ -66,233 +108,12 @@ func (d *DB) SetProduct(product string) {
 	d.product = product
 }
 
-// createSchema creates the database tables if they don't exist.
-func (d *DB) createSchema() error {
-	schema := `
-	-- Sync metadata
-	CREATE TABLE IF NOT EXISTS sync_meta (
-		entity TEXT NOT NULL,
-		product TEXT NOT NULL,
-		last_sync DATETIME NOT NULL,
-		record_count INTEGER DEFAULT 0,
-		PRIMARY KEY (entity, product)
-	);
-
-	-- Features
-	CREATE TABLE IF NOT EXISTS features (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		assigned_to TEXT,
-		start_date TEXT,
-		due_date TEXT,
-		release TEXT,
-		release_id TEXT,
-		tags TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_features_product ON features(product);
-	CREATE INDEX IF NOT EXISTS idx_features_status ON features(status);
-	CREATE INDEX IF NOT EXISTS idx_features_updated ON features(updated_at);
-	CREATE INDEX IF NOT EXISTS idx_features_release_id ON features(release_id);
-
-	-- Ideas
-	CREATE TABLE IF NOT EXISTS ideas (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		votes INTEGER DEFAULT 0,
-		tags TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_ideas_product ON ideas(product);
-	CREATE INDEX IF NOT EXISTS idx_ideas_status ON ideas(status);
-	CREATE INDEX IF NOT EXISTS idx_ideas_votes ON ideas(votes);
-
-	-- Releases
-	CREATE TABLE IF NOT EXISTS releases (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		start_date TEXT,
-		release_date TEXT,
-		released INTEGER DEFAULT 0,
-		parking_lot INTEGER DEFAULT 0,
-		url TEXT,
-		created_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_releases_product ON releases(product);
-
-	-- Initiatives
-	CREATE TABLE IF NOT EXISTS initiatives (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		value REAL,
-		effort REAL,
-		progress REAL,
-		start_date TEXT,
-		end_date TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_initiatives_product ON initiatives(product);
-
-	-- Goals
-	CREATE TABLE IF NOT EXISTS goals (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		progress REAL,
-		start_date TEXT,
-		end_date TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_goals_product ON goals(product);
-
-	-- Epics
-	CREATE TABLE IF NOT EXISTS epics (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		progress REAL,
-		start_date TEXT,
-		due_date TEXT,
-		release TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_epics_product ON epics(product);
-
-	-- Users
-	CREATE TABLE IF NOT EXISTS users (
-		id TEXT PRIMARY KEY,
-		first_name TEXT,
-		last_name TEXT,
-		email TEXT,
-		role TEXT,
-		created_at DATETIME,
-		data JSON
-	);
-
-	-- Products
-	CREATE TABLE IF NOT EXISTS products (
-		id TEXT PRIMARY KEY,
-		reference_prefix TEXT,
-		name TEXT,
-		product_line INTEGER DEFAULT 0,
-		has_ideas INTEGER DEFAULT 0,
-		created_at DATETIME,
-		data JSON
-	);
-
-	-- Comments
-	CREATE TABLE IF NOT EXISTS comments (
-		id TEXT PRIMARY KEY,
-		product TEXT,
-		commentable_type TEXT,
-		commentable_id TEXT,
-		body TEXT,
-		user_id TEXT,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_comments_product ON comments(product);
-	CREATE INDEX IF NOT EXISTS idx_comments_commentable ON comments(commentable_type, commentable_id);
-	CREATE INDEX IF NOT EXISTS idx_comments_user ON comments(user_id);
-
-	-- Requirements
-	CREATE TABLE IF NOT EXISTS requirements (
-		id TEXT PRIMARY KEY,
-		product TEXT NOT NULL,
-		feature_id TEXT,
-		reference_num TEXT,
-		name TEXT,
-		description TEXT,
-		status TEXT,
-		assigned_to TEXT,
-		position INTEGER,
-		original_estimate REAL,
-		remaining_estimate REAL,
-		work_done REAL,
-		url TEXT,
-		created_at DATETIME,
-		updated_at DATETIME,
-		data JSON
-	);
-	CREATE INDEX IF NOT EXISTS idx_requirements_product ON requirements(product);
-	CREATE INDEX IF NOT EXISTS idx_requirements_feature ON requirements(feature_id);
-	CREATE INDEX IF NOT EXISTS idx_requirements_status ON requirements(status);
-
-	-- Saved filters (user-defined AQL queries)
-	CREATE TABLE IF NOT EXISTS saved_filters (
-		id TEXT PRIMARY KEY,
-		name TEXT NOT NULL UNIQUE,
-		aql TEXT NOT NULL,
-		product TEXT,
-		description TEXT,
-		is_favorite INTEGER DEFAULT 0,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	);
-	CREATE INDEX IF NOT EXISTS idx_filters_favorite ON saved_filters(is_favorite);
-	CREATE INDEX IF NOT EXISTS idx_filters_product ON saved_filters(product);
-
-	-- Relationships (for offline joins)
-	CREATE TABLE IF NOT EXISTS relationships (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		from_type TEXT NOT NULL,
-		from_id TEXT NOT NULL,
-		rel_type TEXT NOT NULL,
-		to_type TEXT NOT NULL,
-		to_id TEXT NOT NULL,
-		product TEXT,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		UNIQUE(from_type, from_id, rel_type, to_type, to_id)
-	);
-	CREATE INDEX IF NOT EXISTS idx_rel_from ON relationships(from_type, from_id);
-	CREATE INDEX IF NOT EXISTS idx_rel_to ON relationships(to_type, to_id);
-	CREATE INDEX IF NOT EXISTS idx_rel_type ON relationships(rel_type);
-	CREATE INDEX IF NOT EXISTS idx_rel_product ON relationships(product);
-	`
-
-	_, err := d.db.Exec(schema)
-	if err != nil {
-		return err
-	}
-
+// createFTSSchema creates the FTS5 virtual tables and their sync triggers.
+// The 13 core tables (sync_meta, features, initiatives, etc.) are created
+// by the Ent client in Open() instead - FTS5 virtual tables have no Ent
+// equivalent, so they stay hand-written SQL against the base tables Ent
+// just created.
+func (d *DB) createFTSSchema() error {
 	// Create FTS5 tables for full-text search
 	fts := `
 	-- FTS5 virtual tables for full-text search
@@ -374,321 +195,77 @@ func (d *DB) createSchema() error {
 	END;
 	`
 
-	_, err = d.db.Exec(fts)
-	if err != nil {
-		return err
-	}
-
-	// Run migrations for schema updates
-	return d.migrate()
-}
-
-// migrate applies schema migrations for existing databases.
-func (d *DB) migrate() error {
-	// Add release_id column to features if not exists
-	_, err := d.db.Exec(`
-		ALTER TABLE features ADD COLUMN release_id TEXT;
-	`)
-	if err != nil && !isColumnExistsError(err) {
-		return fmt.Errorf("migrating features table: %w", err)
-	}
-
-	// Add index on release_id if not exists
-	_, _ = d.db.Exec(`
-		CREATE INDEX IF NOT EXISTS idx_features_release_id ON features(release_id);
-	`)
-
-	return nil
-}
-
-// isColumnExistsError checks if the error is about a column already existing.
-func isColumnExistsError(err error) bool {
-	if err == nil {
-		return false
-	}
-	errStr := err.Error()
-	// SQLite error messages can vary by driver, check for common patterns
-	return strings.Contains(errStr, "duplicate column name") ||
-		strings.Contains(errStr, "column already exists")
+	_, err := d.db.Exec(fts)
+	return err
 }
 
 // GetLastSync returns the last sync time for an entity/product combination.
-func (d *DB) GetLastSync(entity, product string) (time.Time, error) {
-	var lastSync time.Time
-	err := d.db.QueryRow(
-		"SELECT last_sync FROM sync_meta WHERE entity = ? AND product = ?",
-		entity, product,
-	).Scan(&lastSync)
-	if err == sql.ErrNoRows {
+func (d *DB) GetLastSync(ctx context.Context, entity, product string) (time.Time, error) {
+	meta, err := d.ent.SyncMeta.Query().
+		Where(syncmeta.Entity(entity), syncmeta.Product(product)).
+		Only(ctx)
+	if ent.IsNotFound(err) {
 		return time.Time{}, nil
 	}
-	return lastSync, err
+	if err != nil {
+		return time.Time{}, err
+	}
+	return meta.LastSync, nil
 }
 
 // SetLastSync updates the last sync time for an entity/product combination.
-func (d *DB) SetLastSync(entity, product string, t time.Time, count int) error {
-	_, err := d.db.Exec(`
-		INSERT INTO sync_meta (entity, product, last_sync, record_count)
-		VALUES (?, ?, ?, ?)
-		ON CONFLICT(entity, product) DO UPDATE SET
-			last_sync = excluded.last_sync,
-			record_count = excluded.record_count
-	`, entity, product, t, count)
-	return err
+func (d *DB) SetLastSync(ctx context.Context, entity, product string, t time.Time, count int) error {
+	return d.upsertSyncMetaEnt(ctx, entity, product, t, count)
 }
 
 // UpsertFeature inserts or updates a feature record.
-func (d *DB) UpsertFeature(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	_, err = d.db.Exec(`
-		INSERT INTO features (id, product, reference_num, name, description, status,
-			assigned_to, start_date, due_date, release, release_id, tags, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			assigned_to = excluded.assigned_to,
-			start_date = excluded.start_date,
-			due_date = excluded.due_date,
-			release = excluded.release,
-			release_id = excluded.release_id,
-			tags = excluded.tags,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"], data["description"],
-		data["status"], data["assigned_to"], data["start_date"], data["due_date"],
-		data["release"], data["release_id"], tagsToString(data["tags"]), data["url"],
-		data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertFeature(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertFeatureEnt(ctx, product, data)
 }
 
 // UpsertIdea inserts or updates an idea record.
-func (d *DB) UpsertIdea(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	votes, _ := data["votes"].(int64)
-
-	_, err = d.db.Exec(`
-		INSERT INTO ideas (id, product, reference_num, name, description, status,
-			votes, tags, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			votes = excluded.votes,
-			tags = excluded.tags,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"], data["description"],
-		data["status"], votes, tagsToString(data["tags"]), data["url"],
-		data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertIdea(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertIdeaEnt(ctx, product, data)
 }
 
 // UpsertRelease inserts or updates a release record.
-func (d *DB) UpsertRelease(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	released := boolToInt(data["released"])
-	parkingLot := boolToInt(data["parking_lot"])
-
-	_, err = d.db.Exec(`
-		INSERT INTO releases (id, product, reference_num, name, start_date, release_date,
-			released, parking_lot, url, created_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			start_date = excluded.start_date,
-			release_date = excluded.release_date,
-			released = excluded.released,
-			parking_lot = excluded.parking_lot,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"],
-		data["start_date"], data["release_date"], released, parkingLot,
-		data["url"], data["created_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertRelease(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertReleaseEnt(ctx, product, data)
 }
 
 // UpsertInitiative inserts or updates an initiative record.
-func (d *DB) UpsertInitiative(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	value, _ := data["value"].(float64)
-	effort, _ := data["effort"].(float64)
-	progress, _ := data["progress"].(float64)
-
-	_, err = d.db.Exec(`
-		INSERT INTO initiatives (id, product, reference_num, name, description, status,
-			value, effort, progress, start_date, end_date, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			value = excluded.value,
-			effort = excluded.effort,
-			progress = excluded.progress,
-			start_date = excluded.start_date,
-			end_date = excluded.end_date,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"], data["description"],
-		data["status"], value, effort, progress, data["start_date"], data["end_date"],
-		data["url"], data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertInitiative(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertInitiativeEnt(ctx, product, data)
 }
 
 // UpsertGoal inserts or updates a goal record.
-func (d *DB) UpsertGoal(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	progress, _ := data["progress"].(float64)
-
-	_, err = d.db.Exec(`
-		INSERT INTO goals (id, product, reference_num, name, description, status,
-			progress, start_date, end_date, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			progress = excluded.progress,
-			start_date = excluded.start_date,
-			end_date = excluded.end_date,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"], data["description"],
-		data["status"], progress, data["start_date"], data["end_date"],
-		data["url"], data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertGoal(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertGoalEnt(ctx, product, data)
 }
 
 // UpsertEpic inserts or updates an epic record.
-func (d *DB) UpsertEpic(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	progress, _ := data["progress"].(float64)
-
-	_, err = d.db.Exec(`
-		INSERT INTO epics (id, product, reference_num, name, description, status,
-			progress, start_date, due_date, release, url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			progress = excluded.progress,
-			start_date = excluded.start_date,
-			due_date = excluded.due_date,
-			release = excluded.release,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["reference_num"], data["name"], data["description"],
-		data["status"], progress, data["start_date"], data["due_date"],
-		data["release"], data["url"], data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertEpic(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertEpicEnt(ctx, product, data)
 }
 
 // UpsertUser inserts or updates a user record.
-func (d *DB) UpsertUser(data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	_, err = d.db.Exec(`
-		INSERT INTO users (id, first_name, last_name, email, role, created_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			first_name = excluded.first_name,
-			last_name = excluded.last_name,
-			email = excluded.email,
-			role = excluded.role,
-			created_at = excluded.created_at,
-			data = excluded.data
-	`,
-		data["id"], data["first_name"], data["last_name"], data["email"],
-		data["role"], data["created_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertUser(ctx context.Context, data map[string]any) error {
+	return d.upsertUserEnt(ctx, data)
 }
 
 // UpsertProduct inserts or updates a product record.
-func (d *DB) UpsertProduct(data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
+func (d *DB) UpsertProduct(ctx context.Context, data map[string]any) error {
+	return d.upsertProductEnt(ctx, data)
+}
 
-	productLine := boolToInt(data["product_line"])
-	hasIdeas := boolToInt(data["has_ideas"])
+// UpsertIdeaUser inserts or updates an idea user (voter identity) record.
+func (d *DB) UpsertIdeaUser(ctx context.Context, data map[string]any) error {
+	return d.upsertIdeaUserEnt(ctx, data)
+}
 
-	_, err = d.db.Exec(`
-		INSERT INTO products (id, reference_prefix, name, product_line, has_ideas, created_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			reference_prefix = excluded.reference_prefix,
-			name = excluded.name,
-			product_line = excluded.product_line,
-			has_ideas = excluded.has_ideas,
-			created_at = excluded.created_at,
-			data = excluded.data
-	`,
-		data["id"], data["reference_prefix"], data["name"],
-		productLine, hasIdeas, data["created_at"], string(jsonData),
-	)
-	return err
+// UpsertIdeaOrganization inserts or updates an idea organization (customer/account) record.
+func (d *DB) UpsertIdeaOrganization(ctx context.Context, data map[string]any) error {
+	return d.upsertIdeaOrganizationEnt(ctx, data)
 }
 
 // tagsToString converts a tags value to a comma-separated string.
@@ -717,105 +294,28 @@ func joinStrings(ss []string, sep string) string {
 	return result
 }
 
-func boolToInt(v any) int {
-	if v == nil {
-		return 0
-	}
-	switch b := v.(type) {
-	case bool:
-		if b {
-			return 1
-		}
-		return 0
-	default:
-		return 0
-	}
+// UpsertComment inserts or updates a comment record.
+func (d *DB) UpsertComment(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertCommentEnt(ctx, product, data)
 }
 
-// UpsertComment inserts or updates a comment record.
-func (d *DB) UpsertComment(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	_, err = d.db.Exec(`
-		INSERT INTO comments (id, product, commentable_type, commentable_id, body, user_id,
-			url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			commentable_type = excluded.commentable_type,
-			commentable_id = excluded.commentable_id,
-			body = excluded.body,
-			user_id = excluded.user_id,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["commentable_type"], data["commentable_id"],
-		data["body"], data["user_id"], data["url"],
-		data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+// UpsertIdeaEndorsement inserts or updates an idea endorsement (vote) record.
+func (d *DB) UpsertIdeaEndorsement(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertIdeaEndorsementEnt(ctx, product, data)
 }
 
 // UpsertRequirement inserts or updates a requirement record.
-func (d *DB) UpsertRequirement(product string, data map[string]any) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	position, _ := data["position"].(int64)
-	origEst, _ := data["original_estimate"].(float64)
-	remainEst, _ := data["remaining_estimate"].(float64)
-	workDone, _ := data["work_done"].(float64)
-
-	_, err = d.db.Exec(`
-		INSERT INTO requirements (id, product, feature_id, reference_num, name, description,
-			status, assigned_to, position, original_estimate, remaining_estimate, work_done,
-			url, created_at, updated_at, data)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET
-			feature_id = excluded.feature_id,
-			reference_num = excluded.reference_num,
-			name = excluded.name,
-			description = excluded.description,
-			status = excluded.status,
-			assigned_to = excluded.assigned_to,
-			position = excluded.position,
-			original_estimate = excluded.original_estimate,
-			remaining_estimate = excluded.remaining_estimate,
-			work_done = excluded.work_done,
-			url = excluded.url,
-			created_at = excluded.created_at,
-			updated_at = excluded.updated_at,
-			data = excluded.data
-	`,
-		data["id"], product, data["feature_id"], data["reference_num"], data["name"],
-		data["description"], data["status"], data["assigned_to"], position,
-		origEst, remainEst, workDone, data["url"],
-		data["created_at"], data["updated_at"], string(jsonData),
-	)
-	return err
+func (d *DB) UpsertRequirement(ctx context.Context, product string, data map[string]any) error {
+	return d.upsertRequirementEnt(ctx, product, data)
 }
 
 // UpsertRelationship inserts or updates a relationship record.
-func (d *DB) UpsertRelationship(fromType, fromID, relType, toType, toID, product string) error {
-	_, err := d.db.Exec(`
-		INSERT INTO relationships (from_type, from_id, rel_type, to_type, to_id, product)
-		VALUES (?, ?, ?, ?, ?, ?)
-		ON CONFLICT(from_type, from_id, rel_type, to_type, to_id) DO UPDATE SET
-			product = excluded.product
-	`,
-		fromType, fromID, relType, toType, toID, product,
-	)
-	return err
+func (d *DB) UpsertRelationship(ctx context.Context, fromType, fromID, relType, toType, toID, product string) error {
+	return d.upsertRelationshipEnt(ctx, fromType, fromID, relType, toType, toID, product)
 }
 
 // FullTextSearch searches across all FTS5 tables.
-func (d *DB) FullTextSearch(query string, entityTypes []string, limit int) ([]map[string]any, error) {
+func (d *DB) FullTextSearch(ctx context.Context, query string, entityTypes []string, limit int) ([]map[string]any, error) {
 	if limit <= 0 {
 		limit = 100
 	}
@@ -828,8 +328,19 @@ func (d *DB) FullTextSearch(query string, entityTypes []string, limit int) ([]ma
 	}
 
 	for _, et := range entityTypes {
+		// Allow-list: et ends up interpolated into a table name below (FTS5
+		// virtual tables have no Ent/query-builder equivalent to bind this
+		// safely). httpserver's /api/search passes this straight from a
+		// query-string parameter, so this has to be checked here, not
+		// upstream.
+		switch et {
+		case "features", "ideas", "initiatives", "epics":
+			// valid
+		default:
+			continue
+		}
 		ftsTable := et + "_fts"
-		rows, err := d.db.Query(fmt.Sprintf(`
+		rows, err := d.db.QueryContext(ctx, fmt.Sprintf(`
 			SELECT id, name, description, bm25(%s) as score
 			FROM %s
 			WHERE %s MATCH ?
@@ -861,54 +372,170 @@ func (d *DB) FullTextSearch(query string, entityTypes []string, limit int) ([]ma
 }
 
 // GetRelationships returns relationships for an entity.
-func (d *DB) GetRelationships(entityType, entityID string) ([]map[string]any, error) {
-	rows, err := d.db.Query(`
-		SELECT from_type, from_id, rel_type, to_type, to_id, product
-		FROM relationships
-		WHERE (from_type = ? AND from_id = ?) OR (to_type = ? AND to_id = ?)
-	`, entityType, entityID, entityType, entityID)
+func (d *DB) GetRelationships(ctx context.Context, entityType, entityID string) ([]map[string]any, error) {
+	rels, err := d.ent.Relationship.Query().
+		Where(relationship.Or(
+			relationship.And(relationship.FromType(entityType), relationship.FromID(entityID)),
+			relationship.And(relationship.ToType(entityType), relationship.ToID(entityID)),
+		)).
+		All(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	results := make([]map[string]any, 0, len(rels))
+	for _, r := range rels {
+		results = append(results, map[string]any{
+			"from_type": r.FromType,
+			"from_id":   r.FromID,
+			"rel_type":  r.RelType,
+			"to_type":   r.ToType,
+			"to_id":     r.ToID,
+			"product":   r.Product,
+		})
+	}
+	return results, nil
+}
+
+// GetFeatureIDs returns all feature IDs for a product.
+func (d *DB) GetFeatureIDs(ctx context.Context, product string) ([]string, error) {
+	return d.ent.Feature.Query().Where(feature.Product(product)).IDs(ctx)
+}
+
+// GetIdeaVoteCounts returns each cached idea's current vote count, keyed by
+// idea ID, for a product. Used by syncIdeaEndorsements to decide which
+// ideas' endorsements actually need re-fetching.
+func (d *DB) GetIdeaVoteCounts(ctx context.Context, product string) (map[string]int, error) {
+	rows, err := d.db.QueryContext(ctx, `SELECT id, votes FROM ideas WHERE product = ?`, product)
+	if err != nil {
+		return nil, fmt.Errorf("querying idea vote counts: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+
+	counts := make(map[string]int)
+	for rows.Next() {
+		var id string
+		var votes int
+		if err := rows.Scan(&id, &votes); err != nil {
+			return nil, err
+		}
+		counts[id] = votes
+	}
+	return counts, rows.Err()
+}
+
+// CountIdeaEndorsements returns the number of endorsement rows already
+// cached for an idea.
+func (d *DB) CountIdeaEndorsements(ctx context.Context, ideaID string) (int, error) {
+	var count int
+	err := d.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM idea_endorsements WHERE idea_id = ?`, ideaID).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("counting cached endorsements for idea %s: %w", ideaID, err)
+	}
+	return count, nil
+}
+
+// GetIdeas returns cached ideas for a product, optionally filtered to those
+// created at or after since. Used by the omnisignalcache provider, which
+// builds signals from the cache rather than live API calls.
+func (d *DB) GetIdeas(ctx context.Context, product string, since time.Time) ([]map[string]any, error) {
+	query := `SELECT id, reference_num, name, COALESCE(status, ''), COALESCE(description, ''), votes, created_at, updated_at
+		FROM ideas WHERE product = ?`
+	args := []any{product}
+	if !since.IsZero() {
+		query += ` AND created_at >= ?`
+		args = append(args, since)
+	}
+
+	rows, err := d.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("querying ideas for product %s: %w", product, err)
 	}
 	defer func() { _ = rows.Close() }()
 
 	var results []map[string]any
 	for rows.Next() {
-		var fromType, fromID, relType, toType, toID, product string
-		if err := rows.Scan(&fromType, &fromID, &relType, &toType, &toID, &product); err != nil {
+		var id, refNum, name, status, description string
+		var votes int
+		var createdAt, updatedAt sql.NullTime
+		if err := rows.Scan(&id, &refNum, &name, &status, &description, &votes, &createdAt, &updatedAt); err != nil {
 			return nil, err
 		}
-		results = append(results, map[string]any{
-			"from_type": fromType,
-			"from_id":   fromID,
-			"rel_type":  relType,
-			"to_type":   toType,
-			"to_id":     toID,
-			"product":   product,
-		})
+		rec := map[string]any{
+			"id": id, "reference_num": refNum, "name": name,
+			"status": status, "description": description, "votes": votes,
+		}
+		if createdAt.Valid {
+			rec["created_at"] = createdAt.Time
+		}
+		if updatedAt.Valid {
+			rec["updated_at"] = updatedAt.Time
+		}
+		results = append(results, rec)
 	}
-
 	return results, rows.Err()
 }
 
-// GetFeatureIDs returns all feature IDs for a product.
-func (d *DB) GetFeatureIDs(product string) ([]string, error) {
-	rows, err := d.db.Query("SELECT id FROM features WHERE product = ?", product)
+// GetIdeaEndorsementsByIdea returns cached endorsements (votes) for an idea,
+// including the voter's portal email.
+func (d *DB) GetIdeaEndorsementsByIdea(ctx context.Context, ideaID string) ([]map[string]any, error) {
+	rows, err := d.db.QueryContext(ctx, `
+		SELECT id, COALESCE(portal_user_email, ''), COALESCE(portal_user_name, '')
+		FROM idea_endorsements WHERE idea_id = ?
+	`, ideaID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("querying endorsements for idea %s: %w", ideaID, err)
 	}
 	defer func() { _ = rows.Close() }()
 
-	var ids []string
+	var results []map[string]any
 	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
+		var id, email, name string
+		if err := rows.Scan(&id, &email, &name); err != nil {
 			return nil, err
 		}
-		ids = append(ids, id)
+		results = append(results, map[string]any{"id": id, "portal_user_email": email, "portal_user_name": name})
 	}
+	return results, rows.Err()
+}
 
-	return ids, rows.Err()
+// IdeaOrganizationSummary is the subset of a cached IdeaOrganization needed
+// to resolve a voter's email domain to a customer reference.
+type IdeaOrganizationSummary struct {
+	ID           string
+	Name         string
+	ReferenceNum string
+}
+
+// GetIdeaOrganizationsByDomain returns a domain -> organization lookup built
+// from every cached IdeaOrganization's (possibly comma-separated)
+// email_domains field. Built once per omnisignalcache.Fetch() call rather
+// than once per voter.
+func (d *DB) GetIdeaOrganizationsByDomain(ctx context.Context) (map[string]IdeaOrganizationSummary, error) {
+	rows, err := d.db.QueryContext(ctx, `
+		SELECT id, COALESCE(name, ''), COALESCE(reference_num, ''), COALESCE(email_domains, '')
+		FROM idea_organizations WHERE email_domains IS NOT NULL AND email_domains != ''
+	`)
+	if err != nil {
+		return nil, fmt.Errorf("querying idea organizations: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+
+	byDomain := make(map[string]IdeaOrganizationSummary)
+	for rows.Next() {
+		var id, name, refNum, domains string
+		if err := rows.Scan(&id, &name, &refNum, &domains); err != nil {
+			return nil, err
+		}
+		summary := IdeaOrganizationSummary{ID: id, Name: name, ReferenceNum: refNum}
+		for _, domain := range strings.Split(domains, ",") {
+			domain = strings.ToLower(strings.TrimSpace(domain))
+			if domain != "" {
+				byDomain[domain] = summary
+			}
+		}
+	}
+	return byDomain, rows.Err()
 }
 
 // SavedFilter represents a saved AQL query.
@@ -924,80 +551,48 @@ type SavedFilter struct {
 }
 
 // ListFilters returns all saved filters.
-func (d *DB) ListFilters() ([]SavedFilter, error) {
-	rows, err := d.db.Query(`
-		SELECT id, name, aql, product, description, is_favorite, created_at, updated_at
-		FROM saved_filters
-		ORDER BY is_favorite DESC, name ASC
-	`)
+func (d *DB) ListFilters(ctx context.Context) ([]SavedFilter, error) {
+	rows, err := d.ent.SavedFilter.Query().
+		Order(ent.Desc(savedfilter.FieldIsFavorite), ent.Asc(savedfilter.FieldName)).
+		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	defer func() { _ = rows.Close() }()
-
-	var filters []SavedFilter
-	for rows.Next() {
-		var f SavedFilter
-		var product, description sql.NullString
-		var isFav int
-		if err := rows.Scan(&f.ID, &f.Name, &f.AQL, &product, &description, &isFav, &f.CreatedAt, &f.UpdatedAt); err != nil {
-			return nil, err
-		}
-		f.Product = product.String
-		f.Description = description.String
-		f.IsFavorite = isFav == 1
-		filters = append(filters, f)
+	filters := make([]SavedFilter, 0, len(rows))
+	for _, r := range rows {
+		filters = append(filters, savedFilterFromEnt(r))
 	}
-
-	return filters, rows.Err()
+	return filters, nil
 }
 
 // GetFilter returns a saved filter by ID.
-func (d *DB) GetFilter(id string) (*SavedFilter, error) {
-	var f SavedFilter
-	var product, description sql.NullString
-	var isFav int
-	err := d.db.QueryRow(`
-		SELECT id, name, aql, product, description, is_favorite, created_at, updated_at
-		FROM saved_filters
-		WHERE id = ?
-	`, id).Scan(&f.ID, &f.Name, &f.AQL, &product, &description, &isFav, &f.CreatedAt, &f.UpdatedAt)
-	if err == sql.ErrNoRows {
+func (d *DB) GetFilter(ctx context.Context, id string) (*SavedFilter, error) {
+	r, err := d.ent.SavedFilter.Get(ctx, id)
+	if ent.IsNotFound(err) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	f.Product = product.String
-	f.Description = description.String
-	f.IsFavorite = isFav == 1
+	f := savedFilterFromEnt(r)
 	return &f, nil
 }
 
 // GetFilterByName returns a saved filter by name.
-func (d *DB) GetFilterByName(name string) (*SavedFilter, error) {
-	var f SavedFilter
-	var product, description sql.NullString
-	var isFav int
-	err := d.db.QueryRow(`
-		SELECT id, name, aql, product, description, is_favorite, created_at, updated_at
-		FROM saved_filters
-		WHERE name = ?
-	`, name).Scan(&f.ID, &f.Name, &f.AQL, &product, &description, &isFav, &f.CreatedAt, &f.UpdatedAt)
-	if err == sql.ErrNoRows {
+func (d *DB) GetFilterByName(ctx context.Context, name string) (*SavedFilter, error) {
+	r, err := d.ent.SavedFilter.Query().Where(savedfilter.Name(name)).Only(ctx)
+	if ent.IsNotFound(err) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
-	f.Product = product.String
-	f.Description = description.String
-	f.IsFavorite = isFav == 1
+	f := savedFilterFromEnt(r)
 	return &f, nil
 }
 
 // CreateFilter creates a new saved filter.
-func (d *DB) CreateFilter(f *SavedFilter) error {
+func (d *DB) CreateFilter(ctx context.Context, f *SavedFilter) error {
 	if f.ID == "" {
 		f.ID = generateFilterID()
 	}
@@ -1005,61 +600,52 @@ func (d *DB) CreateFilter(f *SavedFilter) error {
 	f.CreatedAt = now
 	f.UpdatedAt = now
 
-	isFav := 0
-	if f.IsFavorite {
-		isFav = 1
+	r, err := d.ent.SavedFilter.Create().
+		SetID(f.ID).
+		SetName(f.Name).
+		SetAql(f.AQL).
+		SetNillableProduct(mapStringPtr2(f.Product)).
+		SetNillableDescription(mapStringPtr2(f.Description)).
+		SetIsFavorite(f.IsFavorite).
+		SetCreatedAt(f.CreatedAt).
+		SetUpdatedAt(f.UpdatedAt).
+		Save(ctx)
+	if err != nil {
+		return err
 	}
-
-	_, err := d.db.Exec(`
-		INSERT INTO saved_filters (id, name, aql, product, description, is_favorite, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-	`, f.ID, f.Name, f.AQL, nullString(f.Product), nullString(f.Description), isFav, f.CreatedAt, f.UpdatedAt)
-	return err
+	*f = savedFilterFromEnt(r)
+	return nil
 }
 
 // UpdateFilter updates an existing saved filter.
-func (d *DB) UpdateFilter(f *SavedFilter) error {
+func (d *DB) UpdateFilter(ctx context.Context, f *SavedFilter) error {
 	f.UpdatedAt = time.Now()
 
-	isFav := 0
-	if f.IsFavorite {
-		isFav = 1
-	}
-
-	result, err := d.db.Exec(`
-		UPDATE saved_filters
-		SET name = ?, aql = ?, product = ?, description = ?, is_favorite = ?, updated_at = ?
-		WHERE id = ?
-	`, f.Name, f.AQL, nullString(f.Product), nullString(f.Description), isFav, f.UpdatedAt, f.ID)
-	if err != nil {
-		return err
-	}
-
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rows == 0 {
+	r, err := d.ent.SavedFilter.UpdateOneID(f.ID).
+		SetName(f.Name).
+		SetAql(f.AQL).
+		SetNillableProduct(mapStringPtr2(f.Product)).
+		SetNillableDescription(mapStringPtr2(f.Description)).
+		SetIsFavorite(f.IsFavorite).
+		SetUpdatedAt(f.UpdatedAt).
+		Save(ctx)
+	if ent.IsNotFound(err) {
 		return sql.ErrNoRows
 	}
+	if err != nil {
+		return err
+	}
+	*f = savedFilterFromEnt(r)
 	return nil
 }
 
 // DeleteFilter deletes a saved filter by ID.
-func (d *DB) DeleteFilter(id string) error {
-	result, err := d.db.Exec("DELETE FROM saved_filters WHERE id = ?", id)
-	if err != nil {
-		return err
-	}
-
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rows == 0 {
+func (d *DB) DeleteFilter(ctx context.Context, id string) error {
+	err := d.ent.SavedFilter.DeleteOneID(id).Exec(ctx)
+	if ent.IsNotFound(err) {
 		return sql.ErrNoRows
 	}
-	return nil
+	return err
 }
 
 // generateFilterID generates a unique filter ID.
@@ -1067,17 +653,25 @@ func generateFilterID() string {
 	return fmt.Sprintf("filter_%d", time.Now().UnixNano())
 }
 
-// nullString returns a sql.NullString for empty strings.
-func nullString(s string) sql.NullString {
-	if s == "" {
-		return sql.NullString{Valid: false}
+// savedFilterFromEnt converts a generated Ent entity to the API-facing
+// SavedFilter DTO (kept distinct from the Ent type so the HTTP/MCP layers
+// aren't coupled to the storage schema).
+func savedFilterFromEnt(r *ent.SavedFilter) SavedFilter {
+	return SavedFilter{
+		ID:          r.ID,
+		Name:        r.Name,
+		AQL:         r.Aql,
+		Product:     r.Product,
+		Description: r.Description,
+		IsFavorite:  r.IsFavorite,
+		CreatedAt:   r.CreatedAt,
+		UpdatedAt:   r.UpdatedAt,
 	}
-	return sql.NullString{String: s, Valid: true}
 }
 
 // GetFeaturesByReleaseID returns all features for a given release ID.
-func (d *DB) GetFeaturesByReleaseID(product, releaseID string) ([]map[string]any, error) {
-	rows, err := d.db.Query(`
+func (d *DB) GetFeaturesByReleaseID(ctx context.Context, product, releaseID string) ([]map[string]any, error) {
+	rows, err := d.db.QueryContext(ctx, `
 		SELECT id, reference_num, name, status, assigned_to, start_date, due_date,
 			   release, release_id, created_at, updated_at
 		FROM features
@@ -1093,8 +687,8 @@ func (d *DB) GetFeaturesByReleaseID(product, releaseID string) ([]map[string]any
 }
 
 // GetFeaturesByReleaseName returns all features for a given release name.
-func (d *DB) GetFeaturesByReleaseName(product, releaseName string) ([]map[string]any, error) {
-	rows, err := d.db.Query(`
+func (d *DB) GetFeaturesByReleaseName(ctx context.Context, product, releaseName string) ([]map[string]any, error) {
+	rows, err := d.db.QueryContext(ctx, `
 		SELECT id, reference_num, name, status, assigned_to, start_date, due_date,
 			   release, release_id, created_at, updated_at
 		FROM features
@@ -1111,9 +705,9 @@ func (d *DB) GetFeaturesByReleaseName(product, releaseName string) ([]map[string
 
 // GetFeaturesByReleaseDate returns all features for releases matching a specific date.
 // The date should be in YYYY-MM-DD format.
-func (d *DB) GetFeaturesByReleaseDate(product, releaseDate string) ([]map[string]any, error) {
+func (d *DB) GetFeaturesByReleaseDate(ctx context.Context, product, releaseDate string) ([]map[string]any, error) {
 	// Join with releases table to match by release_date
-	rows, err := d.db.Query(`
+	rows, err := d.db.QueryContext(ctx, `
 		SELECT f.id, f.reference_num, f.name, f.status, f.assigned_to, f.start_date, f.due_date,
 			   f.release, f.release_id, f.created_at, f.updated_at
 		FROM features f
@@ -1131,7 +725,7 @@ func (d *DB) GetFeaturesByReleaseDate(product, releaseDate string) ([]map[string
 
 // GetFeaturesByReleaseDateRange returns all features for releases within a date range.
 // Both dates should be in YYYY-MM-DD format. Either can be empty for open-ended range.
-func (d *DB) GetFeaturesByReleaseDateRange(product, startDate, endDate string) ([]map[string]any, error) {
+func (d *DB) GetFeaturesByReleaseDateRange(ctx context.Context, product, startDate, endDate string) ([]map[string]any, error) {
 	var query string
 	var args []any
 
@@ -1177,7 +771,7 @@ func (d *DB) GetFeaturesByReleaseDateRange(product, startDate, endDate string) (
 		args = []any{product}
 	}
 
-	rows, err := d.db.Query(query, args...)
+	rows, err := d.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -1236,18 +830,18 @@ func scanFeatureRows(rows *sql.Rows) ([]map[string]any, error) {
 }
 
 // GetReleaseByDate returns a release matching a specific date.
-func (d *DB) GetReleaseByDate(product, releaseDate string) (*map[string]any, error) {
-	return d.getReleaseByField(product, "release_date", releaseDate)
+func (d *DB) GetReleaseByDate(ctx context.Context, product, releaseDate string) (*map[string]any, error) {
+	return d.getReleaseByField(ctx, product, "release_date", releaseDate)
 }
 
 // GetReleaseByName returns a release matching a specific name.
-func (d *DB) GetReleaseByName(product, releaseName string) (*map[string]any, error) {
-	return d.getReleaseByField(product, "name", releaseName)
+func (d *DB) GetReleaseByName(ctx context.Context, product, releaseName string) (*map[string]any, error) {
+	return d.getReleaseByField(ctx, product, "name", releaseName)
 }
 
 // getReleaseByField is a helper that returns a release matching a field value.
 // The field parameter must be a known column name (name or release_date).
-func (d *DB) getReleaseByField(product, field, value string) (*map[string]any, error) {
+func (d *DB) getReleaseByField(ctx context.Context, product, field, value string) (*map[string]any, error) {
 	// Validate field to prevent SQL injection (only allow known columns)
 	switch field {
 	case "name", "release_date":
@@ -1269,7 +863,7 @@ func (d *DB) getReleaseByField(product, field, value string) (*map[string]any, e
 		LIMIT 1
 	`, field)
 
-	err := d.db.QueryRow(query, product, value).Scan(
+	err := d.db.QueryRowContext(ctx, query, product, value).Scan(
 		&id, &refNum, &name, &startDate, &relDate, &released, &parkingLot, &createdAt)
 
 	if err == sql.ErrNoRows {
@@ -1325,7 +919,7 @@ type IdeaSummary struct {
 }
 
 // GetIdeasStatistics returns aggregated statistics for ideas in a product.
-func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, error) {
+func (d *DB) GetIdeasStatistics(ctx context.Context, product string, limit int) (*IdeaStatistics, error) {
 	if limit <= 0 {
 		limit = 10
 	}
@@ -1335,7 +929,7 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	// Total count and vote stats
-	err := d.db.QueryRow(`
+	err := d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*), COALESCE(SUM(votes), 0), COALESCE(AVG(votes), 0), COALESCE(MAX(votes), 0)
 		FROM ideas WHERE product = ?
 	`, product).Scan(&stats.TotalCount, &stats.TotalVotes, &stats.AvgVotes, &stats.MaxVotes)
@@ -1344,7 +938,7 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	// Count by status
-	rows, err := d.db.Query(`
+	rows, err := d.db.QueryContext(ctx, `
 		SELECT COALESCE(status, 'unknown'), COUNT(*)
 		FROM ideas WHERE product = ?
 		GROUP BY status
@@ -1367,7 +961,7 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	// Recent ideas (last 30 days)
-	err = d.db.QueryRow(`
+	err = d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM ideas
 		WHERE product = ? AND created_at >= datetime('now', '-30 days')
 	`, product).Scan(&stats.RecentCount)
@@ -1376,7 +970,7 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	// Recently updated (last 7 days)
-	err = d.db.QueryRow(`
+	err = d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM ideas
 		WHERE product = ? AND updated_at >= datetime('now', '-7 days')
 	`, product).Scan(&stats.UpdatedRecent)
@@ -1385,7 +979,7 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	// Top ideas by votes
-	topRows, err := d.db.Query(`
+	topRows, err := d.db.QueryContext(ctx, `
 		SELECT id, reference_num, name, COALESCE(status, ''), votes
 		FROM ideas WHERE product = ?
 		ORDER BY votes DESC
@@ -1405,6 +999,69 @@ func (d *DB) GetIdeasStatistics(product string, limit int) (*IdeaStatistics, err
 	}
 
 	return stats, topRows.Err()
+}
+
+// VoterDomainStatistics holds an email-domain histogram of idea voters.
+type VoterDomainStatistics struct {
+	TotalVoters   int           `json:"total_voters"`
+	UniqueDomains int           `json:"unique_domains"`
+	ByDomain      []DomainCount `json:"by_domain"`
+}
+
+// DomainCount is the voter count for a single email domain.
+type DomainCount struct {
+	Domain string `json:"domain"`
+	Count  int    `json:"count"`
+}
+
+// GetVoterEmailDomainStatistics returns a histogram of idea voters grouped
+// by email domain (the part of portal_user_email after "@"). If ideaID is
+// empty, the histogram covers every idea in the product; otherwise it's
+// scoped to that one idea. AQL's executor has no string/computed-expression
+// functions (no SUBSTR equivalent), so this can't be a generic AQL GROUP
+// BY -- it needs the same hand-written-SQL approach as GetIdeasStatistics.
+func (d *DB) GetVoterEmailDomainStatistics(ctx context.Context, product, ideaID string, limit int) (*VoterDomainStatistics, error) {
+	if limit <= 0 {
+		limit = 10
+	}
+
+	stats := &VoterDomainStatistics{}
+
+	args := []any{product}
+	where := `product = ? AND portal_user_email IS NOT NULL AND portal_user_email != ''`
+	if ideaID != "" {
+		where += ` AND idea_id = ?`
+		args = append(args, ideaID)
+	}
+
+	err := d.db.QueryRowContext(ctx, `
+		SELECT COUNT(*), COUNT(DISTINCT substr(portal_user_email, instr(portal_user_email,'@')+1))
+		FROM idea_endorsements WHERE `+where, args...,
+	).Scan(&stats.TotalVoters, &stats.UniqueDomains)
+	if err != nil {
+		return nil, fmt.Errorf("querying voter domain totals: %w", err)
+	}
+
+	rows, err := d.db.QueryContext(ctx, `
+		SELECT substr(portal_user_email, instr(portal_user_email,'@')+1) AS domain, COUNT(*)
+		FROM idea_endorsements WHERE `+where+`
+		GROUP BY domain
+		ORDER BY COUNT(*) DESC, domain ASC
+		LIMIT ?
+	`, append(args, limit)...)
+	if err != nil {
+		return nil, fmt.Errorf("querying voter domain histogram: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var dc DomainCount
+		if err := rows.Scan(&dc.Domain, &dc.Count); err != nil {
+			return nil, err
+		}
+		stats.ByDomain = append(stats.ByDomain, dc)
+	}
+	return stats, rows.Err()
 }
 
 // FeatureStatistics holds aggregated statistics for features.
@@ -1429,7 +1086,7 @@ type ReleaseSummary struct {
 }
 
 // GetFeaturesStatistics returns aggregated statistics for features in a product.
-func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistics, error) {
+func (d *DB) GetFeaturesStatistics(ctx context.Context, product string, limit int) (*FeatureStatistics, error) {
 	if limit <= 0 {
 		limit = 5
 	}
@@ -1440,13 +1097,13 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	}
 
 	// Total count
-	err := d.db.QueryRow(`SELECT COUNT(*) FROM features WHERE product = ?`, product).Scan(&stats.TotalCount)
+	err := d.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM features WHERE product = ?`, product).Scan(&stats.TotalCount)
 	if err != nil {
 		return nil, fmt.Errorf("querying feature total: %w", err)
 	}
 
 	// With/without release
-	err = d.db.QueryRow(`
+	err = d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM features WHERE product = ? AND release_id IS NOT NULL AND release_id != ''
 	`, product).Scan(&stats.WithRelease)
 	if err != nil {
@@ -1455,7 +1112,7 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	stats.WithoutRelease = stats.TotalCount - stats.WithRelease
 
 	// Count by status
-	rows, err := d.db.Query(`
+	rows, err := d.db.QueryContext(ctx, `
 		SELECT COALESCE(status, 'unknown'), COUNT(*)
 		FROM features WHERE product = ?
 		GROUP BY status
@@ -1478,7 +1135,7 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	}
 
 	// Count by release
-	relRows, err := d.db.Query(`
+	relRows, err := d.db.QueryContext(ctx, `
 		SELECT COALESCE(release, 'unassigned'), COUNT(*)
 		FROM features WHERE product = ?
 		GROUP BY release
@@ -1501,7 +1158,7 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	}
 
 	// Recent features (last 30 days)
-	err = d.db.QueryRow(`
+	err = d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM features
 		WHERE product = ? AND created_at >= datetime('now', '-30 days')
 	`, product).Scan(&stats.RecentCount)
@@ -1510,7 +1167,7 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	}
 
 	// Recently updated (last 7 days)
-	err = d.db.QueryRow(`
+	err = d.db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM features
 		WHERE product = ? AND updated_at >= datetime('now', '-7 days')
 	`, product).Scan(&stats.UpdatedRecent)
@@ -1519,7 +1176,7 @@ func (d *DB) GetFeaturesStatistics(product string, limit int) (*FeatureStatistic
 	}
 
 	// Upcoming releases with feature counts
-	upRows, err := d.db.Query(`
+	upRows, err := d.db.QueryContext(ctx, `
 		SELECT r.id, r.reference_num, r.name, COALESCE(r.release_date, ''),
 			   (SELECT COUNT(*) FROM features f WHERE f.release_id = r.id)
 		FROM releases r
