@@ -1680,5 +1680,25 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.GetFeaturesStatistics),
+
+		skill.NewTool("get_voter_domain_histogram", "Get an email-domain histogram of idea voters from the local cache (requires syncing the idea_endorsements entity)",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"idea_id": {
+					Type:        "string",
+					Required:    false,
+					Description: "Scope to one idea's voters; omit for a product-wide histogram",
+				},
+				"limit": {
+					Type:        "integer",
+					Required:    false,
+					Description: "Number of top domains to include (default: 10)",
+				},
+			},
+			s.handlers.GetVoterDomainHistogram),
 	}
 }
