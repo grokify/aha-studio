@@ -50,7 +50,7 @@ Aggregated metrics without fetching all records to the client.
 |------|-------|
 | `get_ideas_statistics` | Counts by status/category, vote stats, top ideas per group |
 | `get_features_statistics` | Counts by release/status, requirements summary |
-| `get_idea_voter_domains` | Unique voter domain analytics |
+| `get_voter_domain_histogram` | Unique voter domain analytics (per-idea or product-wide) |
 
 Prefer computing from the SQLite cache when synced (fast, no API quota); fall back to API aggregation.
 

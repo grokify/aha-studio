@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-AHASTUDIO-001`
 **Repository:** `github.com/grokify/aha-studio`
-**Status:** In Progress — 5 of 7 phases completed
+**Status:** In Progress — 5 of 8 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry the trailer `Refs: RMI-AHASTUDIO-NNN`. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in [ROADMAP_HISTORY.md](ROADMAP_HISTORY.md); this file covers remaining work only. See [PLAN.md](PLAN.md) for workstream rationale and sequencing.
 
@@ -94,7 +94,7 @@
 ## Phase 5 — Analytics Tools
 
 **Theme:** Aggregated statistics without fetching all records to the client (legacy Phase 10c).
-**Status:** Completed — 2 of 2 required items completed (1 blocked/descoped)
+**Status:** Completed — 3 of 3 required items completed
 
 - [x] `RMI-AHASTUDIO-021` `get_ideas_statistics` MCP tool
   - Acceptance: counts by status/category, vote statistics, top ideas per group; computed from the SQLite cache when synced, API aggregation as fallback
@@ -102,9 +102,10 @@
 - [x] `RMI-AHASTUDIO-022` `get_features_statistics` MCP tool
   - Acceptance: counts by release/status, requirements summary; cache-first
   - Delivered: sync/db.go GetFeaturesStatistics with status/release counts, with/without release, upcoming releases with feature counts
-- [~] `RMI-AHASTUDIO-023` `get_idea_voter_domains` MCP tool — **blocked/descoped**
-  - Acceptance: unique voter domain analytics for an idea
-  - Blocked: voter/endorser data not available in Aha API (only aggregate numEndorsements); descoped from phase
+- [x] `RMI-AHASTUDIO-023` `get_voter_domain_histogram` MCP tool
+  - Acceptance: unique voter domain analytics for an idea (or product-wide)
+  - Un-blocked: prior investigation checked only aha-go's vendored openapi/aha.yaml and GraphQL schema, both of which expose just the aggregate votes/numEndorsements count. Live-tested against a real Aha account and confirmed `GET /ideas/:idea_id/endorsements` returns per-voter identity (name, email) via `endorsed_by_portal_user`/`endorsed_by_idea_user`; that endpoint was simply missing from the vendored spec.
+  - Delivered: aha-go endorsement.go (ListIdeaEndorsements), aha-studio ent/schema/ideaendorsement.go, sync/sync.go syncIdeaEndorsements (opt-in, incremental), sync/db.go GetVoterEmailDomainStatistics, mcp get_voter_domain_histogram tool
 
 ## Phase 6 — DuckDB Evaluation
 
@@ -142,3 +143,11 @@
     - `list_features_with_jira_links` — find all features with Jira integrations
     - `get_jira_epic_with_feature` — fetch Jira Epic + linked Aha Feature (reverse lookup)
   - Acceptance: tools handle the Integration field parsing (Jira URL → issue key extraction); bidirectional lookups work
+
+## Phase 8 — Voter Identity and Organization Sync
+
+**Theme:** Sync idea_users and idea_organizations from Aha, and wire voter/customer-org tiering into a cache-backed omnisignal provider.
+**Status:** In progress — 0 of 1 items completed
+
+- [ ] `RMI-AHASTUDIO-031` Sync idea_users and idea_organizations; wire voter/customer tiering into a cache-backed omnisignal provider
+  - Acceptance: aha-go `ListIdeaUsers`/`GetIdeaUser`/`ListIdeaOrganizations`/`GetIdeaOrganization` live-verified against a real Aha account; aha-studio `idea_users`/`idea_organizations` sync (`Detailed=true`) populates `email_domains`/`revenue`; a new `omnisignalcache` provider (registered as `"aha-studio"`, mirroring the existing `aha-go/omniroadmap` vs `aha-studio/omniroadmap` live/cached split) produces signals with `signal.MetaCustomers` populated from resolved organization refs — `idea_organizations.email_domains` is Aha's own authoritative domain→customer mapping, no manual config needed for the common case; `metrics.Compute(ctx, "reach", ...)` over those signals returns a non-zero distinct-customer count
