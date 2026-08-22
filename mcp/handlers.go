@@ -2871,6 +2871,39 @@ func (h *ToolHandlers) GetFeaturesStatistics(ctx context.Context, params map[str
 	}, nil
 }
 
+// GetVoterDomainHistogram returns an email-domain histogram of idea voters from the local cache.
+func (h *ToolHandlers) GetVoterDomainHistogram(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncDB == nil {
+		return nil, fmt.Errorf("sync database not configured (set AHA_DB_PATH environment variable)")
+	}
+
+	product, _ := params["product"].(string)
+	if product == "" {
+		product = h.config.DefaultProduct
+	}
+	if product == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	ideaID, _ := params["idea_id"].(string)
+
+	limit := 10
+	if l, ok := params["limit"].(float64); ok && l > 0 {
+		limit = int(l)
+	}
+
+	stats, err := h.syncDB.GetVoterEmailDomainStatistics(ctx, product, ideaID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("getting voter domain histogram: %w", err)
+	}
+
+	return map[string]any{
+		"product":    product,
+		"idea_id":    ideaID,
+		"statistics": stats,
+	}, nil
+}
+
 // ListFeaturesByReleaseName lists features by release name from the local cache.
 // This tool queries the synced SQLite database, not the live Aha API.
 func (h *ToolHandlers) ListFeaturesByReleaseName(ctx context.Context, params map[string]any) (any, error) {
