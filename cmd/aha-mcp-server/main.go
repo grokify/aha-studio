@@ -8,12 +8,14 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	runtime "github.com/plexusone/omniskill/mcp/server"
 	"github.com/spf13/cobra"
 
 	ahamcp "github.com/grokify/aha-studio/mcp"
+	"github.com/grokify/aha-studio/sync"
 )
 
 const (
@@ -51,7 +53,9 @@ Environment variables:
   AHA_API_KEY          Aha API key (required)
   AHA_DEFAULT_PRODUCT  Default product ID for queries
   AHA_EMAIL            Email for browser automation (optional)
-  AHA_PASSWORD         Password for browser automation (optional)`,
+  AHA_PASSWORD         Password for browser automation (optional)
+  AHA_DB_PATH          SQLite cache path for offline/sync tools (default: ~/.aha-studio/cache.db)
+  AHA_SYNC_RPS         Requests/sec for the sync_data tool's client (default: 10)`,
 	Example: `  # Start stdio server (for Claude Desktop)
   aha-mcp-server
 
@@ -86,7 +90,10 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
-func runServer(cmd *cobra.Command, args []string) error {
+// buildConfig resolves Aha! credentials from flags (falling back to
+// environment variables) and returns the resulting skill configuration.
+// Shared by the MCP server command and the `tool` subcommand.
+func buildConfig() (*ahamcp.Config, error) {
 	// Apply environment defaults
 	if subdomain == "" {
 		subdomain = os.Getenv("AHA_SUBDOMAIN")
@@ -103,19 +110,39 @@ func runServer(cmd *cobra.Command, args []string) error {
 
 	// Validate credentials
 	if subdomain == "" {
-		return fmt.Errorf("subdomain required: use --subdomain or set AHA_SUBDOMAIN")
+		return nil, fmt.Errorf("subdomain required: use --subdomain or set AHA_SUBDOMAIN")
 	}
 	if apiKey == "" {
-		return fmt.Errorf("API key required: use --api-key or set AHA_API_KEY")
+		return nil, fmt.Errorf("API key required: use --api-key or set AHA_API_KEY")
 	}
 
-	// Create config
-	cfg := &ahamcp.Config{
-		Subdomain:       subdomain,
-		APIKey:          apiKey,
-		DefaultProduct:  os.Getenv("AHA_DEFAULT_PRODUCT"),
-		BrowserEmail:    os.Getenv("AHA_EMAIL"),
-		BrowserPassword: os.Getenv("AHA_PASSWORD"),
+	dbPath := os.Getenv("AHA_DB_PATH")
+	if dbPath == "" {
+		dbPath = sync.DefaultDBPath()
+	}
+
+	syncRPS := 10.0
+	if v := os.Getenv("AHA_SYNC_RPS"); v != "" {
+		if parsed, err := strconv.ParseFloat(v, 64); err == nil && parsed > 0 {
+			syncRPS = parsed
+		}
+	}
+
+	return &ahamcp.Config{
+		Subdomain:             subdomain,
+		APIKey:                apiKey,
+		DefaultProduct:        os.Getenv("AHA_DEFAULT_PRODUCT"),
+		BrowserEmail:          os.Getenv("AHA_EMAIL"),
+		BrowserPassword:       os.Getenv("AHA_PASSWORD"),
+		DBPath:                dbPath,
+		SyncRequestsPerSecond: syncRPS,
+	}, nil
+}
+
+func runServer(cmd *cobra.Command, args []string) error {
+	cfg, err := buildConfig()
+	if err != nil {
+		return err
 	}
 
 	// Create and initialize skill
