@@ -251,7 +251,7 @@ func (s *Server) executeAPIQuery(ctx context.Context, aql, product string) (*res
 }
 
 // executeOfflineQuery executes a query against the local SQLite cache.
-func (s *Server) executeOfflineQuery(_ context.Context, plan *planner.Plan, product string) (*result.Result, string, error) {
+func (s *Server) executeOfflineQuery(ctx context.Context, plan *planner.Plan, product string) (*result.Result, string, error) {
 	if s.db == nil {
 		return nil, "", errCacheNotAvailable
 	}
@@ -261,7 +261,7 @@ func (s *Server) executeOfflineQuery(_ context.Context, plan *planner.Plan, prod
 		s.db.SetProduct(product)
 	}
 
-	res, err := s.db.QueryOffline(plan)
+	res, err := s.db.QueryOffline(ctx, plan)
 	if err != nil {
 		return nil, "", err
 	}
@@ -277,7 +277,7 @@ func (s *Server) executePreferCacheQuery(ctx context.Context, plan *planner.Plan
 			s.db.SetProduct(product)
 		}
 
-		res, err := s.db.QueryOffline(plan)
+		res, err := s.db.QueryOffline(ctx, plan)
 		if err == nil && res.Count() > 0 {
 			return res, "cache", nil
 		}
@@ -497,7 +497,7 @@ func (s *Server) handleSyncStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := s.db.GetSyncStatus(product)
+	status, err := s.db.GetSyncStatus(r.Context(), product)
 	if err != nil {
 		s.logger.Error("failed to get sync status", "product", product, "error", err)
 		writeError(w, http.StatusInternalServerError, err.Error(), "STATUS_ERROR")
@@ -580,7 +580,7 @@ func (s *Server) handleListFilters(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filters, err := s.db.ListFilters()
+	filters, err := s.db.ListFilters(r.Context())
 	if err != nil {
 		s.logger.Error("failed to list filters", "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to list filters", "DB_ERROR")
@@ -631,7 +631,7 @@ func (s *Server) handleCreateFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check for duplicate name
-	existing, err := s.db.GetFilterByName(req.Name)
+	existing, err := s.db.GetFilterByName(r.Context(), req.Name)
 	if err != nil {
 		s.logger.Error("failed to check for duplicate filter", "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to create filter", "DB_ERROR")
@@ -650,7 +650,7 @@ func (s *Server) handleCreateFilter(w http.ResponseWriter, r *http.Request) {
 		IsFavorite:  req.IsFavorite,
 	}
 
-	if err := s.db.CreateFilter(filter); err != nil {
+	if err := s.db.CreateFilter(r.Context(), filter); err != nil {
 		s.logger.Error("failed to create filter", "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to create filter", "DB_ERROR")
 		return
@@ -674,7 +674,7 @@ func (s *Server) handleGetFilter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filter, err := s.db.GetFilter(id)
+	filter, err := s.db.GetFilter(r.Context(), id)
 	if err != nil {
 		s.logger.Error("failed to get filter", "id", id, "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to get filter", "DB_ERROR")
@@ -702,7 +702,7 @@ func (s *Server) handleUpdateFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if filter exists
-	existing, err := s.db.GetFilter(id)
+	existing, err := s.db.GetFilter(r.Context(), id)
 	if err != nil {
 		s.logger.Error("failed to get filter for update", "id", id, "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to update filter", "DB_ERROR")
@@ -739,7 +739,7 @@ func (s *Server) handleUpdateFilter(w http.ResponseWriter, r *http.Request) {
 	if req.Name != "" {
 		// Check for duplicate name if name is changing
 		if req.Name != existing.Name {
-			dup, err := s.db.GetFilterByName(req.Name)
+			dup, err := s.db.GetFilterByName(r.Context(), req.Name)
 			if err != nil {
 				s.logger.Error("failed to check for duplicate filter", "error", err)
 				writeError(w, http.StatusInternalServerError, "failed to update filter", "DB_ERROR")
@@ -756,7 +756,7 @@ func (s *Server) handleUpdateFilter(w http.ResponseWriter, r *http.Request) {
 	existing.Description = req.Description
 	existing.IsFavorite = req.IsFavorite
 
-	if err := s.db.UpdateFilter(existing); err != nil {
+	if err := s.db.UpdateFilter(r.Context(), existing); err != nil {
 		s.logger.Error("failed to update filter", "id", id, "error", err)
 		writeError(w, http.StatusInternalServerError, "failed to update filter", "DB_ERROR")
 		return
@@ -780,7 +780,7 @@ func (s *Server) handleDeleteFilter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.db.DeleteFilter(id); err != nil {
+	if err := s.db.DeleteFilter(r.Context(), id); err != nil {
 		if err.Error() == "sql: no rows in result set" {
 			writeError(w, http.StatusNotFound, "filter not found", "NOT_FOUND")
 			return
@@ -859,7 +859,7 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	results, err := s.db.FullTextSearch(query, entities, limit)
+	results, err := s.db.FullTextSearch(r.Context(), query, entities, limit)
 	if err != nil {
 		s.logger.Error("search failed", "query", query, "error", err)
 		writeError(w, http.StatusInternalServerError, "search failed", "SEARCH_ERROR")
