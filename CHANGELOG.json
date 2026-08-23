@@ -8,15 +8,34 @@
   "releases": [
     {
       "version": "v0.12.0",
-      "date": "2026-08-01",
-      "commit": "72de791",
+      "date": "2026-08-23",
+      "commit": "7ef4274",
       "highlights": [
+        { "description": "Custom field mutations: UPDATE <entity> SET custom.<key> = <value> in AQL (CLI and set_custom_field_values MCP tool) for features, initiatives, and releases, routed through aha-go's GraphQL SetCustomFieldValues" },
+        { "description": "Idea voter and customer-org sync: idea_endorsements/idea_users/idea_organizations Ent schemas and incremental sync, a get_voter_domain_histogram MCP tool, and a new cache-backed omnisignalcache OmniSignal provider with voter/customer-org tiering" },
+        { "description": "New omniroadmap package: cache-backed provider.Provider implementation for the omniroadmap-core ecosystem, registered as \"aha-studio\", reading entirely from the local cache with no Aha API traffic" },
+        { "description": "aha-mcp-server tool subcommand: invoke any registered MCP tool directly from the shell without a running server session" },
+        { "description": "Rate-limited sync_data MCP tool and --detailed/--rate-limit sync CLI flags, plus context.Context threaded through cache query methods" },
         { "description": "Phase 2 complete: create_release, delete_idea, list_idea_categories, get_feature_ideas MCP tools" },
         { "description": "Phase 4 complete: OpenAPI 3.0 spec at /api/openapi.json and Prometheus metrics at /metrics" },
         { "description": "Phase 5 complete: get_ideas_statistics and get_features_statistics analytics tools" },
         { "description": "Sync resilience: GraphQL feature sync falls back to REST when project resolution fails" }
       ],
       "added": [
+        { "description": "UPDATE <entity> SET custom.<key> = <value> AQL syntax for features, initiatives, and releases (custom.* field references in SET clauses)", "commit": "f562db1" },
+        { "description": "Executor routes custom.* field UPDATEs through aha-go's GraphQL SetCustomFieldValues, alongside standard REST field updates in the same statement", "commit": "33148d1" },
+        { "description": "set_custom_field_values MCP tool for setting custom fields on a Feature, Initiative, or Release", "commit": "d41d950" },
+        { "description": "sync_data MCP tool: run a full or incremental sync into the local SQLite cache from an MCP tool call, via a dedicated rate-limited client", "commit": "d41d950" },
+        { "description": "list_initiative_features, get_initiative_with_features, list_initiatives_by_tag MCP tools", "commit": "d41d950" },
+        { "description": "aha-studio exec/sync CLI wiring for custom-field UPDATE and --detailed/--rate-limit sync flags", "commit": "f41f5c2" },
+        { "description": "aha-mcp-server tool list/schema/call subcommand for invoking MCP tools directly from the shell without a running server session", "commit": "4b2c0c6" },
+        { "description": "ListRecords/GetRecord generic cache-record accessors, returned in the same flattened shape QueryOffline uses", "commit": "116c591" },
+        { "description": "omniroadmap package: provider.Provider implementation over the local SQLite cache, registered as \"aha-studio\"", "commit": "451f95c" },
+        { "description": "Ent schema for IdeaEndorsement, IdeaUser, IdeaOrganization", "commit": "79fcebf" },
+        { "description": "idea_endorsement/idea_user/idea_organization query and upsert methods in sync/db.go", "commit": "4b01be8" },
+        { "description": "Opt-in incremental sync for idea endorsements, users, and organizations", "commit": "3e68538" },
+        { "description": "get_voter_domain_histogram MCP tool: email-domain histogram of idea voters from the local cache", "commit": "cbaa895" },
+        { "description": "omnisignalcache package: cache-backed OmniSignal provider (registered \"aha-studio\") with voter/customer-org tiering via signal.MetaCustomers", "commit": "dd6f261" },
         { "description": "create_release MCP tool for creating releases with dates, parking lot, and theme", "commit": "abd24bc" },
         { "description": "delete_idea MCP tool with required confirm parameter for safety", "commit": "abd24bc" },
         { "description": "list_idea_categories MCP tool to list idea categories for a product", "commit": "abd24bc" },
@@ -32,15 +51,33 @@
         { "description": "AQL release.* qualifier support (release.name, release.date)", "commit": "1ac837b" }
       ],
       "fixed": [
+        { "description": "release_reference_num registered as a queryable AQL field (sync already populated it, but it wasn't declared in the AQL schema)", "commit": "7b51714" },
         { "description": "GraphQL feature sync falls back to REST API when project resolution fails", "commit": "3a59ca5" }
       ],
+      "changed": [
+        { "description": "QueryOffline, GetSyncStatus, ListFilters, GetFilterByName, GetFilter, CreateFilter, and UpdateFilter now take a context.Context", "commit": "116c591" }
+      ],
+      "tests": [
+        { "description": "Tests for custom field UPDATE parsing, mutation execution, and MCP handlers", "commit": "35df331" },
+        { "description": "Tests for sync records, query building, and incremental sync", "commit": "53993c2" },
+        { "description": "Idea endorsement/user/organization store tests", "commit": "d8760d0" },
+        { "description": "omnisignalcache provider test suite", "commit": "437c400" }
+      ],
       "documentation": [
+        { "description": "Document custom field mutations, sync_data tool, and omniroadmap package (README, docs/cli, docs/tools, docs/packages)", "commit": "236768e" },
+        { "description": "Document 11 previously-unlisted MCP tools, add omnisignalcache package page, fix stale tool counts, update VisionStudio reference in CLAUDE.md", "commit": "7ef4274" },
+        { "description": "Unblock RMI-AHASTUDIO-023, add Phase 8 to roadmap", "commit": "0af7850" },
+        { "description": "Update tool count to 81 and add HTTP API feature", "commit": "559844c" },
         { "description": "Add omnisignal package reference page", "commit": "37c989c" },
         { "description": "Fix mkdocs nav orphans and update_release parameter docs", "commit": "bd9f11e" },
         { "description": "Mark Phase 3 OmniSignal Adapter complete in roadmap", "commit": "f8c9007" },
         { "description": "Mark Phases 2, 4, 5 complete in roadmap (5/7 phases done)", "commit": "72de791" }
       ],
       "dependencies": [
+        { "description": "Update github.com/grokify/aha-go to v0.10.0 and github.com/grokify/omniroadmap-core to v0.1.0 as published modules, removing the local replace directives used during development", "commit": "13a561c" },
+        { "description": "Add entgo.io/ent for the new Ent schemas", "commit": "a5ab308" },
+        { "description": "Regenerate Ent client (includes IdeaEndorsement/IdeaUser/IdeaOrganization)", "commit": "3a3ef80" },
+        { "description": "go mod tidy: pin omniroadmap-core to its tagged v0.1.0 and pick up routine transitive bumps", "commit": "3f7ef2f" },
         { "description": "Update github.com/grokify/aha-go to v0.9.0 (CreateRelease, DeleteIdea, ListProductIdeaCategories, ListFeatureIdeas)", "commit": "b319140" },
         { "description": "Update indirect dependencies (golang.org/x/exp, google.golang.org/api, grpc)", "commit": "b319140" }
       ]
