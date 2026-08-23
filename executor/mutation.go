@@ -3,11 +3,16 @@ package executor
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strings"
 
 	aha "github.com/grokify/aha-go"
+	ahagraphql "github.com/grokify/aha-go/graphql"
+	"github.com/grokify/aha-go/graphql/generated"
 	"github.com/grokify/aha-studio/aql/ast"
 	"github.com/grokify/aha-studio/planner"
 	"github.com/grokify/aha-studio/result"
+	"github.com/grokify/aha-studio/schema"
 )
 
 // MutationOptions configures mutation execution.
@@ -101,11 +106,7 @@ func (e *Executor) ExecuteUpdate(ctx context.Context, stmt *ast.UpdateStatement,
 		return res, nil
 	}
 
-	// Build the update map
-	updates := make(map[string]any)
-	for _, assign := range stmt.Assignments {
-		updates[assign.Field] = valueToAny(&assign.Value)
-	}
+	standardUpdates, customUpdates := splitAssignments(stmt.Assignments)
 
 	// Execute updates
 	for _, rec := range records {
@@ -115,9 +116,23 @@ func (e *Executor) ExecuteUpdate(ctx context.Context, stmt *ast.UpdateStatement,
 			continue
 		}
 
-		err := e.updateRecord(ctx, stmt.Entity, id, updates)
-		if err != nil {
-			res.Errors = append(res.Errors, fmt.Errorf("updating %s: %w", id, err))
+		var errs []error
+		if len(standardUpdates) > 0 {
+			if err := e.updateRecord(ctx, stmt.Entity, id, standardUpdates); err != nil {
+				errs = append(errs, fmt.Errorf("updating standard fields: %w", err))
+			}
+		}
+		if len(customUpdates) > 0 {
+			if err := e.updateCustomFields(ctx, stmt.Entity, id, customUpdates); err != nil {
+				errs = append(errs, fmt.Errorf("updating custom fields: %w", err))
+			}
+		}
+
+		// A partial success (standard field written, custom field
+		// rejected, or vice versa) is a record-level failure, not a
+		// silent partial win.
+		if len(errs) > 0 {
+			res.Errors = append(res.Errors, fmt.Errorf("updating %s: %w", id, joinErrors(errs)))
 			continue
 		}
 
@@ -126,6 +141,38 @@ func (e *Executor) ExecuteUpdate(ctx context.Context, stmt *ast.UpdateStatement,
 	}
 
 	return res, nil
+}
+
+// splitAssignments partitions UPDATE SET-clause assignments into standard
+// fields (routed per-entity through REST, today only implemented for
+// features) and custom.* fields (routed through the GraphQL
+// SetCustomFieldValues mutation, entity-agnostic - works for features,
+// initiatives, and releases). Custom field keys are stored bare (prefix
+// stripped), matching what SetCustomFieldValues expects.
+func splitAssignments(assignments []ast.Assignment) (standard, custom map[string]any) {
+	standard = make(map[string]any)
+	custom = make(map[string]any)
+	for _, assign := range assignments {
+		if schema.IsCustomFieldName(assign.Field) {
+			custom[schema.CustomFieldName(assign.Field)] = valueToAny(&assign.Value)
+		} else {
+			standard[assign.Field] = valueToAny(&assign.Value)
+		}
+	}
+	return standard, custom
+}
+
+// joinErrors combines multiple errors into one, since standard-field and
+// custom-field updates for the same record can each fail independently.
+func joinErrors(errs []error) error {
+	if len(errs) == 1 {
+		return errs[0]
+	}
+	msgs := make([]string, len(errs))
+	for i, err := range errs {
+		msgs[i] = err.Error()
+	}
+	return fmt.Errorf("%s", strings.Join(msgs, "; "))
 }
 
 // ExecuteDelete executes a DELETE statement.
@@ -212,23 +259,41 @@ func (e *Executor) insertFeature(ctx context.Context, record map[string]any, opt
 	}, nil
 }
 
-// updateRecord updates a single record.
+// updateRecord updates a single record's standard (non-custom.*) fields.
 func (e *Executor) updateRecord(ctx context.Context, entity ast.EntityType, id string, updates map[string]any) error {
 	switch entity {
 	case ast.EntityFeatures:
 		return e.updateFeature(ctx, id, updates)
 	case ast.EntityIdeas:
 		return fmt.Errorf("UPDATE not yet supported for ideas (API not implemented in aha-go)")
+	case ast.EntityInitiatives, ast.EntityReleases:
+		return fmt.Errorf("standard-field UPDATE not supported for entity: %s; only custom.* fields are supported", entity)
 	default:
 		return fmt.Errorf("UPDATE not supported for entity: %s", entity)
 	}
 }
 
-// updateFeature updates a feature using functional options.
+// featureUpdateFields are the standard (non-custom.*) fields updateFeature
+// recognizes. Any key in `updates` outside this set is an error - see the
+// unrecognizedKeys check below - rather than being silently dropped.
+var featureUpdateFields = map[string]bool{
+	"name": true, "description": true, "workflow_status": true, "status": true,
+	"assigned_to": true, "tags": true, "release": true,
+}
+
+// updateFeature updates a feature using functional options. Fails fast
+// (before calling the API) if `updates` contains any key updateFeature
+// doesn't recognize, rather than silently applying only the recognized
+// subset - a previously-existing bug (recognized keys were applied, an
+// unrecognized key silently no-op'd) is fixed generally here, not just
+// for custom.* fields.
 func (e *Executor) updateFeature(ctx context.Context, id string, updates map[string]any) error {
+	if unrecognized := unrecognizedKeys(updates, featureUpdateFields); len(unrecognized) > 0 {
+		return fmt.Errorf("unsupported field(s) for feature UPDATE: %s", strings.Join(unrecognized, ", "))
+	}
+
 	var updateOpts []aha.UpdateFeatureOption
 
-	// Build functional options from updates map
 	if name := getString(updates, "name"); name != "" {
 		updateOpts = append(updateOpts, func(o *aha.UpdateFeatureOptions) { o.Name = name })
 	}
@@ -256,6 +321,51 @@ func (e *Executor) updateFeature(ctx context.Context, id string, updates map[str
 	}
 
 	_, err := e.client.UpdateFeature(ctx, id, updateOpts...)
+	return err
+}
+
+// unrecognizedKeys returns the keys in m that aren't in known, sorted for
+// deterministic error messages.
+func unrecognizedKeys(m map[string]any, known map[string]bool) []string {
+	var out []string
+	for k := range m {
+		if !known[k] {
+			out = append(out, k)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+// customFieldableType maps an AQL entity type to the GraphQL
+// CustomFieldableTypeEnum value SetCustomFieldValues expects. Scoped to
+// the entities this feature was built for (Feature, Initiative, Release)
+// even though the underlying enum has more values (Epic, Goal, Idea,
+// etc.) - support for those isn't tested or requested yet.
+func customFieldableType(entity ast.EntityType) (generated.CustomFieldableTypeEnum, error) {
+	switch entity {
+	case ast.EntityFeatures:
+		return generated.CustomFieldableTypeEnumFeature, nil
+	case ast.EntityInitiatives:
+		return generated.CustomFieldableTypeEnumInitiative, nil
+	case ast.EntityReleases:
+		return generated.CustomFieldableTypeEnumRelease, nil
+	default:
+		return "", fmt.Errorf("custom field UPDATE not supported for entity: %s", entity)
+	}
+}
+
+// updateCustomFields sets custom.* field values on a record via the
+// GraphQL SetCustomFieldValues mutation (no REST equivalent exists).
+func (e *Executor) updateCustomFields(ctx context.Context, entity ast.EntityType, id string, values map[string]any) error {
+	if e.graphqlClient == nil {
+		return fmt.Errorf("custom field UPDATE requires a GraphQL client (call Executor.WithGraphQL)")
+	}
+	recordType, err := customFieldableType(entity)
+	if err != nil {
+		return err
+	}
+	_, err = ahagraphql.SetCustomFieldValues(ctx, e.graphqlClient, id, recordType, values)
 	return err
 }
 

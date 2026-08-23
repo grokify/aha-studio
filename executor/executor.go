@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"sort"
 
+	genql "github.com/Khan/genqlient/graphql"
+
 	aha "github.com/grokify/aha-go"
 	"github.com/grokify/aha-studio/aql/ast"
 	"github.com/grokify/aha-studio/planner"
@@ -21,6 +23,14 @@ type ProgressFunc func(current, total int, message string)
 type Executor struct {
 	client     *aha.Client
 	progressFn ProgressFunc
+
+	// graphqlClient is optional - only needed for custom.* field UPDATEs
+	// (SetCustomFieldValues is a GraphQL-only mutation, not available via
+	// REST). Left nil unless WithGraphQL is called; a custom.* UPDATE
+	// attempted without it configured fails with a clear error rather than
+	// every executor construction being forced to validate GraphQL
+	// credentials it may never use.
+	graphqlClient genql.Client
 }
 
 // New creates a new executor with the given Aha client.
@@ -31,6 +41,16 @@ func New(client *aha.Client) *Executor {
 // WithProgress sets a progress callback for the executor.
 func (e *Executor) WithProgress(fn ProgressFunc) *Executor {
 	e.progressFn = fn
+	return e
+}
+
+// WithGraphQL sets the GraphQL client used for operations that have no
+// REST equivalent - currently, custom.* field UPDATEs. Construct one from
+// the same credentials as the executor's REST client with
+// graphql.NewGenqlientClient(client.Subdomain(), client.APIKey()), from
+// the github.com/grokify/aha-go/graphql package.
+func (e *Executor) WithGraphQL(client genql.Client) *Executor {
+	e.graphqlClient = client
 	return e
 }
 
