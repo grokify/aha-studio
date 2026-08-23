@@ -1161,6 +1161,27 @@ func TestParseUpdateStatement(t *testing.T) {
 			hasWhere:    true,
 		},
 		{
+			name:        "custom field assignment",
+			input:       `UPDATE features SET custom.priority = 'High'`,
+			entity:      ast.EntityFeatures,
+			assignments: 1,
+			hasWhere:    false,
+		},
+		{
+			name:        "mixed standard and custom field assignments",
+			input:       `UPDATE initiatives SET name = 'Updated', custom.priority = 'High' WHERE id = '123'`,
+			entity:      ast.EntityInitiatives,
+			assignments: 2,
+			hasWhere:    true,
+		},
+		{
+			name:        "custom field on releases",
+			input:       `UPDATE releases SET custom.theme_owner = 'jsmith'`,
+			entity:      ast.EntityReleases,
+			assignments: 1,
+			hasWhere:    false,
+		},
+		{
 			name:     "missing SET",
 			input:    `UPDATE features status = 'Done'`,
 			hasError: true,
@@ -1168,6 +1189,16 @@ func TestParseUpdateStatement(t *testing.T) {
 		{
 			name:     "missing assignment",
 			input:    `UPDATE features SET`,
+			hasError: true,
+		},
+		{
+			name:     "malformed custom field, no trailing identifier",
+			input:    `UPDATE features SET custom. = 'High'`,
+			hasError: true,
+		},
+		{
+			name:     "malformed custom field, dangling dot",
+			input:    `UPDATE features SET custom.priority. = 'High'`,
 			hasError: true,
 		},
 	}
@@ -1204,6 +1235,32 @@ func TestParseUpdateStatement(t *testing.T) {
 				t.Error("expected no WHERE clause")
 			}
 		})
+	}
+}
+
+// TestParseUpdateStatement_CustomFieldName verifies the actual rendered
+// Assignment.Field string for custom.* SET-clause assignments, which
+// downstream code (schema.IsCustomFieldName/CustomFieldName) depends on
+// being exactly "custom.<name>" - the table-driven test above only checks
+// assignment counts, not field name content.
+func TestParseUpdateStatement_CustomFieldName(t *testing.T) {
+	p := New(`UPDATE features SET custom.priority = 'High', status = 'Done'`)
+	stmt, err := p.ParseStatement()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	update, ok := stmt.(*ast.UpdateStatement)
+	if !ok {
+		t.Fatalf("expected UpdateStatement, got %T", stmt)
+	}
+	if len(update.Assignments) != 2 {
+		t.Fatalf("expected 2 assignments, got %d", len(update.Assignments))
+	}
+	if got, want := update.Assignments[0].Field, "custom.priority"; got != want {
+		t.Errorf("Assignments[0].Field = %q, want %q", got, want)
+	}
+	if got, want := update.Assignments[1].Field, "status"; got != want {
+		t.Errorf("Assignments[1].Field = %q, want %q (unqualified field must not gain a spurious qualifier)", got, want)
 	}
 }
 
