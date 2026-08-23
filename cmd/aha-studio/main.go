@@ -12,6 +12,7 @@ import (
 	"time"
 
 	aha "github.com/grokify/aha-go"
+	ahagraphql "github.com/grokify/aha-go/graphql"
 	"github.com/grokify/mogo/fmt/progress"
 	"github.com/spf13/cobra"
 
@@ -51,8 +52,10 @@ var (
 	outputFile string
 
 	// Sync command flags
-	syncSince    string
-	syncEntities []string
+	syncSince     string
+	syncEntities  []string
+	syncDetailed  bool
+	syncRateLimit float64
 
 	// Offline query flags
 	offlineMode bool
@@ -197,7 +200,16 @@ Mutation Syntax:
   DELETE FROM <entity> WHERE conditions
 
 Supported Entities:
-  features  - Create and update features (requires --release for INSERT)
+  features  - Create (requires --release for INSERT) and update standard fields
+  features, initiatives, releases  - Update custom.* fields
+
+Custom Fields:
+  UPDATE <entity> SET custom.<key> = <value> works for features, initiatives,
+  and releases, alongside or instead of standard fields in the same SET clause.
+  Use 'aha-studio' MCP tools or the Aha API to discover valid custom field keys.
+  Note: exec always writes directly to the live Aha API, not the local sync
+  cache - a subsequent 'query --offline' won't see the change until the next
+  'aha-studio sync'.
 
 Safety Features:
   --dry-run  Show what would happen without making changes
@@ -211,6 +223,14 @@ Examples:
   # Update features matching a condition
   aha-studio exec --product PROJ \
     "UPDATE features SET status = 'Done' WHERE name CONTAINS 'MVP'"
+
+  # Set a custom field on a feature
+  aha-studio exec --product PROJ \
+    "UPDATE features SET custom.priority = 'High' WHERE reference_num = 'PROJ-123'"
+
+  # Set a custom field on an initiative
+  aha-studio exec --product PROJ \
+    "UPDATE initiatives SET custom.priority = 'High' WHERE reference_num = 'PROJ-I-1'"
 
   # Delete is not supported by the Aha API`,
 	Args: cobra.ExactArgs(1),
@@ -239,7 +259,11 @@ Examples:
   aha-studio sync --product PLATFORM --entities features,ideas
 
   # Sync changes from a specific date
-  aha-studio sync --product PLATFORM --since 2024-01-15`,
+  aha-studio sync --product PLATFORM --since 2024-01-15
+
+  # Detailed sync: also fetch custom fields for features and initiatives
+  # (does an extra per-record API call, throttled via --rate-limit)
+  aha-studio sync --product PLATFORM --entities features,initiatives --detailed`,
 	RunE: runSync,
 }
 
@@ -315,6 +339,8 @@ func init() {
 	syncCmd.Flags().StringVarP(&productID, "product", "p", "", "Product ID to sync (required)")
 	syncCmd.Flags().StringVar(&syncSince, "since", "", "Sync changes since: 'last' or date (YYYY-MM-DD)")
 	syncCmd.Flags().StringSliceVar(&syncEntities, "entities", nil, "Specific entities to sync (comma-separated)")
+	syncCmd.Flags().BoolVar(&syncDetailed, "detailed", false, "Fetch full per-record data including custom fields (features and initiatives only)")
+	syncCmd.Flags().Float64Var(&syncRateLimit, "rate-limit", 10, "Requests/sec for the sync client (Aha allows up to 20/sec, 300/min)")
 	_ = syncCmd.MarkFlagRequired("product")
 
 	// Sync status command flags
@@ -574,7 +600,7 @@ func executeOfflineQuery(plan *planner.Plan) (*result.Result, error) {
 		db.SetProduct(productID)
 	}
 
-	return db.QueryOffline(plan)
+	return db.QueryOffline(context.Background(), plan)
 }
 
 func runSync(cmd *cobra.Command, args []string) error {
@@ -585,8 +611,8 @@ func runSync(cmd *cobra.Command, args []string) error {
 	}
 	defer func() { _ = db.Close() }()
 
-	// Create Aha client
-	client, err := aha.NewClient()
+	// Create Aha client, throttled for sync's paginated/bulk calls
+	client, err := aha.NewClient(aha.WithRequestsPerSecond(syncRateLimit))
 	if err != nil {
 		return fmt.Errorf("creating Aha client: %w", err)
 	}
@@ -600,14 +626,13 @@ func runSync(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create syncer with GraphQL support for release_id capture
-	subdomain := os.Getenv("AHA_SUBDOMAIN")
-	apiKey := os.Getenv("AHA_API_KEY")
-	syncer := sync.NewSyncerWithGraphQL(db, client, subdomain, apiKey).WithProgress(progressFn)
+	syncer := sync.NewSyncerWithGraphQL(db, client, client.Subdomain(), client.APIKey()).WithProgress(progressFn)
 
 	// Build sync options
 	opts := sync.SyncOptions{
 		Product:  productID,
 		Entities: syncEntities,
+		Detailed: syncDetailed,
 	}
 
 	// Handle --since flag
@@ -631,6 +656,9 @@ func runSync(cmd *cobra.Command, args []string) error {
 		fmt.Printf("Mode: changes since %s\n", opts.Since.Format("2006-01-02"))
 	} else {
 		fmt.Println("Mode: full sync")
+	}
+	if opts.Detailed {
+		fmt.Printf("Detailed: fetching custom fields for features/initiatives (rate limit: %.0f req/s)\n", syncRateLimit)
 	}
 	fmt.Println()
 
@@ -680,7 +708,7 @@ func runSyncStatus(cmd *cobra.Command, args []string) error {
 	}
 
 	// Get sync status
-	status, err := db.GetSyncStatus(product)
+	status, err := db.GetSyncStatus(cmd.Context(), product)
 	if err != nil {
 		return fmt.Errorf("getting sync status: %w", err)
 	}
@@ -771,7 +799,7 @@ func runExec(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to create Aha client: %w", err)
 	}
 
-	exec := executor.New(client)
+	exec := executor.New(client).WithGraphQL(ahagraphql.NewGenqlientClient(client.Subdomain(), client.APIKey()))
 	ctx := context.Background()
 
 	var res *executor.MutationResult
