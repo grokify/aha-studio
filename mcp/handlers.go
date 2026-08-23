@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	genql "github.com/Khan/genqlient/graphql"
@@ -30,6 +31,7 @@ type ToolHandlers struct {
 	graphClient   *graph.Client
 	graphqlClient genql.Client
 	syncDB        *sync.DB
+	syncer        *sync.Syncer
 }
 
 // NewToolHandlers creates a new ToolHandlers instance.
@@ -46,8 +48,8 @@ func (h *ToolHandlers) Init(ctx context.Context) error {
 		return fmt.Errorf("creating Aha client: %w", err)
 	}
 	h.client = client
-	h.executor = executor.New(client)
 	h.graphqlClient = ahagql.NewGenqlientClient(h.config.Subdomain, h.config.APIKey)
+	h.executor = executor.New(client).WithGraphQL(h.graphqlClient)
 
 	// Initialize graph client if Neo4j is configured
 	graphCfg := graph.ConfigFromEnv()
@@ -69,6 +71,15 @@ func (h *ToolHandlers) Init(ctx context.Context) error {
 			fmt.Printf("Warning: Sync DB connection failed: %v\n", err)
 		} else {
 			h.syncDB = db
+
+			// Sync uses its own throttled client, separate from h.client,
+			// so bulk sync_data calls don't add latency to every other tool.
+			syncClient, err := h.config.NewSyncClient()
+			if err != nil {
+				fmt.Printf("Warning: creating sync client failed: %v\n", err)
+			} else {
+				h.syncer = sync.NewSyncerWithGraphQL(db, syncClient, h.config.Subdomain, h.config.APIKey)
+			}
 		}
 	}
 
@@ -588,6 +599,18 @@ func initiativeToMap(i *aha.Initiative) map[string]any {
 		}
 		m["custom_fields"] = fields
 	}
+	if len(i.Features) > 0 {
+		features := make([]map[string]any, len(i.Features))
+		for idx, f := range i.Features {
+			features[idx] = map[string]any{
+				"id":            f.ID,
+				"reference_num": f.ReferenceNum,
+				"name":          f.Name,
+				"url":           f.URL,
+			}
+		}
+		m["features"] = features
+	}
 	return m
 }
 
@@ -737,6 +760,71 @@ func (h *ToolHandlers) GraphSync(ctx context.Context, params map[string]any) (an
 	return map[string]any{
 		"product": productID,
 		"results": response,
+	}, nil
+}
+
+// SyncData syncs Aha data to the local SQLite cache used by the offline
+// query tools (list_features_by_release_date, get_features_statistics, etc.).
+// This blocks until the entire sync completes — for large or detailed
+// syncs, that can take a while (detailed mode makes an additional per-record
+// API call for features and initiatives).
+func (h *ToolHandlers) SyncData(ctx context.Context, params map[string]any) (any, error) {
+	if h.syncer == nil {
+		return nil, fmt.Errorf("sync not configured: set AHA_DB_PATH (or use the default cache path)")
+	}
+
+	productID, _ := params["product"].(string)
+	if productID == "" {
+		productID = h.config.DefaultProduct
+	}
+	if productID == "" {
+		return nil, fmt.Errorf("product parameter is required (or set AHA_DEFAULT_PRODUCT)")
+	}
+
+	// Get entities to sync
+	var entities []string
+	if e, ok := params["entities"].([]any); ok {
+		for _, v := range e {
+			if s, ok := v.(string); ok {
+				entities = append(entities, s)
+			}
+		}
+	}
+
+	detailed, _ := params["detailed"].(bool)
+	incremental, _ := params["incremental"].(bool)
+
+	results, err := h.syncer.SyncAll(ctx, sync.SyncOptions{
+		Product:     productID,
+		Entities:    entities,
+		Detailed:    detailed,
+		Incremental: incremental,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("sync failed: %w", err)
+	}
+
+	var response []map[string]any
+	totalRecords := 0
+	for _, r := range results {
+		rec := map[string]any{
+			"entity":       r.Entity,
+			"record_count": r.RecordCount,
+			"duration_ms":  r.Duration.Milliseconds(),
+		}
+		if r.Error != nil {
+			rec["error"] = r.Error.Error()
+		} else {
+			totalRecords += r.RecordCount
+		}
+		response = append(response, rec)
+	}
+
+	return map[string]any{
+		"product":       productID,
+		"detailed":      detailed,
+		"total_records": totalRecords,
+		"results":       response,
 	}, nil
 }
 
@@ -1456,6 +1544,67 @@ func (h *ToolHandlers) UpdateFeature(ctx context.Context, params map[string]any)
 		"status":        statusName,
 		"url":           feature.URL,
 		"message":       fmt.Sprintf("Feature %s updated successfully", feature.ReferenceNum),
+	}, nil
+}
+
+// customFieldableTypeFromString maps an MCP entity_type parameter
+// (case-insensitive) to the GraphQL CustomFieldableTypeEnum value
+// SetCustomFieldValues expects. Scoped to Feature, Initiative, and
+// Release - the entities this tool was built for, even though the
+// underlying enum has more values (Epic, Goal, Idea, etc.).
+func customFieldableTypeFromString(entityType string) (generated.CustomFieldableTypeEnum, error) {
+	switch strings.ToLower(entityType) {
+	case "feature":
+		return generated.CustomFieldableTypeEnumFeature, nil
+	case "initiative":
+		return generated.CustomFieldableTypeEnumInitiative, nil
+	case "release":
+		return generated.CustomFieldableTypeEnumRelease, nil
+	default:
+		return "", fmt.Errorf("entity_type must be one of: feature, initiative, release (got %q)", entityType)
+	}
+}
+
+// SetCustomFieldValues sets one or more custom field values on a Feature,
+// Initiative, or Release record. Use list_custom_fields to discover valid
+// keys for a given entity_type, and list_custom_field_options for the
+// valid values of a select/choice field.
+func (h *ToolHandlers) SetCustomFieldValues(ctx context.Context, params map[string]any) (any, error) {
+	entityType, _ := params["entity_type"].(string)
+	recordType, err := customFieldableTypeFromString(entityType)
+	if err != nil {
+		return nil, err
+	}
+
+	recordID, _ := params["record_id"].(string)
+	if recordID == "" {
+		return nil, fmt.Errorf("record_id parameter is required")
+	}
+
+	customFields, ok := params["custom_fields"].(map[string]any)
+	if !ok || len(customFields) == 0 {
+		return nil, fmt.Errorf("custom_fields parameter is required (a non-empty object mapping custom field key to value)")
+	}
+
+	values, err := ahagql.SetCustomFieldValues(ctx, h.graphqlClient, recordID, recordType, customFields)
+	if err != nil {
+		return nil, fmt.Errorf("setting custom field values: %w", err)
+	}
+
+	results := make([]map[string]any, 0, len(values))
+	for _, v := range values {
+		results = append(results, map[string]any{
+			"key":         v.Key,
+			"value":       v.Value,
+			"human_value": v.HumanValue,
+		})
+	}
+
+	return map[string]any{
+		"record_id":     recordID,
+		"entity_type":   entityType,
+		"custom_fields": results,
+		"message":       fmt.Sprintf("Updated %d custom field(s) on %s %s", len(results), entityType, recordID),
 	}, nil
 }
 
@@ -2792,10 +2941,10 @@ func (h *ToolHandlers) ListFeaturesByReleaseDate(ctx context.Context, params map
 
 	if releaseDate != "" {
 		// Exact date match
-		features, err = h.syncDB.GetFeaturesByReleaseDate(product, releaseDate)
+		features, err = h.syncDB.GetFeaturesByReleaseDate(ctx, product, releaseDate)
 	} else if startDate != "" || endDate != "" {
 		// Date range
-		features, err = h.syncDB.GetFeaturesByReleaseDateRange(product, startDate, endDate)
+		features, err = h.syncDB.GetFeaturesByReleaseDateRange(ctx, product, startDate, endDate)
 	} else {
 		return nil, fmt.Errorf("one of release_date, start_date, or end_date is required")
 	}
@@ -2830,7 +2979,7 @@ func (h *ToolHandlers) GetIdeasStatistics(ctx context.Context, params map[string
 		limit = int(l)
 	}
 
-	stats, err := h.syncDB.GetIdeasStatistics(product, limit)
+	stats, err := h.syncDB.GetIdeasStatistics(ctx, product, limit)
 	if err != nil {
 		return nil, fmt.Errorf("getting ideas statistics: %w", err)
 	}
@@ -2860,7 +3009,7 @@ func (h *ToolHandlers) GetFeaturesStatistics(ctx context.Context, params map[str
 		limit = int(l)
 	}
 
-	stats, err := h.syncDB.GetFeaturesStatistics(product, limit)
+	stats, err := h.syncDB.GetFeaturesStatistics(ctx, product, limit)
 	if err != nil {
 		return nil, fmt.Errorf("getting features statistics: %w", err)
 	}
@@ -2924,7 +3073,7 @@ func (h *ToolHandlers) ListFeaturesByReleaseName(ctx context.Context, params map
 		return nil, fmt.Errorf("release_name parameter is required")
 	}
 
-	features, err := h.syncDB.GetFeaturesByReleaseName(product, releaseName)
+	features, err := h.syncDB.GetFeaturesByReleaseName(ctx, product, releaseName)
 	if err != nil {
 		return nil, fmt.Errorf("querying features by release name: %w", err)
 	}
@@ -3096,6 +3245,121 @@ func (h *ToolHandlers) GetFeatureIdeas(ctx context.Context, params map[string]an
 		"count":      len(ideas),
 		"pagination": paginationToMap(list.Pagination),
 	}, nil
+}
+
+// =============================================================================
+// Initiative-Feature Relationship Tools
+// =============================================================================
+
+// ListInitiativeFeatures lists features linked to a specific initiative.
+func (h *ToolHandlers) ListInitiativeFeatures(ctx context.Context, params map[string]any) (any, error) {
+	initiativeID, ok := params["initiative_id"].(string)
+	if !ok || initiativeID == "" {
+		return nil, fmt.Errorf("initiative_id parameter is required")
+	}
+
+	initiative, err := h.client.GetInitiative(ctx, initiativeID)
+	if err != nil {
+		return nil, fmt.Errorf("getting initiative %s: %w", initiativeID, err)
+	}
+
+	features := make([]map[string]any, len(initiative.Features))
+	for i, f := range initiative.Features {
+		features[i] = map[string]any{
+			"id":            f.ID,
+			"reference_num": f.ReferenceNum,
+			"name":          f.Name,
+			"url":           f.URL,
+		}
+	}
+
+	return map[string]any{
+		"initiative_id":   initiative.ID,
+		"initiative_name": initiative.Name,
+		"features":        features,
+		"total_features":  len(features),
+	}, nil
+}
+
+// GetInitiativeWithFeatures retrieves an initiative with all its linked features.
+func (h *ToolHandlers) GetInitiativeWithFeatures(ctx context.Context, params map[string]any) (any, error) {
+	initiativeID, ok := params["initiative_id"].(string)
+	if !ok || initiativeID == "" {
+		return nil, fmt.Errorf("initiative_id parameter is required")
+	}
+
+	initiative, err := h.client.GetInitiative(ctx, initiativeID)
+	if err != nil {
+		return nil, fmt.Errorf("getting initiative %s: %w", initiativeID, err)
+	}
+
+	return initiativeToMap(initiative), nil
+}
+
+// ListInitiativesByTag lists initiatives filtered by a tag value from custom fields.
+func (h *ToolHandlers) ListInitiativesByTag(ctx context.Context, params map[string]any) (any, error) {
+	productID, ok := params["product_id"].(string)
+	if !ok || productID == "" {
+		return nil, fmt.Errorf("product_id parameter is required")
+	}
+	tag, ok := params["tag"].(string)
+	if !ok || tag == "" {
+		return nil, fmt.Errorf("tag parameter is required")
+	}
+
+	var allInitiatives []aha.InitiativeMeta
+	page := 1
+	for {
+		list, err := h.client.ListProductInitiatives(ctx, productID, aha.WithPage(page), aha.WithPerPage(200))
+		if err != nil {
+			return nil, fmt.Errorf("listing product initiatives: %w", err)
+		}
+		allInitiatives = append(allInitiatives, list.Initiatives...)
+		if list.Pagination.CurrentPage >= list.Pagination.TotalPages || len(list.Initiatives) == 0 {
+			break
+		}
+		page++
+	}
+
+	var matched []map[string]any
+	for _, meta := range allInitiatives {
+		initiative, err := h.client.GetInitiative(ctx, meta.ID)
+		if err != nil {
+			continue
+		}
+		if initiativeHasTag(initiative, tag) {
+			matched = append(matched, initiativeToMap(initiative))
+		}
+	}
+
+	return map[string]any{
+		"initiatives": matched,
+		"total_count": len(matched),
+		"filter_tag":  tag,
+	}, nil
+}
+
+// initiativeHasTag checks if an initiative has a specific tag in its custom fields.
+func initiativeHasTag(init *aha.Initiative, tag string) bool {
+	for _, cf := range init.CustomFields {
+		if !strings.Contains(strings.ToLower(cf.Key), "tag") && !strings.EqualFold(cf.Name, "Tags") {
+			continue
+		}
+		raw, ok := cf.Value.([]byte)
+		if !ok {
+			continue
+		}
+		var tags []string
+		if err := json.Unmarshal(raw, &tags); err != nil {
+			continue
+		}
+		for _, t := range tags {
+			if strings.EqualFold(t, tag) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // =============================================================================

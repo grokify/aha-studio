@@ -3,6 +3,7 @@ package mcp
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	aha "github.com/grokify/aha-go"
 )
@@ -27,6 +28,11 @@ type Config struct {
 	// DBPath is the path to the SQLite cache database for offline queries.
 	// If empty, cache-based tools will return an error.
 	DBPath string
+
+	// SyncRequestsPerSecond throttles the dedicated client used by the
+	// sync_data tool (does not affect other tools' shared client). Default
+	// is 10 req/s if unset/zero (see NewClient).
+	SyncRequestsPerSecond float64
 }
 
 // ConfigFromEnv creates a Config from environment variables.
@@ -41,13 +47,21 @@ func ConfigFromEnv() (*Config, error) {
 		return nil, fmt.Errorf("AHA_API_KEY environment variable not set")
 	}
 
+	syncRPS := 10.0
+	if v := os.Getenv("AHA_SYNC_RPS"); v != "" {
+		if parsed, err := strconv.ParseFloat(v, 64); err == nil && parsed > 0 {
+			syncRPS = parsed
+		}
+	}
+
 	return &Config{
-		Subdomain:       subdomain,
-		APIKey:          apiKey,
-		DefaultProduct:  os.Getenv("AHA_DEFAULT_PRODUCT"),
-		BrowserEmail:    os.Getenv("AHA_EMAIL"),
-		BrowserPassword: os.Getenv("AHA_PASSWORD"),
-		DBPath:          os.Getenv("AHA_DB_PATH"),
+		Subdomain:             subdomain,
+		APIKey:                apiKey,
+		DefaultProduct:        os.Getenv("AHA_DEFAULT_PRODUCT"),
+		BrowserEmail:          os.Getenv("AHA_EMAIL"),
+		BrowserPassword:       os.Getenv("AHA_PASSWORD"),
+		DBPath:                os.Getenv("AHA_DB_PATH"),
+		SyncRequestsPerSecond: syncRPS,
 	}, nil
 }
 
@@ -56,5 +70,19 @@ func (c *Config) NewClient() (*aha.Client, error) {
 	return aha.NewClient(
 		aha.WithSubdomain(c.Subdomain),
 		aha.WithAPIKey(c.APIKey),
+	)
+}
+
+// NewSyncClient creates an Aha API client throttled for bulk sync
+// operations, using SyncRequestsPerSecond (defaulting to 10 req/s if unset).
+func (c *Config) NewSyncClient() (*aha.Client, error) {
+	rps := c.SyncRequestsPerSecond
+	if rps <= 0 {
+		rps = 10
+	}
+	return aha.NewClient(
+		aha.WithSubdomain(c.Subdomain),
+		aha.WithAPIKey(c.APIKey),
+		aha.WithRequestsPerSecond(rps),
 	)
 }

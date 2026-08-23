@@ -505,6 +505,32 @@ func (s *AhaSkill) Tools() []skill.Tool {
 			},
 			s.handlers.ListCustomFieldOptions),
 
+		// Set custom field values
+		skill.NewTool("set_custom_field_values",
+			"Set one or more custom field values on a Feature, Initiative, or Release record. "+
+				"Works the same way across all three entity types since custom fields are tenant-defined "+
+				"and schemaless. Use list_custom_fields to discover valid keys for a given entity_type, "+
+				"and list_custom_field_options for the valid values of a select/choice field.",
+			map[string]skill.Parameter{
+				"entity_type": {
+					Type:        "string",
+					Required:    true,
+					Description: "The record's entity type",
+					Enum:        []any{"feature", "initiative", "release"},
+				},
+				"record_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Record ID or reference number (e.g., 'FEAT-123')",
+				},
+				"custom_fields": {
+					Type:        "object",
+					Required:    true,
+					Description: "Map of custom field API key to new value, e.g. {\"priority\": \"High\", \"story_points\": 8}",
+				},
+			},
+			s.handlers.SetCustomFieldValues),
+
 		// Update epic
 		skill.NewTool("update_epic", "Update an epic's fields (name, description, status, progress)",
 			map[string]skill.Parameter{
@@ -696,6 +722,34 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.BrowserCreateTemplate),
+
+		// Sync (local SQLite cache) tools
+		skill.NewTool("sync_data", "Sync Aha data to the local SQLite cache used by offline query tools (list_features_by_release_date, get_features_statistics, etc.). "+
+			"Requires AHA_DB_PATH configured. This blocks until the entire sync completes, which can take a while for large products or when detailed=true "+
+			"(detailed mode adds a per-record API call for features/initiatives to fetch custom fields).",
+			map[string]skill.Parameter{
+				"product": {
+					Type:        "string",
+					Required:    false,
+					Description: "Product ID to sync (uses AHA_DEFAULT_PRODUCT if not specified)",
+				},
+				"entities": {
+					Type:        "array",
+					Required:    false,
+					Description: "Specific entities to sync: features, ideas, releases, initiatives, goals, epics, comments, requirements (defaults to all)",
+				},
+				"detailed": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Fetch full per-record data including custom fields for features and initiatives (does an extra API call per record)",
+				},
+				"incremental": {
+					Type:        "boolean",
+					Required:    false,
+					Description: "Only sync changes since the last sync for this product/entity",
+				},
+			},
+			s.handlers.SyncData),
 
 		// Graph (Neo4j) tools
 		skill.NewTool("graph_sync", "Sync Aha data to Neo4j graph database for relationship queries (requires NEO4J_* env vars)",
@@ -1189,6 +1243,41 @@ func (s *AhaSkill) Tools() []skill.Tool {
 				},
 			},
 			s.handlers.ListProductInitiatives),
+
+		skill.NewTool("list_initiative_features", "List features linked to a specific initiative",
+			map[string]skill.Parameter{
+				"initiative_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Initiative ID or reference number (e.g., 'PROD-S-34')",
+				},
+			},
+			s.handlers.ListInitiativeFeatures),
+
+		skill.NewTool("list_initiatives_by_tag", "List initiatives filtered by tag value from custom fields",
+			map[string]skill.Parameter{
+				"product_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Product ID or reference prefix",
+				},
+				"tag": {
+					Type:        "string",
+					Required:    true,
+					Description: "Tag value to filter by (e.g., 'Platform_Initiative')",
+				},
+			},
+			s.handlers.ListInitiativesByTag),
+
+		skill.NewTool("get_initiative_with_features", "Get an initiative with all its linked features",
+			map[string]skill.Parameter{
+				"initiative_id": {
+					Type:        "string",
+					Required:    true,
+					Description: "Initiative ID or reference number",
+				},
+			},
+			s.handlers.GetInitiativeWithFeatures),
 
 		skill.NewTool("list_feature_requirements", "List requirements for a specific feature",
 			map[string]skill.Parameter{
