@@ -343,7 +343,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="packages/omnisignal/" class="md-tabs__link">
+        <a href="packages/omniroadmap/" class="md-tabs__link">
           
   
   
@@ -620,6 +620,17 @@
     <span class="md-ellipsis">
       
         Browser Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sync-tools-local-sqlite-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync Tools (Local SQLite Cache)
       
     </span>
   </a>
@@ -1228,6 +1239,34 @@
   
   
     <li class="md-nav__item">
+      <a href="packages/omniroadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omniroadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="packages/omnisignal/" class="md-nav__link">
         
   
@@ -1236,6 +1275,34 @@
     
   
     omnisignal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="packages/omnisignalcache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omnisignalcache
   
 
     
@@ -2014,6 +2081,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sync-tools-local-sqlite-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync Tools (Local SQLite Cache)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#graph-tools-neo4j" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2089,22 +2167,25 @@
 </tr>
 <tr>
 <td><code>aha-mcp-server</code></td>
-<td>MCP server (81 tools) for Claude Desktop and AI assistants</td>
+<td>MCP server (87 tools) for Claude Desktop and AI assistants</td>
 </tr>
 </tbody>
 </table>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>AQL (Aha Query Language)</strong> - SQL-like syntax for querying Aha.io data</li>
-<li><strong>81 MCP Tools</strong> - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more</li>
+<li><strong>87 MCP Tools</strong> - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more</li>
 <li><strong>HTTP API</strong> - REST endpoints with OpenAPI spec and Prometheus metrics</li>
 <li><strong>Local SQLite sync</strong> - Offline queries and fast local caching</li>
 <li><strong>Neo4j integration</strong> - Graph analytics and relationship queries</li>
 <li><strong>Browser automation</strong> - Strategic template creation via headless Chrome</li>
 <li><strong>OmniSignal provider</strong> - Emit signals from Aha ideas to ProductContext pipeline</li>
+<li><strong>OmniSignalCache provider</strong> - Cache-backed OmniSignal provider with voter/customer-org tiering, provider name <code>aha-studio</code> — see <a href="packages/omnisignalcache/">omnisignalcache Package</a></li>
+<li><strong>OmniRoadmap provider</strong> - Serve the local cache as tool-agnostic roadmap data (<a href="https://github.com/grokify/omniroadmap">omniroadmap</a> ecosystem, provider name <code>aha-studio</code>) — see <a href="packages/omniroadmap/">omniroadmap Provider</a></li>
 </ul>
 <h2 id="what-is-mcp">What is MCP?<a class="headerlink" href="#what-is-mcp" title="Permanent link">&para;</a></h2>
 <p>The <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> is an open standard that enables AI assistants to securely connect to external data sources and tools. The <code>aha-mcp-server</code> acts as a bridge between AI assistants (like Claude) and your Aha! workspace.</p>
+<p>Every MCP tool can also be invoked directly from the shell with <code>aha-mcp-server tool call &lt;name&gt; &lt;json-params&gt;</code> — see <a href="cli/commands/">CLI Commands</a> for details. This is useful for agent sessions that can't register a new or updated MCP server without restarting.</p>
 <h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
 <h3 id="query-tools">Query Tools<a class="headerlink" href="#query-tools" title="Permanent link">&para;</a></h3>
 <table>
@@ -2186,6 +2267,10 @@
 <td><code>get_workflow</code></td>
 <td>Get workflow by ID</td>
 </tr>
+<tr>
+<td><code>get_initiative_with_features</code></td>
+<td>Get an initiative with its linked features in one call</td>
+</tr>
 </tbody>
 </table>
 <h3 id="list-search-tools">List &amp; Search Tools<a class="headerlink" href="#list-search-tools" title="Permanent link">&para;</a></h3>
@@ -2212,6 +2297,14 @@
 <tr>
 <td><code>list_releases</code></td>
 <td>List releases for product</td>
+</tr>
+<tr>
+<td><code>list_initiative_features</code></td>
+<td>List features linked to a specific initiative</td>
+</tr>
+<tr>
+<td><code>list_initiatives_by_tag</code></td>
+<td>List initiatives filtered by tag value from custom fields</td>
 </tr>
 <tr>
 <td><code>search_documents</code></td>
@@ -2270,6 +2363,21 @@
 <tr>
 <td><code>browser_create_template</code></td>
 <td>Create template via browser</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sync-tools-local-sqlite-cache">Sync Tools (Local SQLite Cache)<a class="headerlink" href="#sync-tools-local-sqlite-cache" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync_data</code></td>
+<td>Sync Aha data to the local cache (optionally <code>detailed</code> for custom fields)</td>
 </tr>
 </tbody>
 </table>

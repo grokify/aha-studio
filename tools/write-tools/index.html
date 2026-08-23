@@ -345,7 +345,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../packages/omnisignal/" class="md-tabs__link">
+        <a href="../../packages/omniroadmap/" class="md-tabs__link">
           
   
   
@@ -985,6 +985,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#delete-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delete Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1239,6 +1250,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../packages/omniroadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omniroadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../packages/omnisignal/" class="md-nav__link">
         
   
@@ -1247,6 +1286,34 @@
     
   
     omnisignal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/omnisignalcache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omnisignalcache
   
 
     
@@ -1980,6 +2047,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#delete-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delete Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2126,6 +2204,16 @@
 <td><code>create_requirement</code></td>
 <td>Create a new requirement for a feature</td>
 </tr>
+<tr>
+<td>Create an idea</td>
+<td><code>create_idea</code></td>
+<td>Create a new idea (GraphQL)</td>
+</tr>
+<tr>
+<td>Create a release</td>
+<td><code>create_release</code></td>
+<td>Create a new release for a product</td>
+</tr>
 </tbody>
 </table>
 <h3 id="update-tools">Update Tools<a class="headerlink" href="#update-tools" title="Permanent link">&para;</a></h3>
@@ -2173,6 +2261,11 @@
 <td><code>update_idea</code></td>
 <td>Update idea fields (name, description, status, visibility)</td>
 </tr>
+<tr>
+<td>Set custom fields</td>
+<td><code>set_custom_field_values</code></td>
+<td>Set custom field values on a Feature, Initiative, or Release (GraphQL)</td>
+</tr>
 </tbody>
 </table>
 <h3 id="status-assignment-tools">Status &amp; Assignment Tools<a class="headerlink" href="#status-assignment-tools" title="Permanent link">&para;</a></h3>
@@ -2199,6 +2292,11 @@
 <td>Assign release</td>
 <td><code>assign_feature_release</code></td>
 <td>Assign a feature to a different release</td>
+</tr>
+<tr>
+<td>Link goal to feature</td>
+<td><code>add_goal_to_feature</code></td>
+<td>Link a goal to a feature (GraphQL)</td>
 </tr>
 <tr>
 <td>Lookup statuses</td>
@@ -2231,6 +2329,33 @@
 <td>Add idea comments</td>
 <td><code>add_idea_comment</code></td>
 <td>Add a comment to an idea</td>
+</tr>
+</tbody>
+</table>
+<h3 id="delete-tools">Delete Tools<a class="headerlink" href="#delete-tools" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Tool Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delete an idea</td>
+<td><code>delete_idea</code></td>
+<td>Delete an idea; requires <code>confirm: true</code></td>
+</tr>
+<tr>
+<td>Delete a requirement</td>
+<td><code>delete_requirement</code></td>
+<td>Delete a requirement</td>
+</tr>
+<tr>
+<td>Delete a comment</td>
+<td><code>delete_comment</code></td>
+<td>Delete a comment</td>
 </tr>
 </tbody>
 </table>

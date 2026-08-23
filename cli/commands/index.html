@@ -16,7 +16,7 @@
         <link rel="prev" href="../../tools/write-tools/">
       
       
-        <link rel="next" href="../../packages/omnisignal/">
+        <link rel="next" href="../../packages/omniroadmap/">
       
       
         
@@ -345,7 +345,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../packages/omnisignal/" class="md-tabs__link">
+        <a href="../../packages/omniroadmap/" class="md-tabs__link">
           
   
   
@@ -1088,6 +1088,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="aha-mcp-server Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1438,6 +1455,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../packages/omniroadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omniroadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../packages/omnisignal/" class="md-nav__link">
         
   
@@ -1446,6 +1491,34 @@
     
   
     omnisignal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/omnisignalcache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omnisignalcache
   
 
     
@@ -2193,6 +2266,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="aha-mcp-server Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2535,6 +2625,10 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD<span class="w"> </span>--since<span class="w"> </span><span class="m">2024</span>-01-01
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD<span class="w"> </span>--since<span class="w"> </span>last
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Detailed sync: also fetch custom fields for features and initiatives</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># (does an extra per-record API call, throttled via --rate-limit)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>aha-studio<span class="w"> </span>sync<span class="w"> </span>--product<span class="w"> </span>PROD<span class="w"> </span>--entities<span class="w"> </span>features,initiatives<span class="w"> </span>--detailed
 </code></pre></div>
 <table>
 <thead>
@@ -2556,8 +2650,20 @@
 <td><code>--entities</code></td>
 <td>Specific entities to sync (comma-separated)</td>
 </tr>
+<tr>
+<td><code>--detailed</code></td>
+<td>Fetch full per-record data including custom fields (features and initiatives only)</td>
+</tr>
+<tr>
+<td><code>--rate-limit</code></td>
+<td>Requests/sec for the sync client (default 10; Aha allows up to 20/sec, 300/min)</td>
+</tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>--detailed</code> mode makes an additional API call per record (list-then-get), so it's slower than a normal sync. Custom fields are stored in the cache's <code>data</code> JSON column, not yet queryable via AQL.</p>
+</div>
 <h3 id="shell">shell<a class="headerlink" href="#shell" title="Permanent link">&para;</a></h3>
 <p>Start interactive AQL shell.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aha-studio<span class="w"> </span>shell
@@ -2601,6 +2707,35 @@
 <hr />
 <h2 id="aha-mcp-server-commands">aha-mcp-server Commands<a class="headerlink" href="#aha-mcp-server-commands" title="Permanent link">&para;</a></h2>
 <p>The Aha! MCP server can also be used as a command-line tool for testing and scripting.</p>
+<h3 id="tool">tool<a class="headerlink" href="#tool" title="Permanent link">&para;</a></h3>
+<p>Invoke any registered MCP tool directly, without a running MCP server session.</p>
+<p>This is useful for AI agent sessions that cannot register a new or updated MCP
+tool mid-session — an agent's MCP servers are fixed at launch, so picking up a
+tool that was added or changed normally requires a restart. <code>tool call</code> lets
+an agent shell out to run any registered tool by name instead.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># List all available tools with descriptions</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>list
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Print the JSON Schema for a tool&#39;s parameters</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>schema<span class="w"> </span>list_initiative_features
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Call a tool with JSON parameters (as an argument)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>call<span class="w"> </span>get_feature<span class="w"> </span><span class="s1">&#39;{&quot;reference&quot;:&quot;FEAT-123&quot;}&#39;</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1"># Call a tool with JSON parameters via stdin (omit the argument, or pass &quot;-&quot;)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{&quot;initiative_id&quot;:&quot;PROD-S-34&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>call<span class="w"> </span>list_initiative_features
+</code></pre></div>
+<p>Credentials are resolved the same way as <code>serve</code>: <code>--subdomain</code>/<code>--api-key</code> flags,
+falling back to <code>AHA_SUBDOMAIN</code>/<code>AHA_API_KEY</code> (or <code>AHA_DOMAIN</code>/<code>AHA_API_TOKEN</code>).</p>
+<p>Results are printed to stdout as pretty-printed JSON; errors go to stderr with a
+non-zero exit code, so <code>tool call</code> composes cleanly with <code>jq</code> and shell scripting:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>call<span class="w"> </span>list_initiative_features<span class="w"> </span><span class="s1">&#39;{&quot;initiative_id&quot;:&quot;PROD-S-34&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.features[].reference_num&#39;</span>
+</code></pre></div>
+<p>Sync (<code>sync_data</code>) requires <code>AHA_DB_PATH</code> (defaults to <code>~/.aha-studio/cache.db</code> if unset)
+and is throttled via <code>AHA_SYNC_RPS</code> (default 10 req/s):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>aha-mcp-server<span class="w"> </span>tool<span class="w"> </span>call<span class="w"> </span>sync_data<span class="w"> </span><span class="s1">&#39;{&quot;product&quot;:&quot;PROD&quot;,&quot;entities&quot;:[&quot;initiatives&quot;],&quot;detailed&quot;:true}&#39;</span>
+</code></pre></div>
 <h2 id="global-flags">Global Flags<a class="headerlink" href="#global-flags" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2641,18 +2776,18 @@
 <h2 id="server-commands">Server Commands<a class="headerlink" href="#server-commands" title="Permanent link">&para;</a></h2>
 <h3 id="serve">serve<a class="headerlink" href="#serve" title="Permanent link">&para;</a></h3>
 <p>Start the MCP server (default when no command specified).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>aha-mcp-server<span class="w"> </span>serve
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aha-mcp-server<span class="w">  </span><span class="c1"># Same as above</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aha-mcp-server<span class="w"> </span>serve
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>aha-mcp-server<span class="w">  </span><span class="c1"># Same as above</span>
 </code></pre></div>
 <h3 id="version">version<a class="headerlink" href="#version" title="Permanent link">&para;</a></h3>
 <p>Print version information.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aha-mcp-server<span class="w"> </span>version
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aha-mcp-server<span class="w"> </span>version
 </code></pre></div>
 <h2 id="aha-commands">Aha! Commands<a class="headerlink" href="#aha-commands" title="Permanent link">&para;</a></h2>
 <h3 id="search-documents">search-documents<a class="headerlink" href="#search-documents" title="Permanent link">&para;</a></h3>
 <p>Search for documents.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;product roadmap&quot;</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;auth&quot;</span><span class="w"> </span>--type<span class="w"> </span>Page<span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;product roadmap&quot;</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;auth&quot;</span><span class="w"> </span>--type<span class="w"> </span>Page<span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span>
 </code></pre></div>
 <table>
 <thead>
@@ -2674,14 +2809,14 @@
 </table>
 <h3 id="get-idea">get-idea<a class="headerlink" href="#get-idea" title="Permanent link">&para;</a></h3>
 <p>Get an idea by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-123
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-123<span class="w"> </span>--output<span class="w"> </span>pretty
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-123
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>aha-mcp-server<span class="w"> </span>get-idea<span class="w"> </span>IDEA-123<span class="w"> </span>--output<span class="w"> </span>pretty
 </code></pre></div>
 <h3 id="list-ideas">list-ideas<a class="headerlink" href="#list-ideas" title="Permanent link">&para;</a></h3>
 <p>List ideas with filtering.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aha-mcp-server<span class="w"> </span>list-ideas
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span>--workflow-status<span class="w"> </span><span class="s2">&quot;Under consideration&quot;</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--tag<span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="w"> </span>--sort<span class="w"> </span>recent<span class="w"> </span>--per-page<span class="w"> </span><span class="m">20</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aha-mcp-server<span class="w"> </span>list-ideas
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span>--workflow-status<span class="w"> </span><span class="s2">&quot;Under consideration&quot;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--tag<span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="w"> </span>--sort<span class="w"> </span>recent<span class="w"> </span>--per-page<span class="w"> </span><span class="m">20</span>
 </code></pre></div>
 <table>
 <thead>
@@ -2739,72 +2874,72 @@
 </table>
 <h3 id="get-feature">get-feature<a class="headerlink" href="#get-feature" title="Permanent link">&para;</a></h3>
 <p>Get a feature by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123
 </code></pre></div>
 <h3 id="get-epic">get-epic<a class="headerlink" href="#get-epic" title="Permanent link">&para;</a></h3>
 <p>Get an epic by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aha-mcp-server<span class="w"> </span>get-epic<span class="w"> </span>EPIC-456
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>aha-mcp-server<span class="w"> </span>get-epic<span class="w"> </span>EPIC-456
 </code></pre></div>
 <h3 id="get-release">get-release<a class="headerlink" href="#get-release" title="Permanent link">&para;</a></h3>
 <p>Get a release by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aha-mcp-server<span class="w"> </span>get-release<span class="w"> </span>REL-789
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>aha-mcp-server<span class="w"> </span>get-release<span class="w"> </span>REL-789
 </code></pre></div>
 <h3 id="get-goal">get-goal<a class="headerlink" href="#get-goal" title="Permanent link">&para;</a></h3>
 <p>Get a goal by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aha-mcp-server<span class="w"> </span>get-goal<span class="w"> </span>GOAL-123
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aha-mcp-server<span class="w"> </span>get-goal<span class="w"> </span>GOAL-123
 </code></pre></div>
 <h3 id="get-initiative">get-initiative<a class="headerlink" href="#get-initiative" title="Permanent link">&para;</a></h3>
 <p>Get an initiative by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>aha-mcp-server<span class="w"> </span>get-initiative<span class="w"> </span>INIT-456
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aha-mcp-server<span class="w"> </span>get-initiative<span class="w"> </span>INIT-456
 </code></pre></div>
 <h3 id="get-key-result">get-key-result<a class="headerlink" href="#get-key-result" title="Permanent link">&para;</a></h3>
 <p>Get a key result by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>aha-mcp-server<span class="w"> </span>get-key-result<span class="w"> </span>KR-789
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aha-mcp-server<span class="w"> </span>get-key-result<span class="w"> </span>KR-789
 </code></pre></div>
 <h3 id="get-persona">get-persona<a class="headerlink" href="#get-persona" title="Permanent link">&para;</a></h3>
 <p>Get a persona by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aha-mcp-server<span class="w"> </span>get-persona<span class="w"> </span>PERS-123
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>aha-mcp-server<span class="w"> </span>get-persona<span class="w"> </span>PERS-123
 </code></pre></div>
 <h3 id="get-requirement">get-requirement<a class="headerlink" href="#get-requirement" title="Permanent link">&para;</a></h3>
 <p>Get a requirement by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aha-mcp-server<span class="w"> </span>get-requirement<span class="w"> </span>REQ-456
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>aha-mcp-server<span class="w"> </span>get-requirement<span class="w"> </span>REQ-456
 </code></pre></div>
 <h3 id="get-team">get-team<a class="headerlink" href="#get-team" title="Permanent link">&para;</a></h3>
 <p>Get a team by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aha-mcp-server<span class="w"> </span>get-team<span class="w"> </span>TEAM-789
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aha-mcp-server<span class="w"> </span>get-team<span class="w"> </span>TEAM-789
 </code></pre></div>
 <h3 id="get-user">get-user<a class="headerlink" href="#get-user" title="Permanent link">&para;</a></h3>
 <p>Get a user by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>aha-mcp-server<span class="w"> </span>get-user<span class="w"> </span>USER-123
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>aha-mcp-server<span class="w"> </span>get-user<span class="w"> </span>USER-123
 </code></pre></div>
 <h3 id="get-workflow">get-workflow<a class="headerlink" href="#get-workflow" title="Permanent link">&para;</a></h3>
 <p>Get a workflow by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>aha-mcp-server<span class="w"> </span>get-workflow<span class="w"> </span>WF-456
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>aha-mcp-server<span class="w"> </span>get-workflow<span class="w"> </span>WF-456
 </code></pre></div>
 <h3 id="get-comment">get-comment<a class="headerlink" href="#get-comment" title="Permanent link">&para;</a></h3>
 <p>Get a comment by ID.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aha-mcp-server<span class="w"> </span>get-comment<span class="w"> </span>COMMENT-789
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>aha-mcp-server<span class="w"> </span>get-comment<span class="w"> </span>COMMENT-789
 </code></pre></div>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="scripting-with-json">Scripting with JSON<a class="headerlink" href="#scripting-with-json" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Get feature and extract name with jq</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.feature.name&#39;</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># List ideas and count them</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.ideas | length&#39;</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
-<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Search and format results</span>
-<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;roadmap&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.results[].title&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># Get feature and extract name with jq</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.feature.name&#39;</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># List ideas and count them</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;mobile&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.ideas | length&#39;</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1"># Search and format results</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;roadmap&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.results[].title&#39;</span>
 </code></pre></div>
 <h3 id="using-with-vault">Using with Vault<a class="headerlink" href="#using-with-vault" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># 1Password</span>
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OP_SERVICE_ACCOUNT_TOKEN</span><span class="o">=</span><span class="s2">&quot;ops_...&quot;</span>
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123<span class="w"> </span>--vault<span class="w"> </span>op://MyVault<span class="w"> </span>--credentials-name<span class="w"> </span>aha
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1"># Bitwarden</span>
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ACCESS_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ORGANIZATION_ID</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--vault<span class="w"> </span>bw://org-id<span class="w"> </span>--credentials-name<span class="w"> </span>aha
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># 1Password</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OP_SERVICE_ACCOUNT_TOKEN</span><span class="o">=</span><span class="s2">&quot;ops_...&quot;</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>aha-mcp-server<span class="w"> </span>get-feature<span class="w"> </span>FEAT-123<span class="w"> </span>--vault<span class="w"> </span>op://MyVault<span class="w"> </span>--credentials-name<span class="w"> </span>aha
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="c1"># Bitwarden</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ACCESS_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ORGANIZATION_ID</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>aha-mcp-server<span class="w"> </span>list-ideas<span class="w"> </span>--vault<span class="w"> </span>bw://org-id<span class="w"> </span>--credentials-name<span class="w"> </span>aha
 </code></pre></div>
 
 

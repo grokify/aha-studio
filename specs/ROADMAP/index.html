@@ -343,7 +343,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../packages/omnisignal/" class="md-tabs__link">
+        <a href="../../packages/omniroadmap/" class="md-tabs__link">
           
   
   
@@ -1045,6 +1045,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../packages/omniroadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omniroadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../packages/omnisignal/" class="md-nav__link">
         
   
@@ -1053,6 +1081,34 @@
     
   
     omnisignal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/omnisignalcache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omnisignalcache
   
 
     
@@ -1675,6 +1731,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#phase-8-voter-identity-and-organization-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 8 — Voter Identity and Organization Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1934,6 +2001,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#phase-8-voter-identity-and-organization-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 8 — Voter Identity and Organization Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1957,7 +2035,7 @@
 <h1 id="aha-studio-roadmap">Aha Studio — Roadmap<a class="headerlink" href="#aha-studio-roadmap" title="Permanent link">&para;</a></h1>
 <p><strong>Initiative:</strong> <code>INIT-AHASTUDIO-001</code>
 <strong>Repository:</strong> <code>github.com/grokify/aha-studio</code>
-<strong>Status:</strong> In Progress — 5 of 7 phases completed</p>
+<strong>Status:</strong> In Progress — 5 of 8 phases completed</p>
 <blockquote>
 <p>RMI IDs are stable and permanent. Commits implementing an item carry the trailer <code>Refs: RMI-AHASTUDIO-NNN</code>. Phase status is derived from member RMIs — a phase is complete only when all its required RMIs are complete. Completed historical work (legacy phases 1–10a and most of 10b) is recorded in <a href="../ROADMAP_HISTORY/">ROADMAP_HISTORY.md</a>; this file covers remaining work only. See <a href="../PLAN/">PLAN.md</a> for workstream rationale and sequencing.</p>
 </blockquote>
@@ -2044,7 +2122,7 @@
 </ul>
 <h2 id="phase-5-analytics-tools">Phase 5 — Analytics Tools<a class="headerlink" href="#phase-5-analytics-tools" title="Permanent link">&para;</a></h2>
 <p><strong>Theme:</strong> Aggregated statistics without fetching all records to the client (legacy Phase 10c).
-<strong>Status:</strong> Completed — 2 of 2 required items completed (1 blocked/descoped)</p>
+<strong>Status:</strong> Completed — 3 of 3 required items completed</p>
 <ul>
 <li>[x] <code>RMI-AHASTUDIO-021</code> <code>get_ideas_statistics</code> MCP tool</li>
 <li>Acceptance: counts by status/category, vote statistics, top ideas per group; computed from the SQLite cache when synced, API aggregation as fallback</li>
@@ -2052,9 +2130,10 @@
 <li>[x] <code>RMI-AHASTUDIO-022</code> <code>get_features_statistics</code> MCP tool</li>
 <li>Acceptance: counts by release/status, requirements summary; cache-first</li>
 <li>Delivered: sync/db.go GetFeaturesStatistics with status/release counts, with/without release, upcoming releases with feature counts</li>
-<li>[~] <code>RMI-AHASTUDIO-023</code> <code>get_idea_voter_domains</code> MCP tool — <strong>blocked/descoped</strong></li>
-<li>Acceptance: unique voter domain analytics for an idea</li>
-<li>Blocked: voter/endorser data not available in Aha API (only aggregate numEndorsements); descoped from phase</li>
+<li>[x] <code>RMI-AHASTUDIO-023</code> <code>get_voter_domain_histogram</code> MCP tool</li>
+<li>Acceptance: unique voter domain analytics for an idea (or product-wide)</li>
+<li>Un-blocked: prior investigation checked only aha-go's vendored openapi/aha.yaml and GraphQL schema, both of which expose just the aggregate votes/numEndorsements count. Live-tested against a real Aha account and confirmed <code>GET /ideas/:idea_id/endorsements</code> returns per-voter identity (name, email) via <code>endorsed_by_portal_user</code>/<code>endorsed_by_idea_user</code>; that endpoint was simply missing from the vendored spec.</li>
+<li>Delivered: aha-go endorsement.go (ListIdeaEndorsements), aha-studio ent/schema/ideaendorsement.go, sync/sync.go syncIdeaEndorsements (opt-in, incremental), sync/db.go GetVoterEmailDomainStatistics, mcp get_voter_domain_histogram tool</li>
 </ul>
 <h2 id="phase-6-duckdb-evaluation">Phase 6 — DuckDB Evaluation<a class="headerlink" href="#phase-6-duckdb-evaluation" title="Permanent link">&para;</a></h2>
 <p><strong>Theme:</strong> Columnar engine for analytics, benchmark-first (legacy Phase 13).
@@ -2092,6 +2171,13 @@
 </ul>
 </li>
 <li>Acceptance: tools handle the Integration field parsing (Jira URL → issue key extraction); bidirectional lookups work</li>
+</ul>
+<h2 id="phase-8-voter-identity-and-organization-sync">Phase 8 — Voter Identity and Organization Sync<a class="headerlink" href="#phase-8-voter-identity-and-organization-sync" title="Permanent link">&para;</a></h2>
+<p><strong>Theme:</strong> Sync idea_users and idea_organizations from Aha, and wire voter/customer-org tiering into a cache-backed omnisignal provider.
+<strong>Status:</strong> In progress — 0 of 1 items completed</p>
+<ul>
+<li>[ ] <code>RMI-AHASTUDIO-031</code> Sync idea_users and idea_organizations; wire voter/customer tiering into a cache-backed omnisignal provider</li>
+<li>Acceptance: aha-go <code>ListIdeaUsers</code>/<code>GetIdeaUser</code>/<code>ListIdeaOrganizations</code>/<code>GetIdeaOrganization</code> live-verified against a real Aha account; aha-studio <code>idea_users</code>/<code>idea_organizations</code> sync (<code>Detailed=true</code>) populates <code>email_domains</code>/<code>revenue</code>; a new <code>omnisignalcache</code> provider (registered as <code>"aha-studio"</code>, mirroring the existing <code>aha-go/omniroadmap</code> vs <code>aha-studio/omniroadmap</code> live/cached split) produces signals with <code>signal.MetaCustomers</code> populated from resolved organization refs — <code>idea_organizations.email_domains</code> is Aha's own authoritative domain→customer mapping, no manual config needed for the common case; <code>metrics.Compute(ctx, "reach", ...)</code> over those signals returns a non-zero distinct-customer count</li>
 </ul>
 
 

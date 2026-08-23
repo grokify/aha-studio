@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/aha-studio/getting-started/setup/">
+        <link rel="canonical" href="https://grokify.github.io/aha-studio/packages/omniroadmap/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../../cli/commands/">
       
       
-        <link rel="next" href="../quickstart/">
+        <link rel="next" href="../omnisignal/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Setup - Aha Studio</title>
+        <title>omniroadmap - Aha Studio</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#setup" class="md-skip">
+        <a href="#omniroadmap-provider" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Setup
+              omniroadmap
             
           </span>
         </div>
@@ -259,13 +259,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../installation/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/" class="md-tabs__link">
           
   
   
@@ -341,11 +339,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../packages/omniroadmap/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -520,31 +520,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -562,7 +559,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -580,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   
@@ -605,37 +602,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setup
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../getting-started/setup/" class="md-nav__link">
         
   
   
@@ -651,126 +621,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#get-your-aha-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Get Your Aha! Credentials
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Get Your Aha! Credentials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#api-token" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        API Token
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#domain" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domain
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configure Credentials
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configure Credentials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-1-environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 1: Environment Variables
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-2-command-line-flags" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 2: Command-Line Flags
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-3-vault-backed-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 3: Vault-Backed Credentials
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-your-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Your Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -783,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
         
   
   
@@ -1138,28 +988,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -1177,7 +1030,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1192,10 +1045,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../packages/omniroadmap/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    omniroadmap
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1211,6 +1091,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fidelity-notes-vs-the-live-aha-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fidelity notes vs. the live aha provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-read-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supporting read API
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1223,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../packages/omnisignal/" class="md-nav__link">
+      <a href="../omnisignal/" class="md-nav__link">
         
   
   
@@ -1251,7 +1195,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../packages/omnisignalcache/" class="md-nav__link">
+      <a href="../omnisignalcache/" class="md-nav__link">
         
   
   
@@ -1937,99 +1881,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#get-your-aha-credentials" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Get Your Aha! Credentials
+        Usage
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Get Your Aha! Credentials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#api-token" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        API Token
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#domain" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domain
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-credentials" class="md-nav__link">
+  <a href="#capabilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configure Credentials
+        Capabilities
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Configure Credentials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-1-environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 1: Environment Variables
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-2-command-line-flags" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 2: Command-Line Flags
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-3-vault-backed-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 3: Vault-Backed Credentials
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-your-setup" class="md-nav__link">
+  <a href="#fidelity-notes-vs-the-live-aha-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test Your Setup
+        Fidelity notes vs. the live aha provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-read-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supporting read API
       
     </span>
   </a>
@@ -2056,47 +1944,93 @@
   
 
 
-<h1 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h1>
-<h2 id="get-your-aha-credentials">Get Your Aha! Credentials<a class="headerlink" href="#get-your-aha-credentials" title="Permanent link">&para;</a></h2>
-<h3 id="api-token">API Token<a class="headerlink" href="#api-token" title="Permanent link">&para;</a></h3>
-<ol>
-<li>Log in to your Aha! workspace</li>
-<li>Go to <strong>Settings</strong> &gt; <strong>Personal</strong> &gt; <strong>Developer</strong> &gt; <strong>API</strong></li>
-<li>Generate a new API token</li>
-<li>Copy the token (it won't be shown again)</li>
-</ol>
-<h3 id="domain">Domain<a class="headerlink" href="#domain" title="Permanent link">&para;</a></h3>
-<p>Your Aha! subdomain is the first part of your workspace URL:</p>
+<h1 id="omniroadmap-provider">omniroadmap Provider<a class="headerlink" href="#omniroadmap-provider" title="Permanent link">&para;</a></h1>
+<p>The <code>omniroadmap/</code> package implements
+<a href="https://github.com/grokify/omniroadmap-core">omniroadmap-core</a>'s
+<code>provider.Provider</code> interface over aha-studio's local SQLite cache,
+registered as <strong><code>aha-studio</code></strong>. It lets the
+<a href="https://github.com/grokify/omniroadmap">omniroadmap</a> ecosystem — a
+tool-agnostic canonical model for roadmap/PM data — read everything
+aha-studio has synced <strong>without any Aha API traffic</strong>.</p>
+<p>aha-studio remains the Aha-native system of record; this provider
+generalizes its data into canonical <code>Item</code>/<code>Release</code> types for downstream
+consumers (the omniroadmap Dolt store, prism-roadmap export, future
+visualization).</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<p>Via the omniroadmap CLI (most common):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Sync the local cache into omniroadmap&#39;s canonical Dolt store</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>omniroadmap<span class="w"> </span>sync<span class="w"> </span>--provider<span class="w"> </span>aha-studio
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Scope to one product, from a specific cache file</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>omniroadmap<span class="w"> </span>sync<span class="w"> </span>--provider<span class="w"> </span>aha-studio<span class="w"> </span>--product<span class="w"> </span>PROJ<span class="w"> </span>--cache-db<span class="w"> </span>/path/to/cache.db
+</code></pre></div>
+<p>As a library:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nx">ahastudio</span><span class="w"> </span><span class="s">&quot;github.com/grokify/aha-studio/omniroadmap&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">studiosync</span><span class="w"> </span><span class="s">&quot;github.com/grokify/aha-studio/sync&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">studiosync</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">studiosync</span><span class="p">.</span><span class="nx">DefaultDBPath</span><span class="p">())</span><span class="w"> </span><span class="c1">// ~/.ahastudio/cache.db</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nx">p</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ahastudio</span><span class="p">.</span><span class="nx">NewProvider</span><span class="p">(</span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">ahastudio</span><span class="p">.</span><span class="nx">WithProduct</span><span class="p">(</span><span class="s">&quot;PROJ&quot;</span><span class="p">))</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">ListItems</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">provider</span><span class="p">.</span><span class="nx">ListItemsRequest</span><span class="p">{})</span>
+</code></pre></div>
+<h2 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListItems</code> / <code>GetItem</code></td>
+<td>features, epics, initiatives (by ID or reference number)</td>
+</tr>
+<tr>
+<td><code>ListReleases</code></td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ListStatuses</code></td>
+<td>Derived from observed item statuses (names only)</td>
+</tr>
+<tr>
+<td><code>ListCustomFieldDefinitions</code></td>
+<td>✗ — definitions aren't cached; per-record custom fields <strong>are</strong> available</td>
+</tr>
+<tr>
+<td>Writes</td>
+<td>✗ (read-only, like all omniroadmap providers)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fidelity-notes-vs-the-live-aha-provider">Fidelity notes vs. the live <code>aha</code> provider<a class="headerlink" href="#fidelity-notes-vs-the-live-aha-provider" title="Permanent link">&para;</a></h2>
+<p>The cache stores a curated subset of each record, so a few things differ
+from <a href="https://github.com/grokify/aha-go">aha-go</a>'s live-API <code>aha</code> provider:</p>
 <ul>
-<li>If your workspace is at <code>mycompany.aha.io</code>, your domain is <code>mycompany</code></li>
+<li><strong>Status</strong>: only the workflow status <em>name</em> is cached, so the canonical
+  <code>StatusCategory</code> (todo/in_progress/done/canceled) is a name heuristic.
+  The live provider has Aha's <code>Complete</code> flag and position for reliable
+  normalization.</li>
+<li><strong>Custom fields</strong>: present only for records fetched via <em>detailed</em> sync;
+  lightweight-synced records have none. Run a detailed sync first if you
+  need custom-field-based prioritization mapping (omniroadmap's fieldmap).</li>
+<li><strong>IDs</strong>: canonical IDs are prefixed <code>aha-studio:</code> — syncing both this
+  provider and the live <code>aha</code> provider into one store produces parallel
+  copies, not merged records.</li>
 </ul>
-<h2 id="configure-credentials">Configure Credentials<a class="headerlink" href="#configure-credentials" title="Permanent link">&para;</a></h2>
-<h3 id="option-1-environment-variables">Option 1: Environment Variables<a class="headerlink" href="#option-1-environment-variables" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_DOMAIN</span><span class="o">=</span><span class="s2">&quot;your_subdomain&quot;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AHA_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_api_token&quot;</span>
-</code></pre></div>
-<h3 id="option-2-command-line-flags">Option 2: Command-Line Flags<a class="headerlink" href="#option-2-command-line-flags" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aha-mcp-server<span class="w"> </span>--subdomain<span class="w"> </span>mycompany<span class="w"> </span>--api-key<span class="w"> </span>your-api-key
-</code></pre></div>
-<h3 id="option-3-vault-backed-credentials">Option 3: Vault-Backed Credentials<a class="headerlink" href="#option-3-vault-backed-credentials" title="Permanent link">&para;</a></h3>
-<p>For production use, store credentials in a vault:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 1Password</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OP_SERVICE_ACCOUNT_TOKEN</span><span class="o">=</span><span class="s2">&quot;ops_...&quot;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>aha-mcp-server<span class="w"> </span>--vault<span class="w"> </span>op://MyVault<span class="w"> </span>--credentials-name<span class="w"> </span>aha
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Bitwarden</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ACCESS_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BW_ORGANIZATION_ID</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>aha-mcp-server<span class="w"> </span>--vault<span class="w"> </span>bw://org-id<span class="w"> </span>--credentials-name<span class="w"> </span>aha
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Keeper</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KSM_TOKEN</span><span class="o">=</span><span class="s2">&quot;US:...&quot;</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>aha-mcp-server<span class="w"> </span>--vault<span class="w"> </span>keeper://<span class="w"> </span>--credentials-name<span class="w"> </span>aha
-</code></pre></div>
-<p>See <a href="../../configuration/credentials/">Credentials</a> for detailed configuration options.</p>
-<h2 id="test-your-setup">Test Your Setup<a class="headerlink" href="#test-your-setup" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Test with CLI mode</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>aha-mcp-server<span class="w"> </span>search-documents<span class="w"> </span><span class="s2">&quot;product roadmap&quot;</span><span class="w"> </span>--subdomain<span class="w"> </span>mycompany<span class="w"> </span>--api-key<span class="w"> </span>your-key
+<h2 id="supporting-read-api">Supporting read API<a class="headerlink" href="#supporting-read-api" title="Permanent link">&para;</a></h2>
+<p>The provider is built on two exported <code>sync.DB</code> accessors added for this
+purpose, useful in their own right:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// All cached records of an entity type, optionally product-scoped, in the</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// flattened shape (columns + data-JSON keys; custom_fields as an array of</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// {key,name,value,type} maps):</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nx">records</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">ListRecords</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;features&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PROJ&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">// One record by ID or Aha reference number:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nx">rec</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">GetRecord</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;features&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PROJ-123&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 
