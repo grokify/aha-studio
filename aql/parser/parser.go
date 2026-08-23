@@ -1178,14 +1178,12 @@ func (p *Parser) parseUpdateStatement() (*ast.UpdateStatement, error) {
 	}
 	p.advance()
 
-	// Parse assignments: col1 = val1, col2 = val2, ...
+	// Parse assignments: col1 = val1, custom.field2 = val2, ...
 	for {
-		if !p.check(lexer.TokenIdent) {
-			return nil, p.errorf("expected column name in SET clause")
+		field, err := p.parseFieldRef()
+		if err != nil {
+			return nil, err
 		}
-		fieldName := p.current().Literal
-		fieldPos := p.current().Pos
-		p.advance()
 
 		if !p.check(lexer.TokenEQ) {
 			return nil, p.errorf("expected '=' after column name")
@@ -1198,9 +1196,9 @@ func (p *Parser) parseUpdateStatement() (*ast.UpdateStatement, error) {
 		}
 
 		stmt.Assignments = append(stmt.Assignments, ast.Assignment{
-			Field: fieldName,
+			Field: field.String(),
 			Value: *val,
-			Pos:   fieldPos,
+			Pos:   field.Pos,
 		})
 
 		if !p.check(lexer.TokenComma) {
