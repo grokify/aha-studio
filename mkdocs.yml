@@ -43,6 +43,7 @@ nav:
   - CLI:
       - Commands: cli/commands.md
   - Packages:
+      - omniroadmap: packages/omniroadmap.md
       - omnisignal: packages/omnisignal.md
   - Configuration:
       - Credentials: configuration/credentials.md

@@ -1,6 +1,6 @@
 # Tools Reference
 
-The MCP server provides 81 tools for accessing, querying, and managing Aha.io data.
+The MCP server provides 86 tools for accessing, querying, and managing Aha.io data.
 
 ## Query Tools
 
@@ -186,6 +186,16 @@ Retrieve a strategic model by ID.
 |-----------|------|----------|-------------|
 | `model_id` | string | Yes | Strategic model ID |
 
+### get_initiative_with_features
+
+Get an initiative with all its linked features in a single call. Returns the full initiative details plus an embedded features array.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `initiative_id` | string | Yes | Initiative ID or reference number |
+
 ## List Tools
 
 ### list_ideas
@@ -307,6 +317,27 @@ List initiatives for a specific product.
 | `product_id` | string | Yes | Product ID or reference prefix |
 | `page` | number | No | Page number for pagination |
 | `per_page` | number | No | Results per page (max 200) |
+
+### list_initiative_features
+
+List features linked to a specific initiative.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `initiative_id` | string | Yes | Initiative ID or reference number (e.g., 'PROD-S-34') |
+
+### list_initiatives_by_tag
+
+List initiatives filtered by a tag value from custom fields. Fetches all product initiatives and filters client-side by inspecting custom field values.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `tag` | string | Yes | Tag value to filter by (e.g., 'Platform_Initiative') |
 
 ### list_feature_requirements
 
@@ -647,6 +678,22 @@ Update a strategic model.
 | `model_id` | string | Yes | Strategic model ID |
 | `name` | string | No | New model name |
 
+### set_custom_field_values
+
+Set one or more custom field values on a Feature, Initiative, or Release record.
+Works the same way across all three entity types since custom fields are
+tenant-defined and schemaless. Use `list_custom_fields` to discover valid keys
+for a given `entity_type`, and `list_custom_field_options` for the valid values
+of a select/choice field.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `entity_type` | string | Yes | The record's entity type: `feature`, `initiative`, or `release` |
+| `record_id` | string | Yes | Record ID or reference number (e.g., 'FEAT-123') |
+| `custom_fields` | object | Yes | Map of custom field API key to new value, e.g. `{"priority": "High", "story_points": 8}` |
+
 ### change_feature_status
 
 Change the workflow status of a feature.
@@ -794,6 +841,24 @@ Create a strategic model template in Aha! using browser automation.
 
 !!! note
     Browser automation requires `AHA_EMAIL` and `AHA_PASSWORD` environment variables.
+
+## Sync Tools (Local SQLite Cache)
+
+### sync_data
+
+Sync Aha data to the local SQLite cache used by offline query tools (`list_features_by_release_date`, `get_features_statistics`, etc.). Requires `AHA_DB_PATH` configured (defaults to `~/.aha-studio/cache.db` if unset).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID to sync (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `entities` | array | No | Specific entities to sync: features, ideas, releases, initiatives, goals, epics, comments, requirements (defaults to all) |
+| `detailed` | boolean | No | Fetch full per-record data including custom fields for features and initiatives (does an extra API call per record) |
+| `incremental` | boolean | No | Only sync changes since the last sync for this product/entity |
+
+!!! warning
+    This tool blocks until the entire sync completes, which can take a while for large products or when `detailed=true` — detailed mode makes an additional per-record API call for every feature/initiative. The sync client is throttled via `AHA_SYNC_RPS` (default 10 requests/sec) to stay under Aha's rate limits.
 
 ## Graph Tools (Neo4j)
 

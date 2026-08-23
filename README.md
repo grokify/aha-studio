@@ -32,14 +32,15 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (81 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (86 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - 🔍 **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- 🛠️ **81 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
+- 🛠️ **86 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
 - 📊 **HTTP API** - REST endpoints with OpenAPI spec and Prometheus metrics
 - 📡 **OmniSignal provider** - Normalizes Aha Ideas into vendor-neutral signals for the ProductContext signal pipeline
+- 🗺️ **OmniRoadmap provider** - Serves the local cache as tool-agnostic roadmap data (registered as `aha-studio` in the [omniroadmap](https://github.com/grokify/omniroadmap) ecosystem) — no Aha API traffic
 - 💾 **Local SQLite sync** - Offline queries and fast local caching
 - 🔗 **Neo4j integration** - Graph analytics and relationship queries
 - 🌐 **Browser automation** - Strategic template creation via headless Chrome
@@ -122,6 +123,22 @@ Add to your Claude Desktop configuration:
 }
 ```
 
+### CLI Tool Invocation
+
+Every MCP tool can also be called directly from the shell via `aha-mcp-server tool`. This is useful for AI agent sessions that can't register a new or updated MCP server mid-session — the agent shells out instead of restarting.
+
+```bash
+# List all available tools
+aha-mcp-server tool list
+
+# Print the JSON Schema for a tool's parameters
+aha-mcp-server tool schema list_initiative_features
+
+# Call a tool with JSON parameters (as an argument or via stdin)
+aha-mcp-server tool call get_feature '{"reference":"FEAT-123"}'
+echo '{"initiative_id":"PROD-S-34"}' | aha-mcp-server tool call list_initiative_features
+```
+
 ## AQL Syntax
 
 AQL provides a SQL-like interface for querying Aha.io data:
@@ -161,7 +178,7 @@ SELECT status, COUNT(*) as count FROM features GROUP BY status
 
 ## MCP Tools
 
-The MCP server provides 81 tools organized by category.
+The MCP server provides 86 tools organized by category.
 
 **Backend Legend:** Tools marked with 🌐 require browser credentials. Tools marked with 🔗 require Neo4j.
 
@@ -191,6 +208,7 @@ The MCP server provides 81 tools organized by category.
 | `get_team` | Get team by ID |
 | `get_workflow` | Get workflow by ID |
 | `get_strategic_model` | Get strategic model by ID |
+| `get_initiative_with_features` | Get an initiative with its linked features in one call |
 
 ### List Tools (Aha API)
 
@@ -206,6 +224,8 @@ The MCP server provides 81 tools organized by category.
 | `list_product_goals` | List goals for a product |
 | `list_initiatives` | List initiatives with filters |
 | `list_product_initiatives` | List initiatives for a product |
+| `list_initiative_features` | List features linked to a specific initiative |
+| `list_initiatives_by_tag` | List initiatives filtered by tag value from custom fields |
 | `list_feature_requirements` | List requirements for a feature |
 | `list_users` | List workspace users |
 | `list_workflow_statuses` | List workflow statuses |
@@ -269,6 +289,12 @@ The MCP server provides 81 tools organized by category.
 |------|-------------|
 | `list_predefined_templates` | List strategic templates |
 | 🌐 `browser_create_template` | Create template via browser automation |
+
+### Sync Tools (Local SQLite Cache)
+
+| Tool | Description |
+|------|-------------|
+| `sync_data` | Sync Aha data to the local cache (optionally `detailed` for custom fields); requires `AHA_DB_PATH` |
 
 ### Graph Tools (Neo4j) 🔗
 

@@ -34,6 +34,10 @@ Sync data from Aha.io to local SQLite cache.
 aha-studio sync --product PROD
 aha-studio sync --product PROD --since 2024-01-01
 aha-studio sync --product PROD --since last
+
+# Detailed sync: also fetch custom fields for features and initiatives
+# (does an extra per-record API call, throttled via --rate-limit)
+aha-studio sync --product PROD --entities features,initiatives --detailed
 ```
 
 | Flag | Description |
@@ -41,6 +45,11 @@ aha-studio sync --product PROD --since last
 | `-p, --product` | Product ID (required) |
 | `--since` | Sync changes since date (YYYY-MM-DD) or "last" |
 | `--entities` | Specific entities to sync (comma-separated) |
+| `--detailed` | Fetch full per-record data including custom fields (features and initiatives only) |
+| `--rate-limit` | Requests/sec for the sync client (default 10; Aha allows up to 20/sec, 300/min) |
+
+!!! note
+    `--detailed` mode makes an additional API call per record (list-then-get), so it's slower than a normal sync. Custom fields are stored in the cache's `data` JSON column, not yet queryable via AQL.
 
 ### shell
 
@@ -98,6 +107,47 @@ aha-studio sync --product PROD
 ## aha-mcp-server Commands
 
 The Aha! MCP server can also be used as a command-line tool for testing and scripting.
+
+### tool
+
+Invoke any registered MCP tool directly, without a running MCP server session.
+
+This is useful for AI agent sessions that cannot register a new or updated MCP
+tool mid-session — an agent's MCP servers are fixed at launch, so picking up a
+tool that was added or changed normally requires a restart. `tool call` lets
+an agent shell out to run any registered tool by name instead.
+
+```bash
+# List all available tools with descriptions
+aha-mcp-server tool list
+
+# Print the JSON Schema for a tool's parameters
+aha-mcp-server tool schema list_initiative_features
+
+# Call a tool with JSON parameters (as an argument)
+aha-mcp-server tool call get_feature '{"reference":"FEAT-123"}'
+
+# Call a tool with JSON parameters via stdin (omit the argument, or pass "-")
+echo '{"initiative_id":"PROD-S-34"}' | aha-mcp-server tool call list_initiative_features
+```
+
+Credentials are resolved the same way as `serve`: `--subdomain`/`--api-key` flags,
+falling back to `AHA_SUBDOMAIN`/`AHA_API_KEY` (or `AHA_DOMAIN`/`AHA_API_TOKEN`).
+
+Results are printed to stdout as pretty-printed JSON; errors go to stderr with a
+non-zero exit code, so `tool call` composes cleanly with `jq` and shell scripting:
+
+```bash
+aha-mcp-server tool call list_initiative_features '{"initiative_id":"PROD-S-34"}' \
+  | jq -r '.features[].reference_num'
+```
+
+Sync (`sync_data`) requires `AHA_DB_PATH` (defaults to `~/.aha-studio/cache.db` if unset)
+and is throttled via `AHA_SYNC_RPS` (default 10 req/s):
+
+```bash
+aha-mcp-server tool call sync_data '{"product":"PROD","entities":["initiatives"],"detailed":true}'
+```
 
 ## Global Flags
 

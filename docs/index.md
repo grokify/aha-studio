@@ -9,21 +9,24 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (81 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (86 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- **81 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
+- **86 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
 - **HTTP API** - REST endpoints with OpenAPI spec and Prometheus metrics
 - **Local SQLite sync** - Offline queries and fast local caching
 - **Neo4j integration** - Graph analytics and relationship queries
 - **Browser automation** - Strategic template creation via headless Chrome
 - **OmniSignal provider** - Emit signals from Aha ideas to ProductContext pipeline
+- **OmniRoadmap provider** - Serve the local cache as tool-agnostic roadmap data ([omniroadmap](https://github.com/grokify/omniroadmap) ecosystem, provider name `aha-studio`) — see [omniroadmap Provider](packages/omniroadmap.md)
 
 ## What is MCP?
 
 The [Model Context Protocol](https://modelcontextprotocol.io/) is an open standard that enables AI assistants to securely connect to external data sources and tools. The `aha-mcp-server` acts as a bridge between AI assistants (like Claude) and your Aha! workspace.
+
+Every MCP tool can also be invoked directly from the shell with `aha-mcp-server tool call <name> <json-params>` — see [CLI Commands](cli/commands.md) for details. This is useful for agent sessions that can't register a new or updated MCP server without restarting.
 
 ## Available Tools
 
@@ -51,6 +54,7 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) is an open standa
 | `get_persona` | Get persona by ID |
 | `get_team` | Get team by ID |
 | `get_workflow` | Get workflow by ID |
+| `get_initiative_with_features` | Get an initiative with its linked features in one call |
 
 ### List & Search Tools
 
@@ -60,6 +64,8 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) is an open standa
 | `list_products` | List all products |
 | `list_workflow_statuses` | List workflow statuses |
 | `list_releases` | List releases for product |
+| `list_initiative_features` | List features linked to a specific initiative |
+| `list_initiatives_by_tag` | List initiatives filtered by tag value from custom fields |
 | `search_documents` | Search documents via GraphQL |
 
 ### Write Tools
@@ -79,6 +85,12 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) is an open standa
 |------|-------------|
 | `list_predefined_templates` | List strategic templates |
 | `browser_create_template` | Create template via browser |
+
+### Sync Tools (Local SQLite Cache)
+
+| Tool | Description |
+|------|-------------|
+| `sync_data` | Sync Aha data to the local cache (optionally `detailed` for custom fields) |
 
 ### Graph Tools (Neo4j)
 
