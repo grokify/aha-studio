@@ -13,6 +13,8 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 | Create a goal | `create_goal` | Create a new goal in a product |
 | Create an initiative | `create_initiative` | Create a new initiative in a product |
 | Create a requirement | `create_requirement` | Create a new requirement for a feature |
+| Create an idea | `create_idea` | Create a new idea (GraphQL) |
+| Create a release | `create_release` | Create a new release for a product |
 
 ### Update Tools
 
@@ -25,6 +27,7 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 | Update requirement | `update_requirement` | Update requirement fields (name, description, status) |
 | Update release | `update_release` | Update release fields (name, dates, parking_lot, description) |
 | Update idea | `update_idea` | Update idea fields (name, description, status, visibility) |
+| Set custom fields | `set_custom_field_values` | Set custom field values on a Feature, Initiative, or Release (GraphQL) |
 
 ### Status & Assignment Tools
 
@@ -33,6 +36,7 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 | Assign user to feature | `assign_user_to_feature` | Assign a user to a feature |
 | Change status | `change_feature_status` | Change the workflow status of a feature |
 | Assign release | `assign_feature_release` | Assign a feature to a different release |
+| Link goal to feature | `add_goal_to_feature` | Link a goal to a feature (GraphQL) |
 | Lookup statuses | `list_workflow_statuses` | List all workflow statuses for a product (lookup IDs by name) |
 | Lookup releases | `list_releases` | List all releases for a product (lookup IDs by name) |
 
@@ -42,6 +46,14 @@ The MCP server provides the following tools for creating and modifying Aha.io da
 |---------|-----------|-------------|
 | Add feature comments | `add_feature_comment` | Add a comment to a feature |
 | Add idea comments | `add_idea_comment` | Add a comment to an idea |
+
+### Delete Tools
+
+| Feature | Tool Name | Description |
+|---------|-----------|-------------|
+| Delete an idea | `delete_idea` | Delete an idea; requires `confirm: true` |
+| Delete a requirement | `delete_requirement` | Delete a requirement |
+| Delete a comment | `delete_comment` | Delete a comment |
 
 ## Usage Examples
 

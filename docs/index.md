@@ -9,17 +9,18 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (86 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (87 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- **86 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
+- **87 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
 - **HTTP API** - REST endpoints with OpenAPI spec and Prometheus metrics
 - **Local SQLite sync** - Offline queries and fast local caching
 - **Neo4j integration** - Graph analytics and relationship queries
 - **Browser automation** - Strategic template creation via headless Chrome
 - **OmniSignal provider** - Emit signals from Aha ideas to ProductContext pipeline
+- **OmniSignalCache provider** - Cache-backed OmniSignal provider with voter/customer-org tiering, provider name `aha-studio` — see [omnisignalcache Package](packages/omnisignalcache.md)
 - **OmniRoadmap provider** - Serve the local cache as tool-agnostic roadmap data ([omniroadmap](https://github.com/grokify/omniroadmap) ecosystem, provider name `aha-studio`) — see [omniroadmap Provider](packages/omniroadmap.md)
 
 ## What is MCP?

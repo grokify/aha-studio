@@ -1,6 +1,6 @@
 # Tools Reference
 
-The MCP server provides 86 tools for accessing, querying, and managing Aha.io data.
+The MCP server provides 87 tools for accessing, querying, and managing Aha.io data.
 
 ## Query Tools
 
@@ -195,6 +195,18 @@ Get an initiative with all its linked features in a single call. Returns the ful
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `initiative_id` | string | Yes | Initiative ID or reference number |
+
+### get_feature_ideas
+
+List ideas linked to or promoted from a feature.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number |
+| `page` | number | No | Page number for pagination |
+| `per_page` | number | No | Results per page (default 30) |
 
 ## List Tools
 
@@ -437,6 +449,78 @@ Search for Aha! documents using GraphQL.
 | `query` | string | Yes | Search query string |
 | `searchable_type` | string | No | Type of document to search for (defaults to Page) |
 
+### list_idea_categories
+
+List idea categories for a product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+
+### list_features_by_release_date
+
+List features by release date from the local cache (requires sync).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `release_date` | string | No | Exact release date to match (YYYY-MM-DD format) |
+| `start_date` | string | No | Start of release date range (YYYY-MM-DD format) |
+| `end_date` | string | No | End of release date range (YYYY-MM-DD format) |
+
+### list_features_by_release_name
+
+List features by release name from the local cache (requires sync).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `release_name` | string | Yes | Release name to match exactly |
+
+## Analytics Tools (Local SQLite Cache)
+
+Analytics tools compute aggregated statistics from the local cache rather than fetching individual records. Requires syncing the relevant entity first (see [Sync Tools](#sync-tools-local-sqlite-cache)).
+
+### get_ideas_statistics
+
+Get aggregated statistics for ideas from the local cache: counts by status, vote statistics, top ideas by votes, and recent/updated counts.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `top_count` | integer | No | Number of top ideas by votes to include (default: 10) |
+
+### get_features_statistics
+
+Get aggregated statistics for features from the local cache: counts by status and release, features with/without releases, and upcoming releases with feature counts.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `upcoming_releases_count` | integer | No | Number of upcoming releases to include (default: 5) |
+
+### get_voter_domain_histogram
+
+Get an email-domain histogram of idea voters from the local cache. Requires syncing the `idea_endorsements` entity (`sync_data` with `entities: ["idea_endorsements"]`, or a full sync).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product` | string | No | Product ID (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `idea_id` | string | No | Scope to one idea's voters; omit for a product-wide histogram |
+| `limit` | integer | No | Number of top domains to include (default: 10) |
+
 ## Create Tools
 
 ### create_feature
@@ -542,6 +626,33 @@ Create a new strategic model.
 | `product_id` | string | Yes | Product ID or reference prefix |
 | `kind` | string | Yes | Model type (e.g., 'canvas', 'scorecard') |
 | `name` | string | No | Model name |
+
+### create_idea
+
+Create a new idea using the GraphQL API.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | Yes | Name of the idea |
+| `product_id` | string | No | Product ID or reference prefix (uses `AHA_DEFAULT_PRODUCT` if not specified) |
+| `skip_required_fields_validation` | boolean | No | Skip validation of required custom fields |
+
+### create_release
+
+Create a new release for a product.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product_id` | string | Yes | Product ID or reference prefix |
+| `name` | string | Yes | Name of the release |
+| `start_date` | string | No | Start date (YYYY-MM-DD format) |
+| `release_date` | string | No | Release date (YYYY-MM-DD format) |
+| `parking_lot` | boolean | No | Whether this is a parking lot release |
+| `theme` | string | No | Theme/description of the release (HTML allowed) |
 
 ## Update Tools
 
@@ -727,6 +838,18 @@ Assign a user to a feature.
 | `feature_id` | string | Yes | Feature ID or reference number (e.g., 'FEAT-123') |
 | `user` | string | Yes | User ID or email address to assign |
 
+### add_goal_to_feature
+
+Link a goal to a feature using the GraphQL API.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feature_id` | string | Yes | Feature ID or reference number (e.g., 'FEAT-123') |
+| `goal_id` | string | Yes | Goal ID to link |
+| `link_type` | string | No | Type of link (default: `RELATES_TO`; also `IMPACTS`, `DEPENDS_ON`) |
+
 ## Comment Tools
 
 ### add_feature_comment
@@ -819,6 +942,17 @@ Delete a comment.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `comment_id` | string | Yes | Comment ID |
+
+### delete_idea
+
+Delete an idea (destructive operation, requires confirmation).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `idea_id` | string | Yes | Idea ID or reference number to delete |
+| `confirm` | boolean | Yes | Must be `true` to confirm deletion (safety check) |
 
 ## Browser Tools
 

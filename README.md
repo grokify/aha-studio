@@ -32,14 +32,15 @@ Aha Studio provides two command-line tools:
 | Binary | Purpose |
 |--------|---------|
 | `aha-studio` | AQL query CLI with SQLite sync and interactive shell |
-| `aha-mcp-server` | MCP server (86 tools) for Claude Desktop and AI assistants |
+| `aha-mcp-server` | MCP server (87 tools) for Claude Desktop and AI assistants |
 
 ## Features
 
 - 🔍 **AQL (Aha Query Language)** - SQL-like syntax for querying Aha.io data
-- 🛠️ **86 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
+- 🛠️ **87 MCP Tools** - Features, Ideas, Releases, Initiatives, Graph queries, analytics, and more
 - 📊 **HTTP API** - REST endpoints with OpenAPI spec and Prometheus metrics
 - 📡 **OmniSignal provider** - Normalizes Aha Ideas into vendor-neutral signals for the ProductContext signal pipeline
+- 📡 **OmniSignalCache provider** - Cache-backed OmniSignal provider with voter/customer-org tiering (registered as `aha-studio`) — no Aha API traffic
 - 🗺️ **OmniRoadmap provider** - Serves the local cache as tool-agnostic roadmap data (registered as `aha-studio` in the [omniroadmap](https://github.com/grokify/omniroadmap) ecosystem) — no Aha API traffic
 - 💾 **Local SQLite sync** - Offline queries and fast local caching
 - 🔗 **Neo4j integration** - Graph analytics and relationship queries
@@ -178,7 +179,7 @@ SELECT status, COUNT(*) as count FROM features GROUP BY status
 
 ## MCP Tools
 
-The MCP server provides 86 tools organized by category.
+The MCP server provides 87 tools organized by category.
 
 **Backend Legend:** Tools marked with 🌐 require browser credentials. Tools marked with 🔗 require Neo4j.
 

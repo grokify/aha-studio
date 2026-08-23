@@ -45,6 +45,7 @@ nav:
   - Packages:
       - omniroadmap: packages/omniroadmap.md
       - omnisignal: packages/omnisignal.md
+      - omnisignalcache: packages/omnisignalcache.md
   - Configuration:
       - Credentials: configuration/credentials.md
       - Environment Variables: configuration/environment.md
